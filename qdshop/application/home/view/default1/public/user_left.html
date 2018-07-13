@@ -13,8 +13,8 @@
             <h2>{if $user.nickname}{$user.nickname}{else /}{$user.user_name}{/if}</h2>
         </div>
         <dl>
-        	<dd><a href=""><span>关注</span><font>88</font></a></dd>
-        	<dd><a href=""><span>粉丝</span><font>888</font></a></dd>
+        	<dd><a href=""><span>关注</span><font>{$user.follow_number}</font></a></dd>
+        	<dd><a href=""><span>粉丝</span><font>{$user.be_follow_number}</font></a></dd>
         </dl>
     </div>
     <div class="l_menu bg_white">
