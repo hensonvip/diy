@@ -1,0 +1,55 @@
+{include file="pageheader.htm"}
+
+<form action="excel.php?act=excel" method="post" enctype="multipart/form-data" name="searchForm" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--请选择订单状态-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择订单状态</label>
+            <div class="layui-input-block">
+                <select name="order_status" id="select9">
+                    <option value="-1">请选择...</option>
+                    <option value="0">未确认</option>
+                    <option value="1">已确认</option>
+                    <option value="2">已取消</option>
+                    <option value="3">无效</option>
+                    <option value="4">退货</option>
+                </select>
+            </div>
+        </div>
+        <!--请选择下单时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择下单时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" maxlength="60" size="20" readonly="readonly" id="start_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                ~
+                <input type="text" name="end_time" maxlength="60" size="20" readonly="readonly" id="end_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--请选择订单号-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择订单号</label>
+            <div class="layui-input-block">
+                <input name="order_sn1" type="text" id="order_sn1" class="layui-input"> ~ <input name="order_sn2" type="text" id="order_sn2" class="layui-input"/>开始订单号 到 结尾订单号
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input name="query" type="submit" class="layui-btn" id="query" value="开始导出" />
+        </p>
+    </div>
+</div>
+</form>
+
+
+{insert_scripts files="../js/region.js"}
+{literal}
+<script language="JavaScript">
+region.isAdmin = true;
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+</script>
+{/literal}
+{include file="pagefooter.htm"}

@@ -1,0 +1,20 @@
+{if $data.list}
+    {foreach $data.list as $key =>$vo}
+    <li {if $vo.readed eq 0}class='on'{/if}>
+        <div class="part part1"><label><i></i><input type="checkbox" name="l_id" value="{$vo['l_id']}" class="not_rmcheck"></label></div>
+        <a href="{:url('User/my_message_details',array('l_id'=>$vo['l_id'], 'msg_type' => $vo['msg_type']))}">
+            <div class="part part2"><i></i></div>
+            <div class="part part3 tover">{$vo.title}</div>
+            <div class="part part4">{$vo.receive_time}</div>
+        </a>
+    </li>
+    {/foreach}
+{else}
+    {if $is_ajax eq 1}
+    <script type="text/javascript">
+        $(function(){
+            layer.msg('没有数据了');
+        })
+    </script>
+    {/if}
+{/if}

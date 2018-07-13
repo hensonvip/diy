@@ -1,0 +1,68 @@
+{include file="public/header" /}
+<style type="text/css">
+    .getCode{background: none;color: #c01414;font-size: .36rem;text-align: right;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">手机快捷登录</h1>
+</header>   
+<div class="content">
+    <div class="sign">
+        <form action="{:url('User/do_login_mobile')}" method="post" onsubmit="return checkForm()">
+            <input type="hidden" name="back_url" value="{$back_url}">
+            <input type="text" name="mobile_phone" id="mobile_phone" placeholder="请输入手机号码" >
+           <div class="yz_box clearfix">
+                <input class="fl" type="text" placeholder="验证码" name="mobile_code" id="mobile_code">
+                <input class="fr getCode" type="button" value="获取验证码" onclick="getCode(4,$(this));">
+            </div>
+            
+            <div class="wzm class">
+                <a class="tl fl" href="{:url('User/login')}">手机密码登录</a>
+                <a class="tr wm fr" href="{:url('User/forget')}">忘记密码</a>
+            </div>
+            <input type="submit" class="sub_btn" value="登录" style="margin-top:0.3rem;">
+            
+            <p align="center">
+                <a class="tl wz" href="{:url('User/register')}" style="color:#999999;">还没有帐号？<font color="#c01414">立即注册</font></a>
+            </p>
+            <div class="buys tc" style="display:none;">
+                <a href=""><img src="__IMGWAP__/wq.png"></a>
+                <a href=""><img src="__IMGWAP__/wx.png"></a>
+                <a href=""><img src="__IMGWAP__/wz.png"></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script>
+    function checkForm(){
+        var mobile_phone = $('#mobile_phone').val();
+        if(!checkMobile(mobile_phone)){
+            return false;
+        }
+
+        var mobile_code = $('#mobile_code').val();
+        if(mobile_code == ''){
+            layer.open({
+                content: '请输入手机验证码！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        return true;
+    }
+</script>

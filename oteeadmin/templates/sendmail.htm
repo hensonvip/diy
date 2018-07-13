@@ -1,0 +1,59 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js,validator.js"}
+
+<form action="sendmail.php" name="theForm" onsubmit="return validate()" method="post" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--收件人-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.recipient}</label>
+            <div class="layui-input-block">
+                <input name="email" type="text" value="{$email}" class="layui-input" />
+            </div>
+        </div>
+        <!--主题-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.subject}</label>
+            <div class="layui-input-block">
+                <input name="subject" type="text" class="layui-input" />
+            </div>
+        </div>
+        <!--邮件正文-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.content}</label>
+            <div class="layui-input-block">
+                <textarea name="content" id="content" rows="10" cols="98" ></textarea>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" name="submit" value="{$lang.button_send}" class="layui-btn" />
+            <input type="hidden" name="act" value="send_act">
+        </p>
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+
+document.forms['theForm'].elements['subject'].focus();
+
+onload = function()
+{
+    startCheckOrder(); // 开始检查订单
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+	
+    validator.isEmail("email", invalid_email, true);
+	validator.required("subject", no_subject);
+	validator.required("content", no_content);
+	
+	return validator.passed();
+}
+</script>
+{include file="pagefooter.htm"}

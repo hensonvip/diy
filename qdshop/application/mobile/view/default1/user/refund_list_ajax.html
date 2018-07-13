@@ -1,0 +1,46 @@
+{if $data.list}
+    {foreach $data.list as $key =>$vo}
+    <div class="sh_suc" style="margin-top:0px;margin-bottom: .3rem;">
+        <div class="bian bgc clearfix">
+            <span>退款单号：{$vo.back_sn}</span>
+            <span style="margin-left:0.2rem;">{$vo.refund_time}</span>
+            {if $vo.status eq 3}<font>{$vo.status_back}</font>{else}<em>{$vo.status_back}</em>{/if}
+        </div>
+        <a href="{:url('User/refund_details',array('back_id'=>$vo.back_id))}">
+        {foreach $vo.goods_list as $kk =>$vv}
+        <div class="clearfix tt1_inf">
+            <div class="pic fl"><img src="{$webUrl}/{$vv.goods_thumb}"></div>
+            <div class="fr tt1_r">
+                <p>{$vv.goods_name}</p>
+                <span>{$vv.goods_attr}</span>
+                <div class="clearfix"><p class="fl">{$vv.format_back_goods_price}</p><em class="fr">x{$vv.back_goods_number}</em> </div>
+            </div>
+        </div>
+        {/foreach}
+        </a>
+
+        <div class=" bgc tt1_sty">
+            <div class="clearfix jis" style="color:#999999;">退款类型：{$vo.refund_status}</div>
+            <div class="clearfix"> 
+                <a class="fr hg" href="{:url('User/refund_details',array('back_id'=>$vo.back_id))}" style="border:none;color:#fff;">查看详情</a> 
+            </div>
+        </div>
+    </div>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png" style="max-width:156px;"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}
+

@@ -1,0 +1,55 @@
+{include file="public/header" /}
+  
+<body data-psd-width="840" >
+<header class="ss2 hg ">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">添加优惠券</h1>
+    <div class="wc"> <a href="javascript:;" onclick="save_bonus()">添加</a></div>
+</header>   
+<div class="content ">
+    <div class="nin bgc">
+        <input type="text" value="" name="bonus_sn" id="bonus_sn" placeholder="请输入优惠券序列号，然后点击右上角添加" style="background:url(__IMGWAP__/icon16.png) right no-repeat;width:95%;">
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+	//保存用户名
+    function save_bonus(){
+    	var bonus_sn = $('#bonus_sn').val();
+    	$.ajax({
+	        type: "post",
+	        url: "{:url('User/do_bonus_add')}",
+	        dataType: 'json',
+	        data:{bonus_sn:bonus_sn},
+	        success: function(data){
+	        	if(data.code == 200){
+	        		layer.open({
+                        content: '添加优惠券成功！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            location.href = "{:url('User/bonus')}";
+                            layer.close(index);
+                        }
+                    });
+                    return false;
+	        	}
+	            layer.open({
+				    content: data.message
+				    ,skin: 'msg'
+				    ,time: 2 //2秒后自动关闭
+				});
+	        }  
+	    });
+	    //禁止页面刷新
+	    return false;
+    }
+</script>

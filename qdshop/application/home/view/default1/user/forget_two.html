@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="forget_main bg_f6f6f6">
+	<div class="fg_wrap">
+		<div class="fg_top">
+			<img src="__IMGPC__/fg1.png" class="fg_logo">
+			<h2>忘记密码</h2>
+		</div>
+		<div class="fg_bot">
+			<ul class="fg_ul clearfix">
+				<li><a>填写账号信息</a></li>
+				<li><a>验证身份</a></li>
+				<li class="on"><a>设置新密码</a></li>
+				<li><a>完成</a></li>
+			</ul>
+			<div class="fg_b1 fg_b3">
+				<form action="{:url('User/forget_third')}" class="fg_form" method="post">
+					<div class="item new_pwd">
+						<span>新密码</span>
+						<div class="r_box">
+							<input type="password" name="new_password" placeholder="密码长度8-16位，必须包含字母和数字">
+							<i class="state"></i>
+							<div class="get_pwd"></div>
+						</div>
+					</div>
+					<div class="item new_pwd2">
+						<span>确认密码</span>
+						<div class="r_box">
+							<input type="password" name="confirm_password">
+							<i class="state"></i>
+						</div>
+					</div>
+					<input type="button" value="" class="fg_b1_sub">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+	$('.footer').addClass('rl_footer');
+
+	$('.fg_b1 .item .r_box input').blur(function() {
+		checkpwd();
+		checkpwd2();
+	});
+	$('.fg_b1_sub').click(function() {
+		checkRl();
+	});
+});
+function checkpwd(index){
+	var pwd = $('.new_pwd input').val();
+	var length = /^.{8,16}$/.test(pwd);
+	if(!pwd){
+		if(index == 999){
+			$('.new_pwd.item').removeClass('right').addClass('wrong');
+		}else{
+			$('.new_pwd.item').removeClass('right wrong');
+		}
+		$('.get_pwd').removeClass('high middle low');
+	}else if(!length){
+		$('.new_pwd.item').removeClass('right').addClass('wrong');
+		$('.get_pwd').removeClass('high middle low');
+	}else{
+		var modes = 0;
+		var lowercase = /[a-z]/.test(pwd);
+      	var number = /[0-9]/.test(pwd);
+      	var letter = /[a-zA-Z]/.test(pwd);
+      	var uppercase = /[A-Z]/.test(pwd);
+      	var other = /[!#$%&'*+/=?<>^_`(){|}~-]/.test(pwd);
+		if(number || letter){
+			modes++;
+		}
+		if((letter && number) || (number && other) || (letter && other)){
+			modes++;
+		}
+		if(lowercase && uppercase && number && other){
+			modes++;
+		}
+		if(modes == 1){
+		    $('.get_pwd').removeClass('high middle low').addClass('low');
+		    $('.new_pwd.item').removeClass('right').addClass('wrong');
+		}else if(modes == 2){
+			$('.get_pwd').removeClass('high middle low').addClass('middle');
+			$('.new_pwd.item').removeClass('wrong').addClass('right');
+		}else if(modes == 3){
+			$('.get_pwd').removeClass('high middle low').addClass('high');
+			$('.new_pwd.item').removeClass('wrong').addClass('right');
+		}
+	}
+}
+function checkpwd2(index){
+	var pwd = $('.new_pwd input').val();
+	var pwd2 = $('.new_pwd2 input').val();
+	if(!pwd2){
+		if(index == 999){
+			$('.new_pwd2.item').removeClass('right').addClass('wrong');
+		}else{
+			$('.new_pwd2.item').removeClass('right wrong');
+		}
+	}else if(pwd != pwd2){
+		$('.new_pwd2.item').removeClass('right').addClass('wrong');
+	}else{
+		$('.new_pwd2.item').removeClass('wrong').addClass('right');
+	}
+}
+
+function checkRl(){
+	checkpwd(999);
+	checkpwd2(999);
+	if($('.fg_form .item.right').length == $('.fg_form .item').length){
+		$('.fg_form').submit();
+	}else{
+		return false;
+	}
+}
+</script>

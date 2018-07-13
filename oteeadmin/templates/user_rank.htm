@@ -1,0 +1,63 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+<!-- start ads list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellspacing='1' id="list-table" class="layui-table">
+  <tr>
+    <th>{$lang.rank_name}</th>
+    <th style="display:none;">{$lang.integral_min}</th>
+    <th style="display:none;">{$lang.integral_max}</th>
+    <th>销量下限</th>
+    <th>销量上限</th>
+    <th>第1阶段佣金比例(%)</th>
+    <th>第2阶段佣金比例(%)</th>
+    <th>可销售数量</th>
+    <th>售价</th>
+    <th style="display:none;">{$lang.discount}(%)</th>
+    <th style="display:none;">{$lang.special_rank}</th>
+    <th style="display:none;">{$lang.show_price_short}</th>
+    <th style="display:none;">分成会员</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$user_ranks item=rank}
+  <tr>
+    <td class="first-cell" ><span onclick="listTable.edit(this,'edit_name', {$rank.rank_id})">{$rank.rank_name}</span></td>
+    <td align="right" style="display:none;"><span {if $rank.special_rank != 1} onclick="listTable.edit(this, 'edit_min_points', {$rank.rank_id})" {/if} >{$rank.min_points}</span></td>
+    <td align="right" style="display:none;"><span {if $rank.special_rank != 1} onclick="listTable.edit(this, 'edit_max_points', {$rank.rank_id})" {/if} >{$rank.max_points}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_min_sale_number', {$rank.rank_id})">{$rank.min_sale_number}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_max_sale_number', {$rank.rank_id})">{$rank.max_sale_number}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_commision_scale1', {$rank.rank_id})">{$rank.commision_scale1}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_commision_scale2', {$rank.rank_id})">{$rank.commision_scale2}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_sale_number', {$rank.rank_id})">{$rank.sale_number}</span></td>
+    <td align="right"><span onclick="listTable.edit(this, 'edit_sale_price', {$rank.rank_id})">{$rank.sale_price}</span></td>
+    <td align="right" style="display:none;"><span onclick="listTable.edit(this, 'edit_discount', {$rank.rank_id})">{$rank.discount}</span></td>
+    <td align="center" style="display:none;"><img src="images/{if $rank.special_rank}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_special', {$rank.rank_id})" /></td>
+    <td align="center" style="display:none;"><img src="images/{if $rank.show_price}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_showprice', {$rank.rank_id})" /></td>
+    <td align="center" style="display:none;"><img src="images/{if $rank.is_recomm}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_is_recomm', {$rank.rank_id})" /></td>
+    <td align="center"><a href="javascript:;" onclick="listTable.remove({$rank.rank_id}, '{$lang.drop_confirm}')" title="{$lang.remove}"><img src="images/icon_drop.gif" border="0" height="16" width="16"></a></td>
+  </tr>
+  {/foreach}
+  </table>
+
+{if $full_page}
+</div>
+<!-- end user ranks list -->
+</form>
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+{/literal}
+//-->
+</script>
+{include file="pagefooter.htm"}
+{/if}

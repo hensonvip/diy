@@ -1,0 +1,165 @@
+{include file="pageheader.htm"}
+
+<form action="pickup_point.php" method="post" name="theForm" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--店名-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.shop_name}</label>
+            <div class="layui-input-block">
+                <input type='text' name='shop_name' maxlength="20" value='{$pickup_point.shop_name}' class="layui-input" />
+            </div>
+        </div>
+        <!--地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.address}</label>
+            <div class="layui-input-block">
+                <input type='text' name='address' maxlength="20" value='{$pickup_point.address}' class="layui-input" />
+            </div>
+        </div>
+        <!--联系人-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.contact}</label>
+            <div class="layui-input-block">
+                <input type='text' name='contact' maxlength="20" value='{$pickup_point.contact}' class="layui-input" />
+            </div>
+        </div>
+        <!--联系方式-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.phone}</label>
+            <div class="layui-input-block">
+                <input type='text' name='phone' maxlength="20" value='{$pickup_point.phone}' class="layui-input" />
+            </div>
+        </div>
+        <!--所属省市-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.belong_city}</label>
+            <div class="layui-input-block">
+                <select name="province" id="selProvinces" lay-filter="selProvinces">
+                  <option value="0">{$lang.select_please}</option>
+                  {foreach from=$province_list item=province}
+                  <option value="{$province.region_id}"{if $pickup_point.province_id eq $province.region_id}selected="selected"{/if}>{$province.region_name}</option>
+                  {/foreach}
+                </select>
+                <select name="city" id="selCities" lay-filter="selCities">
+                  <option value="0">{$lang.select_please}</option>
+                  {foreach from=$city_list item=city}
+                  <option value="{$city.region_id}"{if $pickup_point.city_id eq $city.region_id}selected="selected"{/if}>{$city.region_name}</option>
+                  {/foreach}
+                </select>
+                <select name="district" id="selDistricts">
+                  <option value="0">{$lang.select_please}</option>
+                  {foreach from=$district_list item=district}
+                  <option value="{$district.region_id}"{if $pickup_point.district_id eq $district.region_id}selected="selected"{/if}>{$district.region_name}</option>
+                  {/foreach}
+                </select>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$pickup_point.id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js,../js/region.js"}
+
+{literal}
+<script language="JavaScript">
+region.isAdmin = true;
+<!--
+document.forms['theForm'].elements['cat_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  validator.required("shop_name",      '{$lang.shop_name_empty}');
+  validator.required("address",      '{$lang.address_empty}');
+  validator.required("contact",      '{$lang.contact_empty}');
+  validator.required("phone",      '{$lang.phone_empty}');
+  if (parseInt(document.forms['theForm'].elements['province'].value) == 0 || parseInt(document.forms['theForm'].elements['city'].value) == 0)
+  {
+    validator.addErrorMsg('{$lang.select_province}');
+  }
+  return validator.passed();
+}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新增一个筛选属性
+ */
+function addFilterAttr(obj)
+{
+  var src = obj.parentNode.parentNode;
+  var tbl = document.getElementById('tbody-attr');
+
+  var validator  = new Validator('theForm');
+  var filterAttr = document.getElementsByName("filter_attr[]");
+
+  if (filterAttr[filterAttr.length-1].selectedIndex == 0)
+  {
+    validator.addErrorMsg(filter_attr_not_selected);
+  }
+  
+  for (i = 0; i < filterAttr.length; i++)
+  {
+    for (j = i + 1; j <filterAttr.length; j++)
+    {
+      if (filterAttr.item(i).value == filterAttr.item(j).value)
+      {
+        validator.addErrorMsg(filter_attr_not_repeated);
+      } 
+    } 
+  }
+
+  if (!validator.passed())
+  {
+    return false;
+  }
+
+  var row  = tbl.insertRow(tbl.rows.length);
+  var cell = row.insertCell(-1);
+  cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addFilterAttr)(.*)(\[)(\+)/i, "$1removeFilterAttr$3$4-");
+  filterAttr[filterAttr.length-1].selectedIndex = 0;
+}
+
+/**
+ * 删除一个筛选属性
+ */
+function removeFilterAttr(obj)
+{
+  var row = rowindex(obj.parentNode.parentNode);
+  var tbl = document.getElementById('tbody-attr');
+
+  tbl.deleteRow(row);
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('select(selProvinces)', function(data){
+            region.changed(data.elem, 2, 'selCities');
+            region.changed(data.elem, 3, 'selDistricts');
+        });  
+        form.on('select(selCities)', function(data){
+            region.changed(data.elem, 3, 'selDistricts');
+        });
+
+    });
+</script>
+{include file="pagefooter.htm"}

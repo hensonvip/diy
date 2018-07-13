@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="order_bg">
+    <div class="order_wrap">
+        <!-- <form action="{:url('Goods/save_invoice')}" method="post" class="order_form"> -->
+        <div class="order_form">
+            <ul class="not_rlist">
+                <li class="on"><a href="javascript:void(0);">普通发票<i></i></a></li>
+                <li><a href="javascript:void(0);">电子普通发票<i></i></a></li>
+                <li><a href="javascript:void(0);">增值税专用发票<i></i></a></li>
+            </ul>
+            <div class="fg_b1_wrap order_form_mid">
+                <div class="fg_b1 selected">
+                    <form action="{:url('Goods/save_invoice')}" method="post">
+                        <div class="item">
+                            <span>发票抬头</span>
+                            <div class="r_box">
+                                <select name="inv_payee_type" class="fp_select">
+                                    <option value="individual" {if $inv_payee_type eq 'individual'}selected="selected"{/if}>个人</option>
+                                    <option value="unit" {if $inv_payee_type eq 'unit'}selected="selected"{/if}>单位</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="type_wrap">
+                            <div class="type_box"></div>
+                            <div class="type_box">
+                                {if $inv_title_list}
+                                {foreach $inv_title_list as $key => $vo}
+                                <div class="item a_ddbox">
+                                    <span></span>
+                                    <div class="r_box readonly {if $vo.inv_title eq $inv_payee}default{/if}">
+                                        <input type="text" class="inv_payee" value="{$vo.inv_title}" {if $vo.inv_title eq $inv_payee}readonly="readonly"{/if} placeholder="填写单位发票抬头">
+                                        <i class="a_edit">编辑</i>
+                                        <i class="m_inbtn">-</i>
+                                    </div>
+                                </div>
+                                {/foreach}
+                                <div class="item a_ddbox">
+                                    <span></span>
+                                    <div class="r_box">
+                                        <input type="text" class="inv_payee" value="" placeholder="填写单位发票抬头">
+                                        <i class="a_edit save">保存</i>
+                                        <i class="a_ddbtn">+</i>
+                                    </div>
+                                </div>
+                                {else}
+                                <div class="item a_ddbox">
+                                    <span></span>
+                                    <div class="r_box">
+                                        <input type="text" class="inv_payee" value="" placeholder="填写单位发票抬头">
+                                        <i class="a_edit save">保存</i>
+                                        <i class="a_ddbtn">+</i>
+                                    </div>
+                                </div>
+                                {/if}
+                                <div class="item e_item">
+                                    <span>纳税人识别号</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_taxpayer_id" value="{$vat_inv_taxpayer_id}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item p_item">
+                            <span>发票内容</span>
+                            <div class="r_box">
+                                <dl>
+                                    {foreach $invoice_content as $key => $vo}
+                                    <dd {if $inv_content eq $vo}class="on"{/if}><label><input type="radio" name="inv_content" value="{$vo}" {if $inv_content eq $vo}checked="checked"{/if}>{$vo}</label></dd>
+                                    {/foreach}
+                                </dl>
+                            </div>
+                        </div>
+                        <input type="hidden" name="inv_payee" value="{$inv_payee}">
+                        <input type="hidden" name="inv_type" class="inv_type" value="normal_invoice">
+                    </form>
+                </div>
+                <div class="fg_b1">
+                    <form action="{:url('Goods/save_invoice')}" method="post">
+                        <div class="item">
+                            <span>发票抬头</span>
+                            <div class="r_box">
+                                <select name="inv_payee_type" class="fp_select">
+                                    <option value="individual" {if $inv_payee_type eq 'individual'}selected="selected"{/if}>个人</option>
+                                    <option value="unit" {if $inv_payee_type eq 'unit'}selected="selected"{/if}>单位</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="type_wrap">
+                            <div class="type_box"></div>
+                            <div class="type_box">
+                                {if $inv_title_list}
+                                {foreach $inv_title_list as $key => $vo}
+                                <div class="item a_ddbox">
+                                    <span></span>
+                                    <div class="r_box readonly {if $vo.inv_title eq $inv_payee}default{/if}">
+                                        <input type="text" class="inv_payee" value="{$vo.inv_title}" {if $vo.inv_title eq $inv_payee}readonly="readonly"{/if} placeholder="填写单位发票抬头">
+                                        <i class="a_edit">编辑</i>
+                                        <i class="m_inbtn">-</i>
+                                    </div>
+                                </div>
+                                {/foreach}
+                                {else}
+                                <div class="item a_ddbox">
+                                    <span></span>
+                                    <div class="r_box">
+                                        <input type="text" class="inv_payee" value="{$inv_payee}" placeholder="填写单位发票抬头">
+                                        <i class="a_edit save">保存</i>
+                                        <i class="a_ddbtn">+</i>
+                                    </div>
+                                </div>
+                                {/if}
+                                <div class="item e_item">
+                                    <span>纳税人识别号</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_taxpayer_id" value="{$vat_inv_taxpayer_id}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item p_item">
+                            <span>发票内容</span>
+                            <div class="r_box">
+                                <dl>
+                                    {foreach $invoice_content as $key => $vo}
+                                    <dd {if $inv_content eq $vo}class="on"{/if}><label><input type="radio" name="inv_content" value="{$vo}" {if $inv_content eq $vo}checked="checked"{/if}>{$vo}</label></dd>
+                                    {/foreach}
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <span>收票人手机</span>
+                            <div class="r_box">
+                                <input type="text" name="inv_consignee_phone" value="{$inv_consignee_phone}">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <span>收票人邮箱</span>
+                            <div class="r_box">
+                                <input type="text" name="inv_consignee_email" value="{$inv_consignee_email}">
+                            </div>
+                        </div>
+                        <input type="hidden" name="inv_payee" value="{$inv_payee}">
+                        <input type="hidden" name="inv_type" class="inv_type" value="online_normal_invoice">
+                    </form>
+                </div>
+                <div class="fg_b1 or_f3">
+                    <form action="{:url('Goods/save_invoice')}" method="post">
+                        <ul class="order_m3_list">
+                            <li class="on">
+                                <em>1</em>
+                                <p>开票方式</p>
+                            </li>
+                            <li>
+                                <em>2</em>
+                                <p>填写公司信息</p>
+                            </li>
+                            <li>
+                                <em>3</em>
+                                <p>填写收票人信息</p>
+                            </li>
+                        </ul>
+                        <div class="order_m3_wrap">
+                            <div class="order_m3_box order_m3_box1">
+                                <div class="item">
+                                    <span>开票方式</span>
+                                    <div class="r_box">
+                                        <select name="open_inv_type" class="select">
+                                            <option value="订单完成后开票">订单完成后开票</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="item p_item">
+                                    <span>发票内容</span>
+                                    <div class="r_box">
+                                        <dl>
+                                            <dd {if $inv_content eq '明细'}class="on"{/if}><label><input type="radio" name="inv_content" value="明细" {if $inv_content eq '明细'}checked="checked"{/if}>明细</label></dd>
+                                            <dd {if $inv_content eq '服装'}class="on"{/if}><label><input type="radio" name="inv_content" value="服装" {if $inv_content eq '服装'}checked="checked"{/if}>服装</label></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order_m3_box order_m3_box2">
+                                <div class="item">
+                                    <span>*单位名称</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_company_name" value="{$vat_inv_company_name}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*纳税人识别号</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_taxpayer_id" value="{$vat_inv_taxpayer_id}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*注册地址</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_registration_address" value="{$vat_inv_registration_address}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*注册电话</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_registration_phone" value="{$vat_inv_registration_phone}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*开户银行</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_deposit_bank" value="{$vat_inv_deposit_bank}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*银行账号</span>
+                                    <div class="r_box">
+                                        <input type="text" name="vat_inv_bank_account" value="{$vat_inv_bank_account}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order_m3_box order_m3_box3">
+                                <div class="item name">
+                                    <span>*收票人姓名</span>
+                                    <div class="r_box">
+                                        <input type="text" name="inv_consignee_name" value="{$inv_consignee_name}"><i></i>
+                                    </div>
+                                </div>
+                                <div class="item phone">
+                                    <span>*收票人手机</span>
+                                    <div class="r_box">
+                                        <input type="text" name="inv_consignee_phone" value="{$inv_consignee_phone}"><i></i>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <span>*收票人省份</span>
+                                    <div class="r_box select_box">
+                                        <input type="hidden" id="apkey" value="0">
+                                        <select name="inv_consignee_province" id="inv_consignee_province" onChange="getARegionC()" class="fg_select">
+                                            <option value="0">省</option>
+                                            {foreach $regionP as $key => $vo}
+                                            <option value="{$vo.region_id}" key="{$vo.pkey}">{$vo.region_name}</option>
+                                            {/foreach}
+                                        </select>
+                                        <select name="inv_consignee_city" id="inv_consignee_city" onChange="getARegionD()" class="fg_select">
+                                            <option value="0">市</option>
+                                        </select>
+                                        <select name="inv_consignee_district" id="inv_consignee_district" class="fg_select">
+                                            <option value="0">区</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="item detail">
+                                    <span>*详细地址</span>
+                                    <div class="r_box">
+                                        <input type="text" name="inv_consignee_address" value="{$inv_consignee_address}"><i></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="inv_type" class="inv_type" value="vat_invoice">
+                    </form>
+                </div>
+            </div>
+            <div class="order_form_bot">
+                <div class="info_box">
+                    <div class="info">
+                        <p>响应国家电子普通发票政策，京东部分试点地区仅支持提供电子普通发票，暂不支持纸质普通发票。如您本次购物选择“普通发票”，但订单属于试点区域范围内，系统将为您开具电子普通发票，电子普通发票是税务机关认可的有效收付款凭证，与纸质普通发票具有同等法律效力，可用于报销入账、售后维权等。</p>
+                        <p><a href="">普通发票相关信息>></a></p>
+                    </div>
+                    <div class="info">
+                        <p>电子普通发票是税务机关认可的有效收付款凭证，其法律效力、基本用途及使用规定同纸质普通发票，可用于报销入账、售后维权等。如需纸质发票可自行下载打印。</p>
+                        <p><a href="">电子普通发票相关信息>></a></p>
+                        <p>如商品由第三方卖家销售，发票类型及内容将由该卖家决定，发票由卖家开具并提供。</p>
+                        <p><a href="">发票信息相关问题>></a></p>
+                    </div>
+                    <div class="info">
+                        <p>我公司依法开具发票，请您按照税法规定使用发票。</p>
+                        <p><a href="">发票制度说明>></a>  <a href="">首次开具增值税专用发票>></a></p>
+                        <p>如商品由第三方卖家销售，发票类型和内容将由该卖家决定，发票由卖家开具并提供。</p>
+                        <p><a href="">发票信息相关问题>></a></p>
+                    </div>
+                </div>
+                <div class="btn_list clearfix">
+                    <input type="button" id="save_invoice" value="确 定" class="order_form_yes fl nb_t2">
+                    <input type="button" value="取 消" class="order_form_no fr nb_t1">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <form action="{:url('Goods/done')}" method="POST" id="order_form"> -->
+    <div class="order_main bg_f5f5f5 clearfix">
+    	<div class="order_tit">
+            <h2>填写并核对订单信息</h2>
+        </div>
+        <div class="order_top">
+            <div class="mem_rtit">收货地址</div>
+            <div class="mem_rcon shdz_rcon">
+                <div class="shdz_top">
+                    <ul class="clearfix">
+                        {if $address.list}
+                        {foreach $address.list as $key => $vo}
+                        <li onclick="set_default_address(this, {$key})"
+                        {if isset($data.def_addr.address_id) && $data.def_addr.address_id gt 0}
+                            {if $vo.address_id eq $data.def_addr.address_id}class="addr_select"{/if}
+                        {elseif isset($data.def_addr.defaul_addr.address_id)}
+                            {if $vo.address_id eq $data.def_addr.defaul_addr.address_id}class="addr_select"{/if}
+                        {/if}
+                        >
+                            <div class="text">
+                                <p data-name="consignee">{$vo.consignee}</p>
+                                <p data-name="area">{$vo.province_name} {$vo.city_name} {$vo.district_name}</p>
+                                <p data-name="address">{$vo.address}</p>
+                                <p data-name="mobile">{$vo.mobile}</p>
+                                <p data-name="tel" style="display:none;">{$vo.tel}</p>
+                                <p data-name="province" style="display:none;">{$vo.province}</p>
+                                <p data-name="city" style="display:none;">{$vo.city}</p>
+                                <p data-name="district" style="display:none;">{$vo.district}</p>
+                            </div>
+                            <!-- <em class="favor" onclick="set_default_address(this, {$key})">设为默认</em> -->
+                            <i class="modify" data-id="{$vo.address_id}">编辑</i>
+                            <div class="dc_pr">
+                                <i class="del" onclick="del_address({$vo['address_id']})">删除</i>
+                                <!-- <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div> -->
+                            </div>
+                        </li>
+                        {/foreach}
+                        {/if}
+                        <li class="new_one"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="order_mid">
+            <div class="shdz_bot">
+                <form action="{:url('User/do_address_add')}" method="post" id="address_edit_form">
+                    <div class="item username">
+                        <span>收货人姓名</span>
+                        <div class="r_box">
+                            <input type="text" name="consignee" id="consignee" placeholder="请填写收货人姓名">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item clearfix">
+                        <div class="w50 phone1">
+                            <span>手机号码</span>
+                            <div class="r_box">
+                                <input type="text" name="mobile" id="mobile" placeholder="请填写手机号码">
+                                <i class="state"></i>
+                            </div>
+                        </div>
+                        <div class="w50 phone2">
+                            <span>/ 固定电话</span>
+                            <div class="r_box">
+                                <input type="text" name="tel" id="tel">
+                                <i class="state"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span id="area">所在地区</span>
+                        <div class="r_box select_box">
+                            <input type="hidden" id="pkey" value="0">
+                            <select name="province" id="province" onChange="getRegionC()" class="fg_select">
+                                <option value="0">省</option>
+                                {foreach $regionP as $key => $vo}
+                                <option value="{$vo.region_id}" key="{$vo.pkey}">{$vo.region_name}</option>
+                                {/foreach}
+                            </select>
+                            <select name="city" id="city" onChange="getRegionD()" class="fg_select">
+                                <option value="0">市</option>
+                            </select>
+                            <select name="district" id="district" class="fg_select">
+                                <option value="0">区</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="item w100 dress">
+                        <span>详细地址</span>
+                        <div class="r_box">
+                            <input type="text" name="address" id="address" placeholder="建议如实填写详细收货地址，例如街道名称，门牌号码，楼层等信息，不需要重复填写所在地区">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item btn_item">
+                        <div class="r_box w100">
+                            <input type="hidden" name="address_id" id="address_id" value="">
+                            <input type="hidden" name="province_old" id="province_old" value="">
+                            <input type="hidden" name="city_old" id="city_old" value="">
+                            <input type="hidden" name="district_old" id="district_old" value="">
+                            <input type="hidden" name="back_url" value="{:url('Goods/checkout', array('sel_goods'=>$Think.session.sel_goods))}">
+                            <input type="button" name="" value="取 消" class="fg_b1_cel nb_t1">
+                            <input type="button" name="insert" value="保 存" class="fg_b1_sub nb_t2">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <form action="{:url('Goods/done')}" method="POST" id="order_form">
+            <div class="order_tit">
+                <h2>商品详情</h2>
+                <p>预计48小时内发货</p>
+            </div>
+            {foreach $data.supplier_list as $key => $vo}
+            <div class="order_bot">
+                <div class="bag_wrap">
+                    <div class="bag_tit">
+                        <div class="part part1">商品信息</div>
+                        <div class="part part2">数量</div>
+                        <div class="part part3">金额</div>
+                    </div>
+                    <ul class="bag_list bag_list_one">
+                        {foreach $vo.goods_list as $kk => $vv}
+                        <li>
+                            <div class="part part1">
+                                <div class="info">
+                                    <div class="pic d_ib vm">
+                                        <img class="lazybg" data-lazyload-img="{$webUrl}/{$vv.goods_thumb}">
+                                    </div>
+                                    <div class="txt d_ib vm">
+                                        <h2>{$vv.goods_name}</h2>
+                                        <span>限量：{$vv.goods_stock}/{$vv.goods_total}</span>
+                                        <p>￥<em class="one_price">{$vv.goods_price}</em></p>
+                                    </div>
+                                    <div class="des d_ib vm">
+                                        <div class="icon icon1" style="background-image: url({$webUrl}/{$vv.attr_icon});"></div>
+                                        <div class="icon icon2" style="background-color: #{$vv.attr_color};border: 1px solid #eee;"></div>
+                                        <div class="icon icon3">{$vv.attr_size}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="part part2">x {$vv.goods_number}</div>
+                            <div class="part part3">{$vv.formated_subtotal}</div>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <div class="order_info tr clearfix">
+                    <div class="box">
+                        <span>{$vo.supplier_total.goods_count} 件商品</span>
+                        <font>合计</font><em>{$vo.supplier_total.formated_goods_price}</em>
+                    </div>
+                    {if $is_design eq 0}
+                    <div class="box">
+                        <font>活动优惠</font><em>-￥{$vo.supplier_total.discount}</em>
+                        <input type="hidden" id="discount_{$vo.supplier_id}" value="{$vo.supplier_total.discount}">
+                    </div>
+                    {else}
+                    <input type="hidden" id="discount_{$vo.supplier_id}" value="0">
+                    {/if}
+                    <div class="box">
+                        {foreach $vo.shipping_list as $kk => $vv}
+                        {if $vv['selected'] eq 'checked'}
+                            <font>运费</font><em>+{$vv.shipping_fee_formated}</em>
+                            <input type="hidden" id="shipping_fee_{$vo.supplier_id}" value="{$vv.shipping_fee}"><!--计算金额用-->
+                        {/if}
+                        {/foreach}
+                    </div>
+                    <div class="h16"></div>
+                    {if $is_design eq 0}
+                        {if $bonus[$vo.supplier_id] gt 0}
+                            {foreach $vo.bonus_list as $kk => $vv}
+                            {if $vv.bonus_id eq $bonus[$vo.supplier_id]}
+                            <div class="box mb14">
+                                <span>使用优惠券</span>
+                                <select name="bonus{$vo.supplier_id}" id="bonus" class="select">
+                                    <option value="0">请选择优惠券</option>
+                                    {foreach $bonus_list as $key => $vvv}
+                                        <option value="{$vvv.bonus_id}" {if $bonus[$vo.supplier_id] eq $vvv.bonus_id}selected="selected"{/if}>{$vvv.type_name} 有效期至{$vvv.use_enddate}</option>
+                                    {/foreach}
+                                </select>
+                                <em>-￥{$vv.type_money}</em>
+                                <input type="hidden" id="bonus_fee_{$vo.supplier_id}" value="{$vv.type_money}"><!--计算金额用-->
+                            </div>
+                            {/if}
+                            {/foreach}
+                        {else}
+                            <div class="box mb14">
+                                <span>使用优惠券</span>
+                                <select name="bonus{$vo.supplier_id}" id="bonus" class="select">
+                                    {if $bonus_list}
+                                        <option value="0">请选择优惠券</option>
+                                        {foreach $bonus_list as $key => $vvv}
+                                            <option value="{$vvv.bonus_id}" {if $bonus[$vo.supplier_id] eq $vvv.bonus_id}selected="selected"{/if}>{$vvv.type_name} 有效期至{$vvv.use_enddate}</option>
+                                        {/foreach}
+                                    {else}
+                                        <option value="0">无可用优惠券</option>
+                                    {/if}
+                                </select>
+                                <em>-￥0.00</em>
+                                <input type="hidden" id="bonus_fee_{$vo.supplier_id}" value="0"><!--计算金额用-->
+                            </div>
+                        {/if}
+                    {else}
+                        <input type="hidden" id="bonus_fee_{$vo.supplier_id}" value="0"><!--计算金额用-->
+                    {/if}
+                    <div class="box">
+                        <span>备注</span>
+                        <input type="text" placeholder="请填写备注信息" class="beizhu" name="message{$vo.supplier_id}" value="{$message[$vo.supplier_id]}" onblur="setCookie('message{$vo.supplier_id}',$(this).val());">
+                        <em></em>
+                    </div>
+                    {if $vo.open_invoice.can_invoice}
+                    <div class="box">
+                        <label {if $inv_type}class="on"{/if}><i></i><input type="checkbox" name="open_invoice" {if $inv_type}checked="checked"{/if}>是否开具发票</label>
+                        <em></em>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+            <input type="hidden" name="address_id" id="address_id" value="{$data.def_addr.address_id}">
+            <input type="hidden" name="shipping_id{$vo.supplier_id}" id="shipping_id{$vo.supplier_id}" value="{$data.order_info.shipping_id}">
+            <!-- 支付宝 -->
+            <input type="hidden" name="pay_id" value="2">
+            <!-- 微信 -->
+            <!-- <input type="hidden" name="pay_id" value="5"> -->
+            <input type="hidden" id="goods_price_{$vo.supplier_id}" value="{$vo.supplier_total.goods_price}">
+            {/foreach}
+            <div class="bag_control">
+                <div class="bag_ctop clearfix">
+                    <div class="left fl">
+                        <p>因商品为限量定制产品，如非发错货或质量问题，不支持退换货。</p>
+                    </div>
+                    <div class="right fr"><font>订单金额（含运费） </font><span id="order_total">{$data.order_total.amount_formated}</span></div>
+                </div>
+                <div class="bag_cbot clearfix">
+                    <div class="right fr">
+                        <input type="hidden" name="is_design" value="{$is_design}">
+                        <span class="bag_sub nb_t2">提交订单</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+<!-- </form> -->
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script>
+    $(function(){
+        changeTotal();
+        show_sel();
+        //滚动条
+        $('.order_form').mCustomScrollbar({
+            axis: "y",
+            scrollInertia: 100,
+            scrollButtons: {
+                enable: true,
+                scrollSpeed: 20
+            },
+            theme: "3d"
+        });
+
+        //删除地址
+        /*$('.shdz_top li i.del').click(function() {
+            $('.ipro_popup').addClass('visible');
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        $('.dc_firm .dc_yes').click(function(event) {
+            $('.ipro_popup').removeClass('visible');
+            $(this).parents('li').remove();
+        });*/
+
+        $('.fg_select').selectOrDie();
+
+        //验证
+        $('.shdz_bot form input').focus(function() {
+            $(this).parents('.l_box').addClass('hover');
+        });
+        $('.shdz_bot form input').blur(function() {
+            $(this).parents('.l_box').removeClass('hover');
+            checkName();
+            checkPhone();
+            checkPhone2();
+            checkAddress();
+        });
+        $('.fg_b1_sub').click(function() {
+            checkRl($(this).attr('name'));
+        });
+
+        $('.fg_b1_cel').click(function() {
+            $('.shdz_bot').fadeOut();
+        });
+
+        //添加地址
+        /*$('.shdz_top li i.modify,.shdz_top li.new_one').click(function() {
+            $('.shdz_bot').fadeIn();
+        });*/
+        $('.shdz_top li.new_one').click(function() {
+            $('#address_edit_form').attr('action', "{:url('User/do_address_add')}");
+            $('.fg_b1_sub').attr('name', 'insert');
+            $('#consignee').val('');
+            $('#address').val('');
+            $('#mobile').val('');
+            $('#tel').val('');
+            $('#address_id').val('');
+            $('#area').text('所在地区');
+            $('.shdz_bot').fadeIn();
+        });
+
+        //编辑地址
+        $('.shdz_top li i.modify').click(function() {
+            $('#address_edit_form').attr('action', "{:url('User/do_address_edit')}");
+
+            $('.fg_b1_sub').attr('name', 'update');
+
+            var consignee = $(this).siblings('.text').find('[data-name="consignee"]').text();
+            $('#consignee').val(consignee);
+
+            var area = $(this).siblings('.text').find('[data-name="area"]').text();
+            $('#area').text('所在地区('+area+')');
+
+            var province = $(this).siblings('.text').find('[data-name="province"]').text();
+            $('#province_old').val(province);
+
+            var city = $(this).siblings('.text').find('[data-name="city"]').text();
+            $('#city_old').val(city);
+
+            var district = $(this).siblings('.text').find('[data-name="district"]').text();
+            $('#district_old').val(district);
+
+            var address = $(this).siblings('.text').find('[data-name="address"]').text();
+            $('#address').val(address);
+
+            var mobile = $(this).siblings('.text').find('[data-name="mobile"]').text();
+            $('#mobile').val(mobile);
+
+            var tel = $(this).siblings('.text').find('[data-name="tel"]').text();
+            $('#tel').val(tel);
+
+            var address_id = $(this).attr('data-id');
+            $('#address_id').val(address_id);
+
+            $('.shdz_bot').fadeIn();
+        });
+
+        //设为默认
+        /*$('.shdz_top li em.favor').click(function() {
+            if($(this).parents('li').hasClass('on')){ return false; }
+            var _this = $(this);
+            layer.confirm('确定设为默认地址吗？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                _this.parents('li').addClass('on').siblings().removeClass('on');
+            });
+        });*/
+
+        //开发票
+        $('.order_info label input').change(function() {
+            if($(this).prop("checked") == true){
+                $(this).parents('label').addClass('on');
+                $('.order_bg').fadeIn();
+            }else{
+                $(this).parents('label').removeClass('on');
+            }
+        });
+
+        //切换发票类型
+        $('.not_rlist li').click(function() {
+            var eq = $(this).index();
+            $(this).addClass('on').siblings().removeClass('on');
+            $('.order_form_mid .fg_b1,.order_form_bot .info_box .info').hide().css({"opacity":".6"});
+            $('.order_form_mid .fg_b1').eq(eq).show().animate({"opacity":"1"});
+            $('.order_form_bot .info_box .info').eq(eq).show().animate({"opacity":"1"});
+
+            $('.order_form_mid .fg_b1').removeClass('selected');
+            $('.order_form_mid .fg_b1').eq(eq).addClass('selected');
+        });
+
+        //发票内容
+        $('.order_wrap .fg_b1 .item dd input').change(function() {
+            if($(this).prop("checked") == true){
+                $(this).parents('dd').addClass('on').siblings().removeClass('on');
+                $(this).parents('dd').siblings().find('input').prop("checked",false);
+            }
+        });
+
+        //切换发票抬头
+        $('.fp_select').selectOrDie({
+            onChange: function(){
+                var eq = $(this).find('option:selected').index();
+                $(this).parents('.fg_b1').find('.type_wrap .type_box').hide().css({"opacity":".6"});
+                $(this).parents('.fg_b1').find('.type_wrap .type_box').eq(eq).show().animate({"opacity":"1"});
+            }
+        });
+
+        $('.fp_select').change();
+
+        //发票增加单位
+        $('.a_ddbtn').click(function(event) {
+            if(event.preventDefault) event.preventDefault();
+            if(event.returnValue) event.returnValue = false;
+            $(this).parents('.type_box').prepend('<div class="item"><span></span><div class="r_box"><input type="text" class="inv_payee" placeholder="填写单位发票抬头"><i class="a_edit save">保存</i><i class="m_inbtn">-</i></div></div>')
+        });
+
+        //增值税切换步骤
+        $('.order_m3_list li').click(function() {
+            var eq = $(this).index();
+            $(this).addClass('on').siblings().removeClass('on');
+            $('.order_m3_wrap .order_m3_box').hide().css({"opacity":".6"});
+            $('.order_m3_wrap .order_m3_box').eq(eq).show().animate({"opacity":"1"});
+        });
+
+        //编辑抬头
+        $(document).on('click', '.a_edit', function(event) {
+            var _this = $(this);
+            if(_this.hasClass('save')){
+                var inv_title = _this.parents('.r_box').find('input').val();
+                if(inv_title == ""){
+                    layer.tips('请填写发票抬头', _this.parents('.r_box').find('input'), {
+                      tips: 4,
+                      time: 1000
+                    });
+                    return false;
+                }
+                var sss = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                // ajax保存发票抬头
+                $.ajax({
+                    url: "{:url('Goods/save_inv_title')}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {inv_title: inv_title},
+                    success: function(data) {
+                        layer.close(sss);
+                        if (data.code == 200) {
+                            _this.text("编辑").removeClass('save');
+                            _this.parents('.r_box').find('input').prop("readonly",true);
+                            _this.parents('.type_box').find('.r_box').removeClass('default')
+                            _this.parents('.r_box').addClass('readonly default');
+                            // _this.parents('.fg_b1').find('[name=inv_payee]').val(inv_title);
+                        }
+                    }
+                });
+            }else{
+                _this.text("保存").addClass('save');
+                _this.parents('.r_box').find('input').prop("readonly",false);
+                _this.parents('.r_box').removeClass('readonly');
+            }
+        });
+
+        //选中抬头
+        $(document).on('click', '.order_wrap .fg_b1 .item .r_box', function() {
+            if($(this).hasClass('readonly')){
+                $(this).parents('.type_box').find('.r_box').removeClass('default')
+                $(this).addClass('default');
+            }
+        });
+
+        //删除抬头
+        $(document).on('click', '.m_inbtn', function(event) {
+            event.preventDefault();
+            var _this = $(this);
+            layer.confirm('确定要删除该发票信息吗？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                var inv_title = _this.siblings('input').val();
+                var sss = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                // ajax删除发票抬头
+                $.ajax({
+                    url: "{:url('Goods/del_inv_title')}",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {inv_title: inv_title},
+                    success: function(data) {
+                        layer.close(sss);
+                        if (data.code == 200) {
+                            _this.parents('.item').remove();
+                        }
+                    }
+                });
+            });
+        });
+
+        $('.order_m3_wrap .order_m3_box:last-child input').focus(function() {
+            var eq = $(this).parents('.item').index();
+            $(this).parents('.r_box').addClass('hover');
+            checkRl2(eq);
+        });
+        $('.order_m3_wrap .order_m3_box:last-child input').blur(function() {
+            var eq = $(this).parents('.item').index();
+            $(this).parents('.r_box').removeClass('hover');
+            checkRl2(eq);
+        });
+        $('.order_form_yes').click(function() {
+            /*if($('.order_m3_list li').eq(2).hasClass('on')){
+                checkRl2(999);
+            }else{
+                $('.fg_b1_wrap .selected').find('form').submit();
+            }*/
+            var _this = $(this);
+            var inv_title = '';
+            $('.fg_b1_wrap .selected').find('.inv_payee').each(function() {
+                if ($(this).parent('.r_box').hasClass('default')) {
+                    inv_title = $(this).val();
+                    return false
+                }
+            });
+            $('.fg_b1_wrap .selected').find('[name=inv_payee]').val(inv_title);
+            $('.fg_b1_wrap .selected').find('form').submit();
+        });
+
+        $('.order_form_no').click(function() {
+            $('.order_bg').fadeOut();
+            $('.order_info label').removeClass('on');
+            $('.order_info label input').prop("checked",false);
+        });
+
+        // 选择优惠券
+        $('#bonus').change(function(event) {
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var bonus_key = $(this).attr('name');
+            $.ajax({
+                type: "post",
+                url: "{:url('Goods/setCookie')}",
+                dataType: 'json',
+                data:{is_ajax: 1, k: bonus_key, v: $(this).val()},
+                success: function(data){
+                    layer.close(index);
+                    location.reload();
+                }
+            });
+            //禁止页面刷新
+            return false;
+        });
+
+        $('.bag_sub').click(function(event) {
+            $('#order_form').submit();
+        });
+
+        /*$('#save_invoice').click(function(){
+            if($('.fg_b1_wrap .selected').length > 0){
+                $('.fg_b1_wrap .selected').find('form').submit();
+            }
+        });*/
+    });
+
+    function checkRl2(index){
+        var name = $('.order_m3_box3 .name input').val();
+        var phone = $('.order_m3_box3 .phone input').val();
+        var detail = $('.order_m3_box3 .detail input').val();
+        if(index == 0 || index == 999){
+            if(!name){
+                $('.name.item').removeClass('right').addClass('wrong');
+            }else{
+                $('.name.item').removeClass('wrong').addClass('right');
+            }
+        }
+        if(index == 1 || index == 999){
+            if(!(/^1[34578]\d{9}$/.test(phone))){
+                $('.phone.item').removeClass('right').addClass('wrong');
+            }else{
+                $('.phone.item').removeClass('wrong').addClass('right');
+            }
+        }
+        if(index == 3 || index == 999){
+            if(!detail){
+                $('.detail.item').removeClass('right').addClass('wrong');
+            }else{
+                $('.detail.item').removeClass('wrong').addClass('right');
+            }
+        }
+        if($('.item.wrong').length != 0){
+            return false;
+        }else if(index == 999){
+            $('.order_form').submit();
+        }
+    }
+    function checkName(index){
+        var username = $('.username input').val();
+        if(!username){
+            if(index == 999){
+                $('.username.item').removeClass('right').addClass('wrong');
+            }else{
+                $('.username.item').removeClass('right wrong');
+            }
+        }else if(username.length > 10){
+            $('.username.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.username.item').removeClass('wrong').addClass('right');
+        }
+    }
+    function checkPhone(index){
+        var phone1 = $('.phone1 input').val();
+        var phone2 = $('.phone2 input').val();
+        if(!phone1){
+            if(index == 999 && !phone2){
+                $('.phone1.w50').removeClass('right').addClass('wrong');
+            }else{
+                $('.phone1.w50').removeClass('right wrong');
+            }
+        }else if(!(/^1[34578]\d{9}$/.test(phone1))){
+            $('.phone1.w50').removeClass('right').addClass('wrong');
+        }else{
+            $('.phone1.w50').removeClass('wrong').addClass('right');
+        }
+    }
+    function checkPhone2(index){
+        var phone1 = $('.phone1 input').val();
+        var phone2 = $('.phone2 input').val();
+        if(!phone2){
+            if(index == 999 && !phone1){
+                $('.phone2.w50').removeClass('right').addClass('wrong');
+            }else{
+                $('.phone2.w50').removeClass('right wrong');
+            }
+        }else if(!(/^(?:(?:0\d{2,3})-)?(?:\d{7,8})(-(?:\d{3,}))?$/.test(phone2))){
+            $('.phone2.w50').removeClass('right').addClass('wrong');
+        }else{
+            $('.phone2.w50').removeClass('wrong').addClass('right');
+        }
+    }
+    function checkAddress(index){
+        var dress = $('.dress input').val();
+        if(!dress){
+            if(index == 999){
+                $('.dress.item').removeClass('right').addClass('wrong');
+            }else{
+                $('.dress.item').removeClass('right wrong');
+            }
+        }else{
+            $('.dress.item').removeClass('wrong').addClass('right');
+        }
+    }
+    function checkRl(type){
+        checkName(999);
+        checkPhone(999);
+        checkPhone2(999);
+        checkAddress(999);
+        var _select = 0;
+        if (type == 'insert') {
+            $('.shdz_bot .fg_select').each(function(index, el) {
+                if($(this).find("option:selected").val() == "0"){
+                    _select ++;
+                }
+            });
+            if(_select != 0){
+                layer.tips('请选择所在地区', '.shdz_bot .sod_select:last-child', {
+                  tips: 2,
+                  time: 1000
+                });
+                return false;
+            }
+        } else {
+            if($("#province option:selected").val() > 0){
+                if($("#city option:selected").val() == 0 || $("#district option:selected").val() == 0){
+                    layer.tips('请选择所在地区', '.shdz_bot .sod_select:last-child', {
+                      tips: 2,
+                      time: 1000
+                    });
+                    return false;
+                }
+            }
+        }
+        if($('.shdz_bot .right').length >= $('.shdz_bot .item').length - 2 && _select == 0){
+            $('.shdz_bot form').submit();
+        }else{
+            return false;
+        }
+    }
+
+    function getRegionC(){
+        var options=$("#province option:selected"); //获取选中的项
+        var pkey = options.attr('key');
+        $('#pkey').val(pkey);
+        var province_id = options.val();
+        if(province_id == 0){
+            $('#city').html('<option value="0">市</option>');
+            $('#district').html('<option value="0">区</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionC')}",
+            dataType: 'json',
+            data:{pkey:pkey},
+            success: function(data){
+                var l = '<option value="0">市</option>';
+                var u = '<li class="selected active" title="市" data-value="0">市</li>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" key="'+data[i].ckey+'">'+data[i].region_name+'</option>';
+                    u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+                }
+                $('#city').html(l);
+                $('#city').siblings('.sod_list').children('ul').html(u);
+                return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function getRegionD(){
+        var options=$("#city option:selected"); //获取选中的项
+        var ckey = options.attr('key');
+        var pkey = $('#pkey').val();
+        var city_id = options.val();
+        if(city_id == 0){
+            $('#district').html('<option value="0">区</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionD')}",
+            dataType: 'json',
+            data:{pkey:pkey,ckey:ckey},
+            success: function(data){
+                var l = '<option value="0">区</option>';
+                var u = '<li class="selected active" title="区" data-value="0">区</li>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" >'+data[i].region_name+'</option>';
+                    u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+                 }
+                 $('#district').html(l);
+                 $('#district').siblings('.sod_list').children('ul').html(u);
+                 return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function getARegionC(){
+        var options=$("#inv_consignee_province option:selected"); //获取选中的项
+        var pkey = options.attr('key');
+        $('#apkey').val(pkey);
+        var province_id = options.val();
+        if(province_id == 0){
+            $('#inv_consignee_city').html('<option value="0">市</option>');
+            $('#inv_consignee_district').html('<option value="0">区</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionC')}",
+            dataType: 'json',
+            data:{pkey:pkey},
+            success: function(data){
+                var l = '<option value="0">市</option>';
+                var u = '<li class="selected active" title="市" data-value="0">市</li>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" key="'+data[i].ckey+'">'+data[i].region_name+'</option>';
+                    u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+                }
+                $('#inv_consignee_city').html(l);
+                $('#inv_consignee_city').siblings('.sod_list').children('ul').html(u);
+                return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function getARegionD(){
+        var options=$("#inv_consignee_city option:selected"); //获取选中的项
+        var ckey = options.attr('key');
+        var pkey = $('#apkey').val();
+        var city_id = options.val();
+        if(city_id == 0){
+            $('#inv_consignee_district').html('<option value="0">区</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionD')}",
+            dataType: 'json',
+            data:{pkey:pkey,ckey:ckey},
+            success: function(data){
+                var l = '<option value="0">区</option>';
+                var u = '<li class="selected active" title="区" data-value="0">区</li>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" >'+data[i].region_name+'</option>';
+                    u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+                 }
+                 $('#inv_consignee_district').html(l);
+                 $('#inv_consignee_district').siblings('.sod_list').children('ul').html(u);
+                 return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    /**
+     * 删除收货地址
+     */
+    function del_address(address_id){
+        layer.open({
+            content: '您确定要删除该收货地址吗？',
+            btn: ['确定', '取消'],
+            yes: function(index){
+                layer.close(index);
+                var sss = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                $.ajax({
+                   type: "post",
+                   url: "{:url('User/do_address_del')}",
+                   dataType: 'json',
+                   data:{address_id:address_id},
+                   success: function(data){
+                        layer.close(sss);
+                        layer.msg(data.message);
+                        location.reload();
+                   }
+                });
+                //禁止页面刷新
+                return false;
+
+            }
+        });
+    }
+
+    function set_default_address(obj, key){
+        if($(obj).hasClass('addr_select')){ return false; }
+        layer.open({
+            content: '确定选择此收货地址吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                layer.close(index);
+                var sss = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                $.ajax({
+                    type: "post",
+                    url: "{:url('Goods/setCookie')}",
+                    dataType: 'json',
+                    data:{is_ajax: 1, k: 'address_id_key', v: key},
+                    success: function(data){
+                        layer.close(sss);
+                        location.reload();
+                    }
+                });
+                //禁止页面刷新
+                return false;
+            }
+        });
+    }
+
+    //计算金额
+    function changeTotal(){
+        var order_total = 0;
+        var supplier_id = 0;
+        var goods_price = parseFloat($('#goods_price_'+supplier_id).val());//商品金额
+        var discount = parseFloat($('#discount_'+supplier_id).val());//优惠金额
+        var shipping_fee = parseFloat($('#shipping_fee_'+supplier_id).val());//配送金额
+        var bonus_fee = parseFloat($('#bonus_fee_'+supplier_id).val());//红包金额
+        console.log(goods_price);
+        console.log(shipping_fee);
+        console.log(bonus_fee);
+        console.log(discount);
+        var supplier_total = (parseFloat(goods_price)+parseFloat(shipping_fee)-parseFloat(bonus_fee)-parseFloat(discount)).toFixed(2);
+        $('#supplier_total_'+supplier_id).html('￥'+supplier_total);
+        order_total = parseFloat(order_total) + parseFloat(supplier_total);
+        $('#order_total').html('￥'+order_total.toFixed(2));
+    }
+
+    function setCookie(key,value){
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        $.ajax({
+            type: "post",
+            url: "{:url('Goods/setCookie')}",
+            dataType: 'json',
+            data:{k:key,v:value,is_ajax:1},
+            success: function(result){
+                layer.close(index);
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function show_sel() {
+        var inv_type = "{$inv_type}";
+
+        if (inv_type == 'normal_invoice') {
+            $('.not_rlist li').eq(0).addClass('on').siblings('li').removeClass('on');
+            $('.fg_b1').eq(0).addClass('selected').show().animate({"opacity":"1"})
+            .siblings('.fg_b1').removeClass('selected').hide().css({"opacity":".6"});
+        }
+        if (inv_type == 'online_normal_invoice') {
+            $('.not_rlist li').eq(1).addClass('on').siblings('li').removeClass('on');
+            $('.fg_b1').eq(1).addClass('selected').show().animate({"opacity":"1"})
+            .siblings('.fg_b1').removeClass('selected').hide().css({"opacity":".6"});
+        }
+        if (inv_type == 'vat_invoice') {
+            $('.not_rlist li').eq(2).addClass('on').siblings('li').removeClass('on');
+            $('.fg_b1').eq(2).addClass('selected').show().animate({"opacity":"1"})
+            .siblings('.fg_b1').removeClass('selected').hide().css({"opacity":".6"});
+        }
+    }
+</script>

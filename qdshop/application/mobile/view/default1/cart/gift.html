@@ -1,0 +1,114 @@
+{include file="public/header" /}
+<body data-psd-width="840" >
+<div class="ss2 hg"> 
+    <div class="pa back " onclick="history.go(-1)"></div>
+    <h2>选择赠品</h2>
+    <a href="/mobile.php/index/index.html"><div class="header_home"></div></a>
+</div>
+<div class="content ">
+    {if $data.favourable_info}
+        <form action="{:url('Cart/do_gift')}" method="post" id="gift_form" onsubmit="return checkForm()">
+            <div class="give_box bgc">
+                <ul class="give_list">
+                    {foreach $data.favourable_info as $key => $vo}
+                    {foreach $vo.gift as $k => $v}
+                    <li class="clearfix">
+                        <label><input type="checkbox" class="checkbox-item s-item" name="gift[]" value="{$v.id}"><i class="icon"></i></label>
+                        <div class="pic fl">
+                            <img src="{$webUrl}/{$v.goods_thumb}" alt="">
+                        </div>
+                        <div class="text">
+                            <h2 class="title dot">{$v.name}</h2>
+                            <div class="price ">{$v.formated_price}</div> 
+                        </div>
+                    </li>
+                    {/foreach}
+                    <input type="hidden" name="act_id" id="act_id" value="{$vo.act_id}">
+                    {/foreach}
+                </ul>  
+            </div>
+            <div class="yi_ling"> 
+                <span>已领取<em><font id="gift_num">0</font>/<font id="max_num">{$vo.get_max_gift}</font></em>件</span>
+                <button>确定</button>
+            </div>
+        </form>
+    {else}
+        <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+        <p align="center" style="margin-top:0.3rem;">您的购物车里什么都没有哦</p>
+        <p align="center" style="margin-top:0.3rem;"><a href="{:url('Index/index')}" style="color:red;">再去看看</a></p>
+    {/if}
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+
+<script>
+    //单独页面上的js
+    $(function(){
+
+        //选中效果
+        $(".checkbox-item:checked").parents("label").addClass("selected");
+        $(".checkbox-item").change(function(){
+            //$(this).prop("checked") ? $(this).parents("label").addClass("selected") : $(this).parents("label").removeClass("selected");
+            var gift_num = $('#gift_num').html();
+            if($(this).prop("checked")){
+                $(this).parents("label").addClass("selected");
+                $('#gift_num').html(parseInt(gift_num)+1);
+            }else{
+                $(this).parents("label").removeClass("selected");
+                $('#gift_num').html(parseInt(gift_num)-1);
+            }
+        })
+    })
+</script>
+
+<script type="text/javascript">
+    function checkForm(){
+        var index = layer.open({type: 2,content: '加载中'});
+        var gift_num = $('#gift_num').html();
+        var max_num = $('#max_num').html();
+        if(gift_num == 0){
+            layer.close(index);
+            layer.open({
+                content: '请选择赠品！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        if(gift_num > max_num){
+            layer.close(index);
+            layer.open({
+                content: '领取赠品数量不能超过限制数量！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+
+        $.ajax({
+           type: "post",
+           url: "{:url('Cart/do_gift')}",
+           dataType: 'json',
+           data:$("#gift_form").serializeArray(),
+           success: function(data){
+                if(data.code == 200){
+                    window.location.href = "{:url('Cart/index')}";return false;
+                }else{
+                    layer.open({
+                        content: data.message
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    layer.close(index);
+                }
+           }
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>

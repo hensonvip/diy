@@ -1,0 +1,115 @@
+{include file="public/header" /}
+<style type="text/css">
+    /*联想搜索*/
+    #rs ul{background: #fff;}
+    #rs ul li{font-size: .28rem;width: 100%;height: 1rem;line-height: 1rem;border-bottom: 1px solid #eeeeee;text-indent: .3rem;}
+    #rs ul li a{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width: 7rem;display: block;}
+</style>
+
+<body data-psd-width="840">
+<div class="ss"> 
+    <form action="{:url('Goods/index')}" method="post" id="search_box">
+    <div class="search bgc">
+        <input type="text" placeholder="搜索" id="keywords" name="keywords">
+    </div> 
+    <span onclick="$('#search_box').submit();">确定</span>
+    </form>
+</div>  
+<div class="content">
+    <div class="s_con">
+        <div class="res1 bgc">
+            <h2>热门搜索</h2>
+        
+            <div class="res1_list clearfix">
+                {if $data}
+                {foreach $data as $key => $vo}
+                <a href="{:url('Goods/index',array('keywords'=>$vo))}">{$vo}</a>
+                {/foreach}
+                {/if}
+            </div>
+        </div>  
+        <div class="res2 bgc">
+            <h2 class="clearfix">历史搜索  <em onclick="clear_keywords();"></em></h2>
+            <div class="res2_list ">
+                {if $keywords_arr}
+                {foreach $keywords_arr as $key => $vo}
+                <a  class="clearfix" href="{:url('Goods/index',array('keywords'=>$vo))}">{$vo}</a>
+                {/foreach}
+                {/if}
+            </div>
+        </div>
+    </div>
+    <div id='rs' style="display:none;">
+        <ul></ul>
+    </div>
+</div>
+
+{include file="public/footer" /}
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script type="text/javascript">
+    function clear_keywords(){
+        var index = layer.open({type: 2,content: '加载中'});
+        layer.open({
+            content: '确定清空搜索记录吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                $.ajax({
+                    type: "get",
+                    url: "{:url('Goods/clear_keywords')}",
+                    dataType: 'json',
+                    success: function(data){
+                        layer.open({
+                            content: data.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                layer.close(index);
+                                location.reload();
+                            }
+                        });
+                    }  
+                });
+                //禁止页面刷新
+                return false;
+            }
+        });
+        layer.close(index);
+    }
+
+    //联想搜索
+    $(function(){    
+        $("#keywords").keyup(function(){ 
+            var word= $(this).val(); 
+            if($(this).val() == ''){
+                $('#rs').hide();
+                $('.s_con').show();
+                return false;
+            }
+            $.ajax({  
+                type: "post",
+                url: "{:url('Goods/search_word')}",   
+                data: {'keywords':word}, 
+                dataType:'json',       
+                success:function(txt){  
+                    var arr=txt.data;
+                    var li="";    
+                    $.each(arr,function(i,val){ 
+                        li+='<li><a href="/mobile.php/goods/details/goods_id/'+val['goods_id']+'.html">'+val['goods_name']+'</a></li> '; 
+                    }); 
+                    $('.s_con').hide();
+                    $("#rs ul").html(li);  
+                    $("#rs").slideDown('fast');
+                }
+            })    
+        })    
+    })   
+</script>

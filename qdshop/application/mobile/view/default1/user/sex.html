@@ -1,0 +1,45 @@
+{include file="public/header" /}
+  
+<body data-psd-width="840" >
+<header class="ss2 hg ">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">性别</h1>
+    <div class="wc"> <a href="javascript:;" onclick="save_sex()">保存</a></div>
+</header>   
+<div class="content ">
+    <div class="bgc" style="height:0.9rem;line-height:0.9rem;text-align:center;font-size:0.3rem;">
+        <input type="radio" value="0" name="sex" id="sex0" {if $data.sex eq 0}checked{/if} ><span for="sex0">保密</span>
+        <input type="radio" value="1" name="sex" id="sex1" {if $data.sex eq 1}checked{/if} style="margin-left:0.5rem;"><span for="sex1">男</span>
+        <input type="radio" value="2" name="sex" id="sex2" {if $data.sex eq 2}checked{/if} style="margin-left:0.5rem;"><span for="sex2">女</span>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+	//保存用户名
+    function save_sex(){
+    	var sex = $('input:radio:checked').val();
+    	$.ajax({
+	        type: "post",
+	        url: "{:url('User/save_sex')}",
+	        dataType: 'json',
+	        data:{sex:sex},
+	        success: function(data){
+	            layer.open({
+				    content: data.message
+				    ,skin: 'msg'
+				    ,time: 2 //2秒后自动关闭
+				});
+	        }  
+	    });
+	    //禁止页面刷新
+	    return false;
+    }
+</script>

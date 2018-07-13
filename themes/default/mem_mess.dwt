@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/user.css" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/css_reset.css" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/style.css" />
+<script type="text/javascript" src="themes/default/js/jquery-1.9.1.min.js"></script>
+{insert_scripts files='jquery.json.js,transport.js,json2.js'}
+{* 包含脚本文件 *}
+{insert_scripts files='common.js,user.js'}
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="main2">
+<div class="margin-w1210 clearfix">
+  <div class="user-left"> <!-- #BeginLibraryItem "/library/user_info.lbi" --><!-- #EndLibraryItem --> <!-- #BeginLibraryItem "/library/user_menu.lbi" --><!-- #EndLibraryItem --> </div>
+  <div class="user-right">
+
+    <style>
+        .mem_sub{
+            color: #c01414;
+            padding: 0 18px;
+            height: 23px;
+            float: left;
+            margin-top: 14px;
+            margin-right: 23px;
+            line-height: 23px;
+            border: 1px solid #c01414;
+        }
+
+        .mess-top{
+            padding-top: 15px;
+            padding-bottom: 5px;
+            font-size: 13px;
+            line-height: 50px;}
+
+        .mess-checkbox{
+            float: left;
+            color: #666666;
+            margin-right: 26px;}
+        .mess-btn{
+            color: #c01414;
+            padding:0 18px;
+            height: 23px;
+            float: left;
+            margin-top: 14px;
+            margin-right: 23px;
+            line-height: 23px;
+            border:1px solid #c01414}
+        .mess-btn.on{
+            color: #ffffff;
+            background: #c01414;}
+        .mess-del{
+            float: right;}
+
+        .mess-list li{
+            font-size: 13px;
+            color: #666666;
+            line-height: 37px;
+            width: 100% !important;
+        }
+
+        .mess-list li a{
+            float: left;}
+        .mess-list li em{
+            float: right;}
+        .mess-list li input{
+            float: left;
+            margin:12px 0;
+            margin-right:65px;}
+        .my_message{
+            margin: 25px 0;
+            padding: 14px 14px 100px;
+            width: 780px;
+            min-height:720px;
+        }   
+    </style>
+
+    <div class="box">
+      <div class="membertit"><span>我的消息</span></div>
+      <div class="mar_top">
+        <div>
+            <div class="my_message">
+                <form action="mem_mess.php" method="post">
+                    <div class="mess-top clearfix">
+                        <em class="mess-checkbox">
+                            <input type="checkbox" name="allChecked" id="allChecked" onclick="DoCheck()">&nbsp;&nbsp;
+                            全选
+                        </em>
+                        <input type="hidden" name="act" value="sele">
+                        <input type="submit" name="change" value="全部标为已读" class="mem_sub">
+                        <input type="submit" name="del" value="删除" class="mem_sub">
+                    </div>
+                    <ul class="mess-list">
+                        {foreach from=$msg_lists item=item}
+                        <li class="clearfix">
+                            <input type="checkbox" name="mess_id[]" value="{$item.l_id}">
+                            <a href="mem_mess.php?act=details&id={$item.l_id}">{if $item.readed eq 0}<font color="#ff7a0d" style="border:1px solid #ff7a0d;margin-right:5px;padding:2px;">未读</font>{/if}{$item.title}</a>
+                            <em>{$item.receive_time}</em>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </form>
+                <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+        function DoCheck()
+        {
+            var ch=document.getElementsByName("mess_id[]");
+            if(document.getElementsByName("allChecked")[0].checked==true)
+            {
+                for(var i=0;i<ch.length;i++)
+                {
+                    ch[i].checked=true;
+                }
+            }else{
+                for(var i=0;i<ch.length;i++)
+                {
+                    ch[i].checked=false;
+                }
+            }
+        }
+    </script>
+    
+  </div>
+</div>
+
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

@@ -1,0 +1,87 @@
+{include file="public/header" /}
+<body data-psd-width="840">
+<header class="pr hg ss2">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">发票信息</h1>
+    <div class="wc"> <a href="javascript:;" onclick="$('#checkForm').submit()">提交</a></div>
+</header>	
+<div class="content">
+	<form action="{:url('Goods/save_invoice')}" method="post" id="checkForm">
+		<div  class="flx bgc">
+			<h2>发票类型</h2>
+			<div class="flx_b clearfix" id="inv_type_box">
+				<span {if $inv_type eq 'normal_invoice'}class="on"{/if} onclick="$('#inv_type').val('normal_invoice')">纸质发票</span>
+				<span {if $inv_type eq 'vat_invoice'}class="on"{/if} onclick="$('#inv_type').val('vat_invoice')" style="display:none;">增值税发票</span>
+			</div>
+		</div>
+		<div class="flx2 bgc mt3">
+			<h2>发票抬头</h2>
+			<div class="tto clearfix" id="inv_payee_type_box">
+			 	<em {if $inv_payee_type eq 'individual'}class="on"{/if} onclick="$('#inv_payee_type').val('individual');$('.unit').hide();"><i class="icon"></i>个人</em>
+			 	<em {if $inv_payee_type eq 'unit'}class="on"{/if} onclick="$('#inv_payee_type').val('unit');$('.unit').show();"><i class="icon"></i>公司</em>
+			 </div>
+			 <div class="put clearfix mt3"> 
+			 	<span>发票抬头</span>
+			 	<input type="text" placeholder="请填写发票抬头" name="inv_payee" value="{$inv_payee}">
+			 </div>
+			 <div class="put clearfix mt3 unit" style="display:none;"> 
+			 	<span>纳税人识别码</span>
+			 	<input type="text" placeholder="请填写纳税人识别码" name="vat_inv_taxpayer_id" value="{$vat_inv_taxpayer_id}">
+			 </div>
+
+			
+			 <div class="put clearfix mt3" style="display:none;"> 
+			 	<span>公司名称</span>
+			 	<input type="text" placeholder="请填写公司名称" name="vat_inv_company_name" value="{$vat_inv_company_name}"><!--增值税发票才使用-->
+			 </div>
+			 <div class="put clearfix mt3 " style="display:none;"> 
+			 	<span>注册地址</span>
+			 	<input type="text" placeholder="请填写注册地址" name="vat_inv_registration_address" value="{$vat_inv_registration_address}">
+			 </div>
+			 <div class="put clearfix mt3 " style="display:none;"> 
+			 	<span>注册电话</span>
+			 	<input type="text" placeholder="请填写注册电话" name="vat_inv_registration_phone" value="{$vat_inv_registration_phone}">
+			 </div>
+			 <div class="put clearfix mt3 " style="display:none;"> 
+			 	<span>开户银行</span>
+			 	<input type="text" placeholder="请填写开户银行" name="vat_inv_deposit_bank" value="{$vat_inv_deposit_bank}">
+			 </div>
+			 <div class="put clearfix mt3 " style="display:none;"> 
+			 	<span>银行账户</span>
+			 	<input type="text" placeholder="请填写银行账户" name="vat_inv_bank_account" value="{$vat_inv_bank_account}">
+			 </div>
+
+		</div>
+		<div class="flx3 bgc mt3">
+			<h2>发票内容</h2>
+			<textarea name="inv_content">{$inv_content}</textarea>
+		</div>
+
+		<input type="hidden" name="supplier_id" id="supplier_id" value="{$supplier_id}"><!--商家ID-->
+		<input type="hidden" name="inv_type" id="inv_type" value="{$inv_type}"><!--发票类型，默认纸质发票-->
+		<input type="hidden" name="inv_payee_type" id="inv_payee_type" value="{$inv_payee_type}"><!--发票抬头类型，默认个人-->
+
+	</form>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+    	{if $inv_payee_type eq 'unit'}$('.individual').hide();$('.unit').show();{/if}
+
+        $("#inv_type_box span").click(function(){
+            $(this).addClass("on").siblings().removeClass("on");
+    	})
+    	$("#inv_payee_type_box em").click(function(){
+            $(this).addClass("on").siblings().removeClass("on");
+    	})
+    })
+</script>

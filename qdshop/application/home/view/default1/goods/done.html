@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="pay_main bg_f5f5f5 clearfix">
+	<div class="fg_top tc">
+        <img src="__IMGPC__/fg1.png" class="fg_logo">
+        <h2>订单支付</h2>
+    </div>
+    <div class="pay_box pay_box3 tc">
+        <div class="pay_b3_top">
+            订单金额：￥{$order_amount}
+        </div>
+        <div class="pay_b3_bot">
+            <div class="pay_b3_tit"><span>支付方式</span></div>
+            <p>因商品为限量定制产品，请在30分钟内完成支付，否则订单将被自动取消</p>
+            <ul class="pay_b3_list">
+                <li>
+                    <label>
+                        <i></i>
+                        <input type="radio" name="pay" onchange="alipay_qr({$order_id}, this);">
+                        <img src="__IMGPC__/icon43.png">
+                    </label>
+                    <div class="pay_b3_lbot">
+                        <img src="" id="alipay_qr">
+                    </div>
+                </li>
+                <li>
+                    <label>
+                        <i></i>
+                        <input type="radio" name="pay" onchange="wxpay_qr({$order_id}, this);">
+                        <img src="__IMGPC__/icon44.png">
+                    </label>
+                    <div class="pay_b3_lbot">
+                        <img src="" id="wxpay_qr">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+	/*$('.pay_b3_list label input').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('li').addClass('on').siblings().removeClass('on');
+        }
+    });*/
+    setInterval('check_pay_status()', 3000);
+});
+
+// 获取支付宝支付二维码
+function alipay_qr(order_id, obj) {
+    var index = layer.load(0, {
+        shade: [0.1,'#fff']
+    });
+    $.ajax({
+        url: "{:url('Goods/alipay_qr')}",
+        type: 'POST',
+        dataType: 'json',
+        data: {order_id: order_id},
+        success: function(res) {
+            layer.close(index);
+            if (res.code == 200) {
+                var path = 'data:image/png;base64,' + res.data.qrcode;
+                $('#alipay_qr').attr('src', path);
+                if($(obj).prop("checked") == true){
+                    $(obj).parents('li').addClass('on').siblings().removeClass('on');
+                }
+            } else {
+                layer.msg(res.message);
+            }
+        }
+    });
+}
+
+// 获取微信支付二维码
+function wxpay_qr(order_id, obj) {
+    var index = layer.load(0, {
+        shade: [0.1,'#fff']
+    });
+    $.ajax({
+        url: "{:url('Goods/wxpay_qr')}",
+        type: 'POST',
+        dataType: 'json',
+        data: {order_id: order_id},
+        success: function(res) {
+            layer.close(index);
+            if (res.code == 200) {
+                var path = 'data:image/png;base64,' + res.data;
+                $('#wxpay_qr').attr('src', path);
+                if($(obj).prop("checked") == true){
+                    $(obj).parents('li').addClass('on').siblings().removeClass('on');
+                }
+            } else {
+                layer.msg(res.message);
+            }
+        }
+    });
+}
+
+// ajax定时请求订单支付状态
+function check_pay_status() {
+    var order_id = parseInt("{$order_id}");
+    if (order_id > 0) {
+        $.ajax({
+            url: "{:url('Goods/check_pay_status')}",
+            type: "GET",
+            dataType:"json",
+            data: {order_id: order_id},
+            success: function (res) {
+                if (res.code == 200 && res.data.pay_status == 2) {
+                    layer.msg(res.message);
+                    window.location.href = "{:url('Goods/pay_success', array('order_id' => $order_id))}";
+                }
+                if (res.code == 500) {
+                    layer.msg(res.message);
+                    window.location.href = "/";
+                }
+            }
+        });
+    }
+}
+</script>
+

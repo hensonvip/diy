@@ -1,0 +1,53 @@
+define({ "api": [
+  {
+    "type": "post",
+    "url": "/qdapi/?act=diy/uploadFile",
+    "title": "导入图片",
+    "version": "1.0.0",
+    "name": "uploadFile",
+    "group": "DIY",
+    "sampleRequest": [
+      {
+        "url": "/qdapi/?act=diy/uploadFile"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "参数值": [
+          {
+            "group": "参数值",
+            "type": "Int",
+            "optional": false,
+            "field": "debug",
+            "description": "<p>1为调试模式</p>"
+          },
+          {
+            "group": "参数值",
+            "type": "Int",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户ID</p>"
+          },
+          {
+            "group": "参数值",
+            "type": "Binary",
+            "optional": false,
+            "field": "file",
+            "description": "<p>文件</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "成功示例",
+          "content": "{\n    \"code\": 200,\n    \"message\": \"SUCCESS\",\n    \"data\": {\n        \"file_id\": 11,\n        \"file_url\": \"data/diy/201804/1523505643646616934.png\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "qdapi/api_doc.php",
+    "groupTitle": "DIY"
+  }
+] });

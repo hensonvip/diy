@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$site_title}</title>
+    <meta name="keywords" content="{$site_keywords}" />
+    <meta name="description" content="{$site_description}" />
+    <meta name="author" content="互诺科技 - http://www.hunuo.com" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <link href="__CSSWAP__/swiper-3.4.1.min.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSWAP__/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body data-psd-width="840">
+<div class="ss2 hg">
+    <a class="logo" href="javascript:;"><img src="__IMGWAP__/logo.png"></a>
+    <div class="search bgc" onclick="window.location.href='{:url('Goods/search')}'">
+        <input type="text" placeholder="搜索">
+    </div>
+    <a href="{:url('User/my_message')}">
+    <div class="inf icon">
+        <em class="bgc" style="color:#c01414;">{$userinfo.message_count}</em>
+    </div>
+    </a>
+</div>
+<div class="content">
+    <div class="main">
+        <div class="banner">
+            <div class="swiper-wrapper">
+                {foreach $data.head.banner as $key => $vo}
+                <div class="swiper-slide"><a href="{$vo.ad_link}"><img src="{$webUrl}/{$vo.ad_code}" alt="{$vo.ad_name}"></a></div>
+                {/foreach}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="m1 bgc">
+             <ul class="clearfix">
+                {foreach $data.head.icon as $key => $vo}
+                <li>
+                    <a href="{$vo.menu_url}">
+                        <div class="pic"><img src="{$webUrl}/{$vo.menu_img}"></div>
+                        <p>{$vo.menu_name}</p>
+                    </a>
+                </li>
+                {/foreach}
+             </ul>
+        </div>
+        <div class="m2">
+            <ul class="clearfix">
+                {foreach $data.ad1 as $key => $vo}
+                <li>
+                    <a href="{$vo.ad_link}"><img src="{$webUrl}/{$vo.ad_code}"></a>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+
+        {foreach $data.product as $key => $vo}
+        <div class="m3">
+            <div class="zr bgc">
+                <h2>{$vo.title}</h2>
+                <a href="{:url('Goods/index',array('filter'=>$vo['type']))}">更多</a>
+            </div>
+            <ul class="clearfix">
+                {foreach $vo.list as $kk => $vv}
+                    <li>
+                        <div class="pad">
+                            <div class="img">
+                                <a href="{:url('Goods/details',array('goods_id'=>$vv['goods_id']))}"><img src="{$webUrl}/{$vv.goods_thumb}" alt=""></a>
+                            </div>
+                            <div class="idesc">
+                                <a href="{:url('Goods/details',array('goods_id'=>$vv['goods_id']))}"><h3 style="height:0.9rem;">{$vv.goods_name}</h3></a>
+                                <div class=" clearfix">
+                                    <div class="name fl">
+                                        <p class="hc">{$vv.format_shop_price}</p>
+                                    </div>
+                                    <!-- <div class="buy fr" onclick="addToCart({$vv.goods_id})">
+                                        <span class="buy"></span>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {/foreach}
+            </ul>
+            <div class="ad"><a href="{$vo.ad.0.ad_link?:''}"><img src="{$webUrl}/{$vo.ad.0.ad_code?:''}"></a></div>
+        </div>
+        {/foreach}
+
+
+        <div class="m5">
+            <ul class="clearfix">
+                {foreach $data.ad2 as $key => $vo}
+                <li>
+                    <a href="{$vo.ad_link}"><img src="{$webUrl}/{$vo.ad_code}"></a>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{include file="public/footer" /}
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+    //单独页面上的js
+    $(function(){
+        var mybanner = new Swiper('.banner',{
+            pagination : '.swiper-pagination',
+            paginationClickable :true,
+            touchRatio : 0.5,
+            autoplay : 5000,
+            autoplayDisableOnInteraction : false
+        })
+    })
+
+</script>

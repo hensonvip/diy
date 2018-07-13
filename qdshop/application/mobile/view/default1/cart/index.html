@@ -1,0 +1,430 @@
+{include file="public/header" /}
+<style type="text/css">
+    .del{height: 100%;width: 2rem;background: #c30d23;display: block;position: absolute;right: -2rem;top: 0;color: #fff;border: none;font-size: .36rem;}
+    .car_list dd.on {transform: translate(-2rem);}
+    .car_list dd {position: relative;transition: transform 0.5s;border-bottom: 1px solid #eeeeee;}
+</style>
+
+<body data-psd-width="840" >
+<div class="ss2 hg">
+    <div class="pa back " onclick="history.go(-1)"></div>
+    <h2>购物车</h2>
+    <a href="/mobile.php/index/index.html"><div class="header_home"></div></a>
+</div>
+<div class="content ">
+    <div class="pubcar">
+        {if $data.supplier_list}
+        <ul class="car_list">
+            {foreach $data.supplier_list as $key => $vo}
+            <li>
+                <div class="pub_t">
+                    <span class="pub_tl"><label class="select_li on"><em></em> <input type="checkbox" name="">{$vo.supplier_name}</label> </span>
+                    {if $vo.supplier_id}<a class="pub_tr" href="{:url('Supplier/supplier_details',array('supplier_id'=>$vo.supplier_id))}"></a>{/if}
+                </div>
+
+                <dl>
+                    {foreach $vo.goods_list as $kk => $vv}
+                    <dd class="clearfix">
+                        <label class="on"><em></em><input type="checkbox" class="check" name="sel_cartgoods[]" value="{$vv.rec_id}" id="sel_cartgoods_{$vv.rec_id}" checked="checked"></label>
+                        <div class=" clearfix fl mj_box">
+                            <div class="clearfix mj_mes">
+                                <div class="pic fl">
+                                    <a href="{:url('Goods/details',array('goods_id'=>$vv.goods_id))}"><img src="{$webUrl}/{$vv.goods_thumb}" alt=""></a>
+                                </div>
+                                <div class="text">
+                                    <h2 class="title">{if $vv.is_gift neq 0}<font color="red">[赠品]</font>{/if}{$vv.goods_name}</h2>
+                                    <div class="spec">{$vv.goods_attr}</div>
+                                    <div class="price">
+                                            <span class="symbol">¥</span>
+                                            <span class="number">{$vv.goods_price}</span>
+                                     </div>
+                                </div>
+                                <div class="mqp clearfix">
+                                    <a class="q-minus {if $vv.goods_number > 1}on{/if} " href="javascript:;" onclick="minus_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id})" id="jiannum{$vv.rec_id}">-</a>
+                                    <input class="b-quantity" type="text" onKeyDown='if(event.keyCode == 13) event.returnValue = false' name="goods_number[{$vv.rec_id}]" id="goods_number_{$vv.rec_id}" value="{$vv.goods_number}"  class="input-num"  onblur="change_price({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id})">
+                                    <input type="hidden" id="hidden_{$vv.rec_id}" value="{$vv.goods_number}">
+                                    <a class="q-plus on" href="javascript:;" onclick="add_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id})">+</a>
+                                </div>
+                            </div>
+                            {if $vv.favourable_info}
+                            <div class="man_z clearfix bgc">
+                                <em>满赠</em><span>该商品参与了满赠活动</span>
+                                <a class="comback" href="{:url('Cart/gift',array('goods_id'=>$vv.goods_id))}">选择赠品</a>
+                            </div>
+                            {/if}
+                            <button class="del" onclick="delOne({$vv.rec_id})">删除</button>
+                        </div>
+                    </dd>
+
+                    {/foreach}
+                </dl>
+            </li>
+            {/foreach}
+        </ul>
+        <div class="res ">
+            <label class="select_all on"><em></em><input type="checkbox" name="">全选</label>
+           <a class="jie" href="javascript:;" onclick="checkout()">结算 <span>(<em id="totalNumber">{$data.total.real_goods_count}</em>)</span></a>
+           <div class="hef" style="line-height:0.8rem;">
+                <p>合付：<span id="totalPrice">{$data.total.format_goods_price}</span></p>
+                <!-- <i>含运费：￥10.00</i> -->
+           </div>
+        </div>
+        {else}
+            <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+            <p align="center" style="margin-top:0.3rem;">您的购物车里什么都没有哦</p>
+            <p align="center" style="margin-top:0.3rem;"><a href="{:url('Index/index')}" style="color:red;">再去看看</a></p>
+        {/if}
+    </div>
+
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+
+<script>
+    //单独页面上的js
+    $(function(){
+    //选中效果
+    //某一店铺全选
+    $('.select_li input').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('li').find('.check').prop("checked",true);
+            $(this).parents('li').find('label').addClass('on');
+        }else{
+            $(this).parents('li').find('.check').prop("checked",false);
+            $(this).parents('li').find('label').removeClass('on');
+        }
+        checkall();
+        select_cart_goods();
+    });
+
+    //input改变的时候换icon图片
+    $('.pubcar label input[type="checkbox"]').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+        }else{
+            $(this).parents('label').removeClass('on');
+        }
+
+    });
+
+    //所有商品全选
+    $(".select_all input").change(function() {
+        if($('.car_list').hasClass('select')){
+            $('.pubcar input').prop("checked",false);
+            $('.pubcar label').removeClass('on');
+            $('.car_list').removeClass('select');
+        }else{
+            $('.pubcar input').prop("checked",true);
+            $('.pubcar label').addClass('on');
+            $('.car_list').addClass('select');
+        }
+        checkall();
+        select_cart_goods();
+    });
+
+    $('.check').change(function() {
+        //判断是否某一店铺全选
+        var this_total = $(this).parents('li').find('dd').length ;
+        //console.log(this_total);
+        var  this_on_total= $(this).parents('li').find('dd label.on').length;
+        //console.log(this_on_total);
+        if(this_total == this_on_total){
+            $(this).parents('li').find('.select_li').addClass('on');
+            $(this).parents('li').find('.select_li input').prop("checked",true);
+        }else{
+            $(this).parents('li').find('.select_li').removeClass('on');
+            $(this).parents('li').find('.select_li input').prop("checked",false);
+        }
+        checkall();
+        select_cart_goods();
+    });
+
+    function checkall(){
+        for (var i = 0; i < $('.check').length; i++) {
+            if($('.check').eq(i).prop("checked") == false){
+                $(".select_all input").prop("checked",false);
+                $(".select_all").removeClass('on');
+                $('.car_list').removeClass('select');
+                return false;
+            }else{
+                $(".select_all input").prop("checked",true);
+                $(".select_all").addClass('on');
+                $('.car_list').addClass('select');
+            }
+        }
+
+    }
+
+
+
+    //选择购物车商品
+    function select_cart_goods()
+    {
+        var index = layer.open({type: 2,content: '加载中'});
+        var sel_goods = new Array();
+        var obj_cartgoods = document.getElementsByName("sel_cartgoods[]");
+        var j=0;
+        for (i=0;i<obj_cartgoods.length;i++){
+            if(obj_cartgoods[i].checked == true)
+            {
+                sel_goods[j] = obj_cartgoods[i].value;
+                j++;
+            }
+        }
+        if(sel_goods == ''){
+            $("#totalPrice").text('￥0');
+            $("#totalNumber").text('0');
+            layer.close(index);
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/index')}",
+            dataType: 'json',
+            data:{sel_goods:sel_goods,is_ajax:1},
+            success: function(result){
+                changeNumResponse(result);
+                layer.close(index);
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+
+})
+</script>
+
+<script type="text/javascript">
+    //添加商品数量
+    function add_num(rec_id,goods_id,supp_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        var sel_goods = new Array();
+        var obj_cartgoods = document.getElementsByName("sel_cartgoods[]");
+        var j=0;
+        for (i=0;i<obj_cartgoods.length;i++){
+            if(obj_cartgoods[i].checked == true){
+                    sel_goods[j] = obj_cartgoods[i].value;
+                    j++;
+            }
+        }
+        document.getElementById("goods_number_"+rec_id+"").value++;
+        if(document.getElementById("goods_number_"+rec_id+"").value > 1){
+            document.getElementById("jiannum"+rec_id).className = 'q-minus on';
+        }else{
+            document.getElementById("jiannum"+rec_id).className = 'q-minus';
+        }
+        var number = document.getElementById("goods_number_"+rec_id+"").value;
+
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{sel_goods:sel_goods,rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                changeNumResponse(result);
+                layer.close(index);
+            }
+        });
+        //禁止页面刷新
+        return false;
+        //Ajax.call('flow.php', 'step=update_group_cart&sel_goods='+ sel_goods +'&rec_id=' + rec_id +'&number=' + number+'&goods_id=' + goods_id + '&suppid=' + supp_id + '&is_package=' + is_package, changeNumResponse, 'GET', 'JSON');
+    }
+
+    //减少商品数量
+    function minus_num(rec_id,goods_id,supp_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        var sel_goods = new Array();
+        var obj_cartgoods = document.getElementsByName("sel_cartgoods[]");
+        var j=0;
+        for (i=0;i<obj_cartgoods.length;i++){
+            if(obj_cartgoods[i].checked == true){
+                    sel_goods[j] = obj_cartgoods[i].value;
+                    j++;
+            }
+        }
+        if (document.getElementById("goods_number_"+rec_id+"").value>1){
+            document.getElementById("goods_number_"+rec_id+"").value--;
+            if(document.getElementById("goods_number_"+rec_id+"").value > 1){
+                document.getElementById("jiannum"+rec_id).className = 'q-minus on';
+            }else{
+                document.getElementById("jiannum"+rec_id).className = 'q-minus';
+            }
+        }
+        var number = document.getElementById("goods_number_"+rec_id+"").value;
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{sel_goods:sel_goods,rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                changeNumResponse(result);
+                layer.close(index);
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    //更新购物车
+    function change_price(rec_id,goods_id,supp_id)
+    {
+        var index = layer.open({type: 2,content: '加载中'});
+        var r = /^[1-9]+[0-9]*]*$/;
+        var number = document.getElementById("goods_number_"+rec_id+"").value;
+        if (!r.test(number))
+        {
+            layer.open({
+                content: '您输入的格式不正确！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            document.getElementById("goods_number_"+rec_id+"").value=document.getElementById("hidden_"+rec_id+"").value;
+        }
+        else
+        {
+            $.ajax({
+                type: "post",
+                url: "{:url('Cart/updateCart')}",
+                dataType: 'json',
+                data:{rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+                success: function(result){
+                    changeNumResponse(result);
+                    layer.close(index);
+                }
+            });
+            //禁止页面刷新
+            return false;
+            //Ajax.call('flow.php','step=update_group_cart&rec_id=' + rec_id +'&number=' + number+'&goods_id=' + goods_id, changeNumResponse, 'GET', 'JSON');
+        }
+    }
+
+    //回调改变总数
+    function changeNumResponse(result)
+    {
+        if(result.code == 200){
+            $("#totalPrice").text(result.data.total.format_goods_price);
+            $("#totalNumber").text(result.data.total.real_goods_count);
+        }else{
+            layer.open({
+                content: result.message
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        }
+
+    }
+
+    //提交结算
+    function checkout(){
+        var index = layer.open({type: 2,content: '加载中'});
+        var sel_goods = new Array();
+        var obj_cartgoods = document.getElementsByName("sel_cartgoods[]");
+        var j=0;
+        for (i=0;i<obj_cartgoods.length;i++){
+            if(obj_cartgoods[i].checked == true){
+                    sel_goods[j] = obj_cartgoods[i].value;
+                    j++;
+            }
+        }
+        if(sel_goods == ''){
+            layer.open({
+                content: '请选择商品！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+        location.href = "{:url('Goods/checkout')}"+'?sel_goods='+sel_goods;
+        layer.close(index);
+    }
+
+    //删除一个
+    function delOne(rec_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        layer.open({
+            content: '确定删除吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                $.ajax({
+                    type: "get",
+                    url: "{:url('Cart/deleteCart')}",
+                    dataType: 'json',
+                    data:{rec_id:rec_id},
+                    success: function(data){
+                        if(data.code ==200){
+                            layer.close(index);
+                            location.reload();
+                            return false;
+                        }
+                        layer.open({
+                            content: data.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                layer.close(index);
+                            }
+                        });
+                    }
+                });
+                //禁止页面刷新
+                return false;
+            }
+        });
+    }
+
+</script>
+
+
+<script type="text/javascript">
+//左滑动效果
+function myMoveDel(opts){
+    this.wrap=opts.dom;
+    this.delwidth=opts.delwidth;
+    this.oclass=opts.taggleClassName;
+    this.ochild=opts.ochild;
+    this.binddom();
+}
+myMoveDel.prototype.binddom=function(){
+    var self = this;
+    var item = self.wrap.find(this.ochild);
+    var startH = function(ev){
+        self.startX=ev.touches[0].pageX;
+        self.startY=ev.touches[0].pageY;
+    };
+    var moveH = function(ev){
+        self.offsetX=ev.touches[0].pageX-self.startX;
+        self.offsetY=ev.touches[0].pageY-self.startY;
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            ev.preventDefault();
+        }
+    };
+    var endH = function(ev){
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            if(self.offsetX>0){
+                $(this).removeClass(self.oclass);
+            }else{
+                $(this).addClass(self.oclass);
+            }
+        }
+    };
+    for(var i = 0;i<item.length;i++){
+        item[i].addEventListener('touchstart',startH);
+        item[i].addEventListener('touchmove',moveH);
+        item[i].addEventListener('touchend',endH);
+    }
+};
+window.onload=function(){
+    new myMoveDel({
+        'dom':$('.car_list'),
+        'taggleClassName':'on',
+        'ochild':'dd'
+    });
+}
+</script>

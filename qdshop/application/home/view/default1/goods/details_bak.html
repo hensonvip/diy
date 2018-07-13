@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+    <title>{$site_title}</title>
+    <meta name="keywords" content="{$site_keywords}">
+    <meta name="description" content="{$site_description}">
+</head>
+<body>
+    <!--header start-->
+    <div class="header first second fixed">
+        {include file="public/nav" /}
+        {if condition="$user_id"}
+            {include file="public/user_right" /}
+        {else/}
+            {include file="public/right" /}
+        {/if}
+    </div>
+    <div class="float_right"></div>
+    <!--header end-->
+    <!--main start-->
+    <div class="rep_bg">
+        <div class="rep_wrap">
+            <i class="del"></i>
+            <div class="mem_rtit">我要举报</div>
+            <form class="rep_form tc">
+                <div class="item">
+                    <span>举报对象:</span>
+                    <div class="r_box">
+                        <font class="rep_name"></font>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>原 因:</span>
+                    <div class="r_box">
+                        <select name="reason" id="reason" class="select">
+                            {foreach name="$reason_list" item="item"}
+                            <option value="{$item.content}">{$item.content}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="item w100">
+                    <input type="button" value="提 交" class="rep_sub nb_t2">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="p_y">
+        <div class="p_ycon2">
+            <h4>发送私信</h4>
+            <div class="p_ycon2b fix">
+                <div class="p_img fl">
+                    <img src="__IMGPC__/refer/p_peo3.png" alt="">
+                    <p>UMI</p>
+                </div>
+
+                <div class="p_txt fl">
+                    <textarea placeholder="私信内容"></textarea>
+                </div>
+            </div>
+            <a href="#" class="p_fs nb_t2">发 送</a>
+            <div class="p_pclo1"></div>
+        </div>
+    </div>
+    <div class="ipro_bg"></div>
+    <input type="hidden" name="goods_id" value="{$data.goods_id}">
+    <div class="ipro_popup">
+        <div class="ipro_inner">
+            <div class="ipro_content">
+                <div class="ipro_wrap">
+                    <div class="ipro_size">
+                        <i class="ipro_back"></i>
+                        <div class="ipro_size_box">
+                            <img class="lazybg" data-lazyload-img="__IMGPC__/pic12.jpg">
+                        </div>
+                    </div>
+                    <div class="ipro_left">
+                        <div class="ipro_main pr">
+                            <ul class="ipro_slick">
+                                {volist name="data.goods_gallery" id="vo"}
+                                <li data-id="{$vo.goods_attr_id}{$vo.goods_attr_id2}" class="ipro_zoom"><img class="o_img" src="{$webUrl}{$vo.img_url}"></li>
+                                {/volist}
+                            </ul>
+                            <a class="ipro_main_btn"></a>
+                            <div class="hover"></div>
+                        </div>
+                        <div class="ipro_piclist clearfix">
+                            <div class="box"><img realsrc="__IMGPC__/pic33.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic33.jpg"></div>
+                            <div class="box"><img realsrc="__IMGPC__/pic16.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic16.jpg"></div>
+                            <div class="box"><img realsrc="__IMGPC__/pic17.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic17.jpg"></div>
+                        </div>
+                        <div class="ipro_zan {if $data.has_zan gt 0}on{/if}">
+                            <span class="icon"></span>
+                        </div>
+                        <div class="ipro_share">
+                            <div class="icon_bg"><span class="icon"></span></div>
+                            <div class="share_box">
+                                <a href="" class="weibo"></a>
+                                <a href="" class="wechat"></a>
+                                <a href="" class="qq"></a>
+                                <a href="" class="ins"></a>
+                                <a href="" class="talk"></a>
+                                <a href="" class="facebook"></a>
+                                <a href="" class="twitter"></a>
+                            </div>
+                        </div>
+                        <div class="ipro_com">
+                            <h2>推荐</h2>
+                            <div class="ipro_com_top change5">
+                                <ul class="i_plist clearfix">
+                                    {if $hot.list}
+                                    {foreach $hot.list as $key => $vo}
+                                    <li>
+                                        <div class="before">
+                                            <div class="clo">
+                                            <a href="">
+                                                <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.goods_thumb}">
+                                            </a>
+                                            </div>
+                                            <div class="line"></div>
+                                            <div class="info">
+                                                <span class="view">{$vo.click_count}</span>
+                                                <span class="zan">{$vo.zan}</span>
+                                            </div>
+                                        </div>
+                                        <a href="{:url('Goods/details',array('goods_id'=>$vo.goods_id))}">
+                                            <div class="after">
+                                                <div class="af_top tc">
+                                                    <div class="af_avatar lazybg" data-lazyload-bg="{$webUrl}{$vo.headimg}"></div>
+                                                    <h3 class="tover">{if $vo.nickname}{$vo.nickname}{else}{$vo.user_name}{/if}</h3>
+                                                    <h2 class="dot">{$vo.goods_name}</h2>
+                                                </div>
+                                                <div class="af_bot tc">
+                                                    <div class="af_bar"><i style="width: {$vo.number_per}%;"></i></div>
+                                                    <div class="info">
+                                                        <h2>￥<em>{$vo.shop_price}</em></h2>
+                                                        <p>限量 {$vo.goods_number}/{$vo.goods_total}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    {/foreach}
+                                    {/if}
+                                </ul>
+                            </div>
+                            <div class="ipro_com_bot">
+                                <div class="ipro_com_bot_pf">评论(88)<span class="fr"><font>4.0</font><i class="i_pro_pf i_pro_pf4"></i></span></div>
+                                <ul class="ipro_com_bot_ul">
+                                    <li class="clearfix">
+                                        <div class="ipro_com_icon">
+                                            <i class="zan">23</i>
+                                            <i class="favor"></i>
+                                        </div>
+                                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar2.jpg"></div></a>
+                                        <div class="ipro_com_txt">
+                                            <h3><a href=""><b>Adam</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3>
+                                            <p>设计很时尚！</p>
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <div class="ipro_com_icon">
+                                            <i class="zan">23</i>
+                                            <i class="favor"></i>
+                                        </div>
+                                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar3.jpg"></div></a>
+                                        <div class="ipro_com_txt">
+                                            <h3><a href=""><b>Brian</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3>
+                                            <p>Nice work！</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipro_right">
+                        <div class="ipro_right_bef">
+                            <div class="ipd_rtop">
+                                <div class="ipd_user clearfix">
+                                    <div class="avatar">
+                                        <a href=""><span class="lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></span></a>
+                                        <div class="avatar_box">
+                                            <div class="avatar_wrap">
+                                                <div class="ava_top clearfix">
+                                                    <a href=""><div class="ava_pic lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></div></a>
+                                                    <div class="ava_txt">
+                                                        <a href=""><h2>{if $data.nickname}{$data.nickname}{else}{$data.user_name}{/if}</h2></a>
+                                                        <p>设计师</p>
+                                                    </div>
+                                                    <a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+                                                </div>
+                                                <div class="ava_bot">
+                                                    <ul class="clearfix">
+                                                        <li><span>T恤作品</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>
+                                                        <li><span>设计作品</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>
+                                                        <li><span>粉丝</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>
+                                                        <li><span>话题</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text">
+                                        <h2>{if $data.nickname}{$data.nickname}{else}{$data.user_name}{/if}</h2>
+                                        <span class="guanzhu nb_t2 {if $data.follow_status gt 0}follow followed{else}follow{/if}" user_id="{$data.diy_user_id}" value="{$data.follow_status}">{if $data.follow_status eq 1}已关注{elseif $data.follow_status eq 2 }互相关注{else}关注{/if}</span>
+                                        <input type="hidden" name="user_id" id="user_id" value="{$data.user_id}">
+                                    </div>
+                                </div>
+                                <div class="ipd8">
+                                    <div class="ipd_detail">
+                                        <h2 id="goods_name">{$data.goods_name}</h2>
+                                        <div class="price">￥<em>{$data.shop_price}</em></div>
+                                        <div class="bar"><i style="width: {$data.number_per}%;"></i></div>
+                                        <p>限量 {$data.goods_number}/{$data.goods_total}</p>
+                                        <p class="des"><span class="view">{$data.click_count}</span><span class="zan {if $data.has_zan gt 0}on{/if}">{$data.zan}</span><span class="comment">23</span><span class="favor"></span></p>
+                                    </div>
+                                    <div class="ipd_info">
+                                        <div class="box">
+                                            <h2>类型</h2>
+                                            <p>插画</p>
+                                        </div>
+                                        <div class="box">
+                                            <h2>设计描述</h2>
+                                            <p>设计理念，设计理念，设计。</p>
+                                            <p>设计，设计设计。</p>
+                                        </div>
+                                    </div>
+                                    <div class="ipd_type">
+                                        <div class="item clearfix">
+                                            <span>款式</span>
+                                            <div class="r_box sex_box">
+                                                {foreach $data.properties as $spec_key => $spec}
+                                                    {if $spec.name eq '款式'}
+                                                        {foreach $spec.values as $attr_key => $attr}
+                                                        <label data-src='{$webUrl}{$attr.default_icon}' data-srcon='{$webUrl}{$attr.select_icon}' {if $attr_key eq 0}style="background-image: url({$webUrl}{$attr.select_icon});"{else /}style="background-image: url({$webUrl}{$attr.default_icon});"{/if}>
+                                                            <input type="radio" id="spec_value_{$attr.id}" name="spec_0" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                                        </label>
+                                                        {/foreach}
+                                                    {/if}
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                        <div class="item clearfix">
+                                            <span>颜色</span>
+                                            <div class="r_box color_box">
+                                                {foreach $data.properties as $spec_key => $spec}
+                                                    {if $spec.name eq '颜色'}
+                                                        {foreach $spec.values as $attr_key => $attr}
+                                                        <label {if $attr_key eq 0}class="white on"{else}class="white"{/if} style="background-color: #{$attr.color_code};">
+                                                            <input type="radio" id="spec_value_{$attr.id}" name="spec_1" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                                        </label>
+                                                        {/foreach}
+                                                    {/if}
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                        <div class="item clearfix">
+                                            <span>尺码</span>
+                                            <div class="r_box size_box">
+                                                <p>
+                                                    <font class="show_size">参数/尺码表</font>
+                                                </p>
+                                                <div>
+                                                    {foreach $data.properties as $spec_key => $spec}
+                                                        {if $spec.name eq '尺码'}
+                                                            {foreach $spec.values as $attr_key => $attr}
+                                                            <label {if $attr_key eq 0}class="on"{/if}>
+                                                                <input type="radio" id="spec_value_{$attr.id}" name="spec_2" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>{$attr.label}
+                                                            </label>
+                                                            {/foreach}
+                                                        {/if}
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item clearfix">
+                                            <span>数量</span>
+                                            <div class="r_box">
+                                                <div class="num_box" data-max="{$data.goods_number}">
+                                                    <input type="button" value="-" class="btn_m">
+                                                    <input type="text" name="number" value="1" class="btn_input">
+                                                    <input type="button" value="+" class="btn_a">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ipd_rbot">
+                                <div class="ipd_rbot_wrap">
+                                    <div class="ipd_favar nb_t1 {if $data.is_collected eq 1}active{/if}" onclick="collect({$data.goods_id}, this)" {if $data.is_collected neq 1}style="background: #df3853; color: #fff;"{/if}><i></i>{if $data.is_collected eq 1}已收藏{else}加入收藏{/if}</div>
+                                    <div class="ipd_cart nb_t2"><i></i>加入购物袋</div>
+                                    <div class="ipd_exp clearfix">
+                                        <div class="ipd_exp_txt fl"><span>退货说明</span>
+                                            <div class="ipd_exp_box">
+                                                <p>因商品为限量定制产品，如非发错货或质量问题，不支持退换货。</p>
+                                            </div>
+                                        </div>
+                                        <a href="" class="icon fr"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ipro_right_after">
+                            <div class="ipd_rtop">
+                                <i class="ipd_rtop_back"></i>
+                                <div class="ipd_rtop_cart ipd8">
+                                    <ul class="ipd_rtop_clist">
+                                        <li>
+                                            <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                            <div class="ipd_catop">
+                                                <img class="lazybg" data-lazyload-img="__IMGPC__/pic13.jpg">
+                                            </div>
+                                            <div class="ipd_camid clearfix">
+                                                <span>彩虹T恤</span>
+                                                <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                            </div>
+                                            <div class="ipd_cabot clearfix">
+                                                <div class="icon1" style="background-image: url(__IMGPC__/icon32.png);"></div>
+                                                <div class="icon2"></div>
+                                                <div class="icon3">M</div>
+                                                <div class="num_box fr" data-max="10">
+                                                    <input type="button" value="-" class="btn_m">
+                                                    <input type="text" value="1" class="btn_input">
+                                                    <input type="button" value="+" class="btn_a">
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                            <div class="ipd_catop">
+                                                <img class="lazybg" data-lazyload-img="__IMGPC__/pic13.jpg">
+                                            </div>
+                                            <div class="ipd_camid clearfix">
+                                                <span>彩虹T恤</span>
+                                                <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                            </div>
+                                            <div class="ipd_cabot clearfix">
+                                                <div class="icon1" style="background-image: url(__IMGPC__/icon33.png);"></div>
+                                                <div class="icon2"></div>
+                                                <div class="icon3">M</div>
+                                                <div class="num_box fr" data-max="5">
+                                                    <input type="button" value="-" class="btn_m">
+                                                    <input type="text" value="1" class="btn_input">
+                                                    <input type="button" value="+" class="btn_a">
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                            <div class="ipd_catop">
+                                                <img class="lazybg" data-lazyload-img="__IMGPC__/pic13.jpg">
+                                            </div>
+                                            <div class="ipd_camid clearfix">
+                                                <span>彩虹T恤</span>
+                                                <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                            </div>
+                                            <div class="ipd_cabot clearfix">
+                                                <div class="icon1" style="background-image: url(__IMGPC__/icon32.png);"></div>
+                                                <div class="icon2"></div>
+                                                <div class="icon3">M</div>
+                                                <div class="num_box fr" data-max="20">
+                                                    <input type="button" value="-" class="btn_m">
+                                                    <input type="text" value="1" class="btn_input">
+                                                    <input type="button" value="+" class="btn_a">
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="ipd_rbot">
+                                <div class="ipd_rbot_wrap tr">
+                                    <p><span>合计</span>
+                                        <font>￥<em>600（不含运费）</em></font>
+                                    </p>
+                                    <div class="ipd_cart nb_t2">结 算</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+        <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+            <span class="lightbox-spinner"></span>
+        </div>
+        <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+            <div class="js-img-wrap" id="lightbox-img-wrap">
+                <div class="lightbox-extra control prev js-control js-prev hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+                </div>
+                <div class="lightbox-extra control next js-control js-next hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+                </div>
+                <div class="lightbox-extra control close js-control js-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                        <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                        <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                    </svg>
+                </div>
+                <div class="lightbox-contents js-contents"></div>
+            </div>
+        </div>
+    </div>
+    <!--main end-->
+    <!--footer start-->
+    {include file="public/footer" /}
+    <!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script>
+    $(function(){
+        $('body').addClass('one_detail');
+    });
+</script>
+<script>
+    //弹窗代码
+    //
+    $(function() {
+        loadpList(0);
+
+        //详情左边点赞
+        $('.ipro_left .ipro_zan .icon').click(function() {if($(this).parents('.ipro_zan').hasClass('disabled')){ return false; }
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var _this = $(this);
+            if (_this.parents('.ipro_zan').hasClass('on')) {
+                // 取消点赞
+                $.ajax({
+                    url: "{:url('Goods/unlike')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.parents('.ipro_zan').removeClass('on');
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            } else {
+                // 点赞
+                $.ajax({
+                    url: "{:url('Goods/like')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.parents('.ipro_zan').addClass('on');
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        var fav_this;
+        //详情左边底下评论点赞举报标记
+        $(document).on('click', '.ipro_com_icon i', function() {
+            if($(this).hasClass('favor')){
+                alert(111);
+                right_favor = false;
+                if($(this).hasClass('on')){ return false; }
+                fav_this = $(this);
+                $('.rep_bg').fadeIn();
+                $('html').addClass('enabled');
+                return false;
+            }
+            if ($(this).hasClass('on')) {
+                $(this).removeClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) - 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeOut();
+                    r_top_bot();
+                }
+            } else {
+                $(this).addClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) + 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeIn();
+                    r_top_bot();
+                }
+            }
+        });
+
+        //举报弹窗（确认）
+        $('.rep_form .rep_sub').click(function() {
+            var goods_id = $('#goods_id').val();
+            var reason = $('#reason').val();
+            var _this = $(this);
+            layer.confirm('确定要举报该评论？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                $.ajax({
+                   type: "post",
+                   url: "{:url('Goods/do_goods_report')}",
+                   dataType: 'json',
+                   data:{goods_id:goods_id, reason:reason},
+                   success: function(data){
+                        $('.rep_bg').fadeOut();
+                        $('html').removeClass('enabled');
+                        if(right_favor){
+                            fav_right.addClass('on');
+                        }else{
+                            fav_this.addClass('on');
+                        }
+                   }
+                });
+            });
+        });
+
+        //举报弹窗（取消）
+        $('.rep_wrap .del').click(function() {
+            $('.rep_bg').fadeOut();
+            $('html').removeClass('enabled');
+        });
+
+        //右边举报
+        var right_favor = false;
+        var fav_right;
+        $('.ipd_detail .des span.favor').click(function() {
+            if($(this).hasClass('on')){ return false; }
+            var report_obj = $('#goods_name').text();
+            $('.rep_name').text(report_obj);
+            $('.rep_bg').fadeIn();
+            $('html').addClass('enabled');
+            right_favor = true;
+            fav_right = $(this);
+        });
+
+        //详情右边删除购物袋对应商品
+        $('.ipro_right_after .ipd_cadel').click(function() {
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        $('.dc_firm .dc_yes').click(function(event) {
+            $(this).parents('li').remove();
+        });
+
+        //详情右侧点赞
+        $(document).on('click', '.ipd_detail .des span.zan', function(event) {
+            var _this = $(this);
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var zan_num = _this.text();
+            if(_this.hasClass('on')){
+                // 取消点赞
+                $.ajax({
+                    url: "{:url('Goods/unlike')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.removeClass('on');
+                            _this.text(parseInt(zan_num) - 1);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }else{
+                // 点赞
+                $.ajax({
+                    url: "{:url('Goods/like')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.addClass('on');
+                            _this.text(parseInt(zan_num) + 1);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        r_top_bot();
+        $(window).scroll(function() {
+            r_top_bot();
+        });
+
+        $(window).resize(function() {
+            r_top_bot();
+        });
+
+        //详情左边图片放大
+        var pic_index = 0;
+        $('.ipro_piclist img').click(function() {
+            pic_index = $(this).attr("data-index");
+            picCheck(pic_index);
+            $('.js-lightbox-wrap').fadeIn();
+            $('.js-contents .js-slide').eq(pic_index).show().siblings().hide();
+            picLoad(pic_index);
+        });
+        $(document).on('click', '.js-slide-content', function() {
+            if($('html').hasClass('lightbox-zoomed')){
+                $('html').removeClass('lightbox-zoomed');
+            }else{
+                if($(this).parents('.js-slide').attr("zoom-in") == "true"){
+                    $('html').addClass('lightbox-zoomed');
+                }
+            }
+        });
+        $('.js-lightbox-wrap').hover(function() {
+            $(this).removeClass('extras-hidden')
+        }, function() {
+            $(this).addClass('extras-hidden');
+        });
+
+        //切换
+        $('#lightbox-inner-wrap .prev').click(function() {
+            pic_index = parseInt(pic_index)-1;
+            if(pic_index <= 0){
+                pic_index = 0;
+            }
+            picCheck(pic_index);
+            $('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+            picLoad(pic_index);
+        });
+
+        $('#lightbox-inner-wrap .next').click(function() {
+            pic_index = parseInt(pic_index)+1;
+            if(pic_index >= $('.js-contents .js-slide').length){
+                pic_index = $('.js-contents .js-slide').length - 1;
+            }
+            picCheck(pic_index);
+            $('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+            picLoad(pic_index);
+        });
+
+        //详情左边图片关闭
+        $('.js-close').click(function() {
+            $('.js-lightbox-wrap').fadeOut();
+        });
+
+        //点击右边按钮滑到评论区域
+        $('.ipd_detail .des span.comment').click(function() {
+            $('html,body').stop().animate({ scrollTop: $('.ipro_com_bot').offset().top - $('.header').outerHeight() }, 300);
+        });
+
+        //滚动条
+        $('.ipro_right_bef .ipd_rtop .ipd8,.ipro_right_after .ipd_rtop').mCustomScrollbar({
+            axis: "y",
+            scrollInertia: 100,
+            scrollButtons: {
+                enable: true,
+                scrollSpeed: 20
+            },
+            theme: "3d"
+        });
+
+        //显示隐藏私信
+        $('.ava_talk,.d_showtalk').click(function() {
+            $('body > .p_y').stop(true,true).fadeIn();
+            $('html').addClass('enabled');
+        });
+        $('.p_pclo1').click(function() {
+            $('body > .p_y').stop(true,true).fadeOut();
+            $('html').removeClass('enabled');
+        });
+
+        // 收藏
+        $('.ipd_favar').hover(function() {
+            if($(this).hasClass('active')){
+                $(this).html("<i></i>取消收藏").css({
+                    background: '#df3853',
+                    color: '#fff'
+                });
+                $(this).children('i').css('background', 'url(__IMGPC__/icon24_w.png) center no-repeat');
+            }
+        },function(){
+            if($(this).hasClass('active')){
+                $(this).html("<i></i>已收藏").css({
+                    background: 'none',
+                    color: '#df3853'
+                });
+            }else{
+                $(this).html("<i></i>加入收藏").css({
+                    background: '#df3853',
+                    color: '#fff'
+                });
+            }
+        });
+    });
+    //收藏一个商品
+    function collect(goods_id, obj){
+        // if($(obj).hasClass('disabled')){ return false; }
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        $.ajax({
+            type: "get",
+            url: "/Goods/collectGoods",
+            dataType: 'json',
+            data:{goods_id:goods_id},
+            success: function(data){
+                if(data.status == 200){
+                    layer.close(index);
+                    if($(obj).hasClass('active')){
+                        $(obj).removeClass('active').html("<i></i>加入收藏").css({
+                            background: '#df3853',
+                            color: '#fff'
+                        });
+                    } else {
+                        $(obj).addClass('active').html("<i></i>已收藏").css({
+                            background: 'none',
+                            color: '#df3853'
+                        });
+                    }
+                    layer.msg(data.message);
+                    // location.reload();
+                }
+            }
+        });
+    }
+    function loadpList(eq){
+        var ihtml = '';
+        $('.ipro_content .ipro_wrap').eq(eq).find('.ipro_piclist img').each(function(index, el) {
+           $(this).attr("data-index",index);
+           ihtml += '<div data-slide-id="'+ index +'" class="js-slide" zoom-in="false"><div class="js-slide-content lightbox-content"><img data-src="'+ $(this).attr("realsrc") +'"></div></div>';
+        });
+        $('.js-contents').append(ihtml);
+    }
+    function picCheck(pic_index){
+        var pic_length = $('.js-contents .js-slide').length;
+        if(pic_index == 0){
+            $('.js-prev').addClass('hidden');
+        }else{
+            $('.js-prev').removeClass('hidden');
+        }
+        if(pic_index >= pic_length - 1){
+            $('.js-next').addClass('hidden');
+        }else{
+            $('.js-next').removeClass('hidden');
+        }
+    }
+    function picLoad(pic_index){
+        if($('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded") == true){
+            return false;
+        }
+        $('.js-contents .js-slide').eq(pic_index).find('img').attr("src", $('.js-contents .js-slide').eq(pic_index).find('img').attr("data-src"));
+        $('.js-contents .js-slide').eq(pic_index).find('img').bind('load',function(){
+            var nWidth = $(this).naturalWidth();
+            var nHeight = $(this).naturalHeight();
+            var w_h = nHeight * $(window).width() / nWidth;
+            if(nHeight > $(window).height() && w_h > $(window).height()){
+                $(this).parents('.js-slide').attr("zoom-in","true");
+                $(this).parents('.js-slide-content').addClass('zoomable');
+            }
+            $('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded",true);
+        });
+    }
+    function r_top_bot(k) { // k=1(otee),k=2(作品)
+        $('.ipro_right_bef .ipd_rtop .ipd8,.ipro_right_after .ipd_rtop').mCustomScrollbar("update");
+        var scrollTop = $(window).scrollTop();
+        var DivHight = $(".ipro_popup").height();
+        var ScrollHight = $(window).height();
+        var t_top_h1 = $('.ipro_right_bef .ipd_rtop').outerHeight();
+        var t_bot_h1 = $('.ipro_right_bef .ipd_rbot_wrap').outerHeight();
+        var t_top_h2 = $('.ipro_right_after .ipd_rtop').outerHeight();
+        var t_bot_h2 = $('.ipro_right_after .ipd_rbot_wrap').outerHeight();
+        var pad = 20;
+        if(scrollTop < pad){
+            $('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_top');
+            if (t_top_h1 > ScrollHight - $('.header').outerHeight() - scrollTop - t_bot_h1) {
+                $('.ipro_right_bef .ipd_rbot').css({ "top": t_top_h1 });
+            } else {
+                $('.ipro_right_bef .ipd_rbot').css({ "position": "absolute","top": ScrollHight - $('.header').outerHeight() - t_bot_h1 - pad + scrollTop });
+            }
+            if (t_top_h2 > ScrollHight - $('.header').outerHeight() - scrollTop - t_bot_h2) {
+                $('.ipro_right_after .ipd_rbot').css({ "top": t_top_h2 });
+            } else {
+                $('.ipro_right_after .ipd_rbot').css({ "position": "absolute","top": ScrollHight - $('.header').outerHeight() - t_bot_h2 - pad });
+            }
+        }else if(scrollTop >= pad && scrollTop + ScrollHight - $('.header').height() - 2*pad < DivHight){
+            $('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_mid');
+            $('.ipro_right_bef .ipd_rtop').css({ "height": "calc(100% - " + t_bot_h1 + "px)" });
+            $('.ipro_right_after .ipd_rtop').css({ "height": "calc(100% - " + t_bot_h2 + "px)" });
+        }else{
+            $('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_bot');
+            if(DivHight - scrollTop + pad - t_bot_h1 > t_top_h1){
+                var top_dis = DivHight - (DivHight - scrollTop + pad);
+            }else{
+                var top_dis = DivHight - t_bot_h1 - t_top_h1
+            }
+            if(DivHight - scrollTop + pad - t_bot_h2 > t_top_h2){
+                var top_dis2 = DivHight - (DivHight - scrollTop + pad);
+            }else{
+                var top_dis2 = DivHight - t_bot_h2 - t_top_h2
+            }
+            $('.ipro_right_bef .ipd_rtop').css({ "top": top_dis });
+            $('.ipro_right_after .ipd_rtop').css({ "top": top_dis2 });
+        }
+        if($('.ipro_wrap').hasClass('o_bot')){
+            var bot_dis = $(window).height() - $('.footer').outerHeight() - pad;
+            $('.float_right').css({ "bottom": "calc(3% + " + (scrollTop + ScrollHight - $('.header').height() - 2*pad - DivHight) +"px)"})
+        }else{
+            $('.float_right').css({ "bottom": "3%" })
+        }
+        $('.ipro_right_bef .ipd_rtop .ipd8,.ipro_right_after .ipd_rtop').mCustomScrollbar("update");
+    }
+    (function($){
+        var
+        props = ['Width', 'Height'],
+        prop;
+
+        while (prop = props.pop()) {
+        (function (natural, prop) {
+          $.fn[natural] = (natural in new Image()) ?
+          function () {
+          return this[0][natural];
+          } :
+          function () {
+          var
+          node = this[0],
+          img,
+          value;
+
+          if (node.tagName.toLowerCase() === 'img') {
+            img = new Image();
+            img.src = node.src,
+            value = img[prop];
+          }
+          return value;
+          };
+        }('natural' + prop, prop.toLowerCase()));
+        }
+    }(jQuery));
+</script>
+

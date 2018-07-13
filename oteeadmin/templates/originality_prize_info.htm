@@ -1,0 +1,98 @@
+<!-- $Id: originality_info.htm 16780 2009-11-09 09:28:30Z sxc_shop $ -->
+{include file="pageheader_bd.htm"}
+{insert_scripts files="../js/utils.js,selectzone_bd.js,validator.js"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form enctype="multipart/form-data" action="originality_prize.php" method="post" name="theForm" class="layui-form layui-form-pane" onsubmit="return validate()">
+<div class="layui-tab layui-tab-card">
+
+    <div class="layui-tab-content">
+        <!--奖项名-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field}
+                奖项名
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="奖项名" autocomplete="off" name="describe" value="{$info.describe}" >
+            </div>
+        </div>
+        <!--奖项等级-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticeGoodsSN');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                奖项等级
+            </label>
+            <div class="layui-input-initial">
+                <input class="layui-input" type="text" placeholder="奖项等级" autocomplete="off" name="grade" value="{$info.grade}" >
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeGoodsSN">请填数字（无符号）</span>
+            </div>
+        </div>
+        <!--奖品-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                奖品
+            </label>
+            <div class="layui-input-initial">
+                <input class="layui-input" type="text" placeholder="奖品" autocomplete="off" name="prize" value="{$info.prize}" >
+            </div>
+        </div>
+        <!--提交时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.info_time}
+            </label>
+            <div class="layui-input-block">
+                <input name="time" type="text" id="time" class="layui-input" value='{$info.add_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <!--是否显示-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.is_show}</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" {if $info.is_show eq 1}checked{/if} title="开启">
+                    <input type="radio" name="is_show" value="0" {if $info.is_show eq 0}checked{/if} title="关闭">
+                </div>
+            </div>
+        <!--公示展示等级图-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('AdCodeImg');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} 等级图
+            </label>
+            <div class="layui-input-block">
+                <input type='file' name='img' size='35' style="margin-left:10px;margin-top:5px;" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="AdCodeImg">公示展示奖励等级(只支持|GIF|JPG|JEPG|JPEG|PNG|BMP|SWF|格式)</span>
+                {if $info.img neq ''}<br/><br/><a href="/{$info.img}" target="_blank"><img src="/{$info.img}" style="max-height:100px;margin-left:10px;" /></a>{/if}
+            </div>
+        </div>
+
+            <div class="layui-form-item">
+                <tr><td>{$FCKeditor}</td></tr>
+            </div>
+
+
+        </div>
+
+        <script type="text/javascript">
+            layui.use('form', function(){
+                var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+                form.render(); //更新全部
+            });
+        </script>
+
+        <div class="button-div">
+            <input type="hidden" name="id" value="{$info.reward_id}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <!-- <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" /> -->
+        </div>
+    <input type="hidden" name="act" value="{$form_action}" />
+    </div>
+</div>
+</form>
+
+{include file="pagefooter.htm"}

@@ -1,0 +1,335 @@
+{include file="pageheader.htm"}
+
+<form enctype="multipart/form-data" action="category.php" method="post" name="theForm" class="layui-form layui-form-pane">
+    <div class="layui-tab layui-tab-card">
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <!--分类名称-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        <a href="javascript:showNotice2('noticeCat_name');" title="{$lang.form_notice}">
+                            <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                        </a>
+                        {$lang.require_field} {$lang.cat_name}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" placeholder="请输入分类名" autocomplete="off" name="cat_name" value="{$cat_info.cat_name|escape:html}" style="width:60%;">
+                        <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeCat_name">{$lang.notice_cat_name}</span>
+                    </div>
+                </div>
+                <!--上级分类-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} {$lang.parent_id}</label>
+                    <div class="layui-input-block">
+                        <select name="parent_id" >
+                            <option value="0">{$lang.cat_top}</option>
+                            {$cat_select}
+                        </select>
+                    </div>
+                </div>
+                <!--数量单位-->
+                <div class="layui-form-item" >
+                    <label class="layui-form-label">
+                        {$lang.measure_unit}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" autocomplete="off" name="measure_unit" value="{$cat_info.measure_unit}">
+                    </div>
+                </div>
+                <!--排序-->
+                <div class="layui-form-item" >
+                    <label class="layui-form-label">
+                        {$lang.sort_order}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" autocomplete="off" name="sort_order" {if $cat_info.sort_order}value="{$cat_info.sort_order}"{else} value="50"{/if} >
+                    </div>
+                </div>
+                <!--是否显示-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.is_show}</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_show" value="1" {if $cat_info.is_show neq 0} checked="true"{/if} title="{$lang.yes}"/>
+                        <input type="radio" name="is_show" value="0" {if $cat_info.is_show eq 0} checked="true"{/if} title="{$lang.no}"/>
+                    </div>
+                </div>
+                <!--是否显示在导航栏-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.show_in_nav}</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="show_in_nav" value="1" {if $cat_info.show_in_nav neq 0} checked="true"{/if} title="{$lang.yes}"/>
+                        <input type="radio" name="show_in_nav" value="0" {if $cat_info.show_in_nav eq 0} checked="true"{/if} title="{$lang.no}"/>
+                    </div>
+                </div>
+                <!--设置为首页推荐-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        {$lang.show_in_index}
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="cat_recommend[]" value="1" {if $cat_recommend[1] eq 1} checked="true"{/if} title="{$lang.index_best}" />
+                        <input type="checkbox" name="cat_recommend[]" value="2" {if $cat_recommend[2] eq 1} checked="true"{/if} title="{$lang.index_new}" />
+                        <input type="checkbox" name="cat_recommend[]" value="3" {if $cat_recommend[3] eq 1} checked="true"{/if} title="{$lang.index_hot}" />
+                    </div>
+                </div>
+                <!--是否设置为首页推荐-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        {$lang.is_show_cat_pic}
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="is_show_cat_pic" value="1" {if $cat_info.is_show_cat_pic neq 0} checked="true"{/if} title="{$lang.yes}" /> 
+                        <input type="radio" name="is_show_cat_pic" value="0" {if $cat_info.is_show_cat_pic eq 0} checked="true"{/if} title="{$lang.no}" /> 
+                    </div>
+                </div>
+                <!--上传店铺此类广告图-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        {$lang.cat_pic}
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="file" name="cat_pic" size="35" style="margin-top:5px;margin-left:10px;" />
+                        {if $cat_info.cat_pic}
+                            <a href="goods.php?act=show_image&img_url={$cat_info.cat_pic}" target="_blank"><img src="images/yes.gif" border="0" /></a>
+                            <a href="category.php?act=delete_image&img_id={$cat_info.cat_id}&img_url={$cat_info.cat_pic}" target="_self">删除图片</a>
+                        {else}
+                            <img src="images/no.gif" />
+                        {/if}
+                    </div>
+                </div>
+                <!--店铺广告图链接-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        {$lang.cat_pic_url}
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" name='cat_pic_url' value='{$cat_info.cat_pic_url}' class="layui-input" />
+                    </div>
+                </div>
+                <!--首页此类商品显示数量-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">
+                        {$lang.cat_goods_limit}
+                    </label>
+                    <div class="layui-input-block">
+                        <input type="text" name='cat_goods_limit' {if $cat_info.cat_goods_limit}value='{$cat_info.cat_goods_limit}'{else} value="8"{/if} class="layui-input" />
+                    </div>
+                </div>
+                <!--筛选属性-->
+                <style type="text/css">
+                    #tbody-attr td{padding-left:10%;}
+                    #tbody-attr td a{padding-top:10px;line-height:35px;}
+                </style>
+                <script type="text/javascript">
+                  var arr = new Array();
+                  var sel_filter_attr = "{$lang.sel_filter_attr}";
+                  {foreach from=$attr_list item=val key=att_cat_id}
+                    arr[{$att_cat_id}] = new Array();
+                    {foreach from=$val item=item key=i}
+                      {foreach from=$item item=attr_val key=attr_id}
+                        arr[{$att_cat_id}][{$i}] = ["{$attr_val}", {$attr_id}];
+                      {/foreach}
+                    {/foreach}
+                  {/foreach}
+
+                  function changeCat(obj)
+                  {
+                    var key = obj.value;
+                    //var sel = window.ActiveXObject ? obj.parentNode.childNodes[4] : obj.parentNode.childNodes[5];
+                    var sel = window.ActiveXObject ? obj.parentNode.childNodes[5] : obj.parentNode.childNodes[6];//console.log(sel);
+                    sel.length = 0;
+                    sel.options[0] = new Option(sel_filter_attr, 0);
+                    if (arr[key] == undefined)
+                    {
+                        var form = layui.form();
+                        form.render(); //更新全部
+                        return;
+                    }
+                    for (var i= 0; i < arr[key].length ;i++ )
+                    {
+                      sel.options[i+1] = new Option(arr[key][i][0], arr[key][i][1]);
+                    }
+                    var form = layui.form();
+                    form.render(); //更新全部
+                  }
+
+                </script>
+                <table class="layui-table" lay-even="" lay-skin="nob">
+                    <thead>
+                    <tr>
+                        <th style="padding-left:48px;">
+                            <a href="javascript:showNotice2('noticeFilterAttr');" title="{$lang.form_notice}">
+                                <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                            </a>
+                            {$lang.filter_attr}<span style="padding-left:30px;" class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeFilterAttr">{$lang.filter_attr_notic}</span>
+                        </th>
+                    </tr> 
+                    </thead>
+                    <table id="tbody-attr" style="width:100%;">
+                        {if $attr_cat_id eq 0}
+                        <tr>
+                          <td>   
+                               <a href="javascript:;" onclick="addFilterAttr(this)">[+]</a> 
+                               <select lay-filter="sel_filter_attr"><option value="0">{$lang.sel_goods_type}</option>{$goods_type_list}</select>&nbsp;&nbsp;
+                               <select name="filter_attr[]"><option value="0">{$lang.sel_filter_attr}</option></select><br />                   
+                          </td>
+                        </tr> 
+                        {/if}           
+                        {foreach from=$filter_attr_list item=filter_attr name="filter_attr_tab"}
+                        <tr>
+                          <td>
+                             {if $smarty.foreach.filter_attr_tab.iteration eq 1}
+                               <a href="javascript:;" onclick="addFilterAttr(this)">[+]</a>
+                             {else}
+                               <a href="javascript:;" onclick="removeFilterAttr(this)">[-]&nbsp;</a>
+                             {/if}
+                             <select lay-filter="sel_filter_attr"><option value="0">{$lang.sel_goods_type}</option>{$filter_attr.goods_type_list}</select>&nbsp;&nbsp;
+                             <select name="filter_attr[]"><option value="0">{$lang.sel_filter_attr}</option>{html_options options=$filter_attr.option selected=$filter_attr.filter_attr}</select><br />
+                          </td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </table> 
+                <script type="text/javascript">
+                layui.use('form', function(){
+                        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+                        form.render(); //更新全部
+
+                        form.on('select(sel_filter_attr)', function(data){
+                            changeCat(data.elem);
+                        });  
+                    });
+                </script>
+                <!--价格区间个数-->
+                <div class="layui-form-item" >
+                    <label class="layui-form-label">
+                        <a href="javascript:showNotice2('noticeGrade');" title="{$lang.form_notice}">
+                            <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                        </a>
+                        {$lang.grade}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="grade" value="{$cat_info.grade|default:0}">
+                        <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeGrade">{$lang.notice_grade}</span>
+                    </div>
+                </div>
+                <!--分类的样式表文件-->
+                <div class="layui-form-item" style="display:none;">
+                    <label class="layui-form-label">
+                        <a href="javascript:showNotice2('noticeGoodsSN');" title="{$lang.form_notice}">
+                            <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                        </a>
+                        {$lang.cat_style}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="style" value="{$cat_info.style|escape}">
+                        <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeGoodsSN">{$lang.notice_style}</span>
+                    </div>
+                </div>
+                <!--关键字-->
+                <div class="layui-form-item" >
+                    <label class="layui-form-label">
+                        {$lang.keywords}
+                    </label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="keywords" value="{$cat_info.keywords}">
+                    </div>
+                </div>
+                <!--分类描述-->
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label" style="float:left;">{$lang.cat_desc}</label>
+                    <div class="layui-input-initial">
+                        <textarea name="cat_desc" placeholder="请输入内容" class="layui-textarea" style="float:left;width:45%;">{$cat_info.cat_desc}</textarea>
+                    </div>
+                </div>
+                <div class="button-div">
+                    <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+                    <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+                </div>
+                <input type="hidden" name="act" value="{$form_act}" />
+                <input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+                <input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+
+            </div>
+        </div>
+    </div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['cat_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  validator.required("cat_name",      catname_empty);
+  if (parseInt(document.forms['theForm'].elements['grade'].value) >10 || parseInt(document.forms['theForm'].elements['grade'].value) < 0)
+  {
+    validator.addErrorMsg('{$lang.grade_error}');
+  }
+  return validator.passed();
+}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新增一个筛选属性
+ */
+function addFilterAttr(obj)
+{
+  var src = obj.parentNode.parentNode;
+  var tbl = document.getElementById('tbody-attr');
+
+  var validator  = new Validator('theForm');
+  var filterAttr = document.getElementsByName("filter_attr[]");
+
+  if (filterAttr[filterAttr.length-1].selectedIndex == 0)
+  {
+    validator.addErrorMsg(filter_attr_not_selected);
+  }
+
+  for (i = 0; i < filterAttr.length; i++)
+  {
+    for (j = i + 1; j <filterAttr.length; j++)
+    {
+      if (filterAttr.item(i).value == filterAttr.item(j).value)
+      {
+        validator.addErrorMsg(filter_attr_not_repeated);
+      }
+    }
+  }
+
+  if (!validator.passed())
+  {
+    return false;
+  }
+
+  var row  = tbl.insertRow(tbl.rows.length);
+  var cell = row.insertCell(-1);
+  cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addFilterAttr)(.*)(\[)(\+)/i, "$1removeFilterAttr$3$4-");
+  filterAttr[filterAttr.length-1].selectedIndex = 0;
+  var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+  form.render(); //更新全部
+}
+
+/**
+ * 删除一个筛选属性
+ */
+function removeFilterAttr(obj)
+{
+  var row = rowindex(obj.parentNode.parentNode);
+  var tbl = document.getElementById('tbody-attr');
+
+  tbl.deleteRow(row);
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

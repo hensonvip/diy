@@ -1,0 +1,43 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+{include file="supplier/supplier_header" /}
+
+<div class="content">
+    <div class="hm1"><a href=""><img src="{$webUrl}/{$supplier_data.logopath}" style="width:100%"></a></div>
+    <div class="lve bgc">
+        <ul class="clearfix">
+            {include file="supplier/supplier_goods_ajax" /}
+        </ul>
+    </div>
+    <div class="hm2 mt3"><a href=""><img src="__IMGWAP__/img4.png"></a></div>
+    <div class="bgc dp5 clearfix">
+        <a href="javascript:;" onclick="guanzhu({$supplier_id});">关注店铺</a>
+        {if $supplier_data.qq}
+            <a title="点击这里给我发消息" alt="点击这里给我发消息" href="http://wpa.qq.com/msgrd?v=3&uin={$supplier_data.qq}&site=qq&menu=yes" target="_blank">
+        {else}
+        <a href="javascript:;" onclick="noChat()">
+        {/if}
+            联系客服
+        </a>
+    </div>
+</div>  
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script type="text/javascript">
+    function noChat(){
+        layer.open({
+            content: '该商家暂无客服！'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+</script>

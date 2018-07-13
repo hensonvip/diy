@@ -1,0 +1,54 @@
+{include file="public/header" /}
+<style type="text/css">
+    .getCode{background: none;color: #c01414;font-size: .36rem;text-align: right;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">找回密码</h1>
+</header>   
+<div class="content">
+    <div class="sign">
+        <form action="{:url('User/forget_two')}" method="post" onsubmit="return checkForm()">
+            <input type="text" name="mobile_phone" id="mobile_phone" placeholder="手机号" onblur="checkMobile($(this).val())">
+            <div class="yz_box clearfix">
+                <input class="fl" type="text" placeholder="验证码" name="mobile_code" id="mobile_code">
+                <input class="fr getCode" type="button" value="获取验证码" onclick="getCode(2,$(this));">
+            </div>
+            <input type="submit" class="sub_btn" value="确定">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script type="text/javascript">
+    function checkForm(){
+        var mobile = $('#mobile_phone').val();
+        if(!checkMobile(mobile)){
+            return false;
+        }
+
+        var mobile_code = $('#mobile_code').val();
+        if(mobile_code == ''){
+            layer.open({
+                content: '请输入手机验证码！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        return true;
+
+    }
+</script>

@@ -1,0 +1,52 @@
+   /*购物车、商品属性选择弹出框样式start*/
+::-webkit-scrollbar {width: 0px;}
+.f_block{ width:100%;}
+.p-link {display: block;height: 100%;}
+.f_block .f_content { background:#F1F1F5; overflow-y:scroll}
+#choose{position:fixed; bottom:0; left:0; height:0px; z-index:99999999; background:#FFF; overflow:hidden;}
+
+.f_mask {background-color: #000;opacity: 0.4;height: 100%;width: 100%; position: absolute;top: 0;left: 0;z-index: 111;display: none;}
+.f_title_attr { height:130px; margin-top:30px; color:#58595b; background:#fff}
+.f_title_attr img{width:125px;  border:#e5e5e5 1px solid; border-radius:4px; padding:5px; background:#FFF; margin-top:-15px; margin-left:15px; float:left;}
+.f_content_attr {padding:0 15px;background:#ffffff; height:100%; overflow-y:scroll;}
+#choose_attr{position:fixed; bottom:0; left:0; height:0px; z-index:99999999; }
+.f_foot { width: 100%;  background:#E71F19;width: 100%; height:75px; text-align:center;}
+.c_close_attr {background: url(../images/c_cancel.png) center no-repeat; background-size: 16px 16px;
+ width: 26px;height: 50px; right:5px;margin: 0; margin-right:10px; position:absolute}
+.add_gift_attr{background: #E71F19;text-align: center;height:45px;line-height:45px;font-size: 16px;
+  color: #fff;width:100%;font-family: 微软雅黑; border:none; border-radius:0;}
+  
+.add_gift{border-radius:3px;background: #E71F19;text-align: center;height: 40px;line-height: 40px;font-size: 16px;
+  color: #fff;width:100%;font-family: 微软雅黑;border:none; margin:0 auto;}
+ 
+.f_title_arr_r{margin-left:5px; margin-top:15px; float:left; overflow:hidden; width:50%;} 
+.f_title_arr_r span{ display:block; width:100%; overflow:hidden; color:#666; font-size:14px; line-height:150%; margin-bottom:5px;}
+.f_title_arr_r i{ font-style:normal} 
+
+/*========弹出框========*/
+.navContent{ width:100%; overflow:hidden;}
+.navContent li{overflow:hidden; width:100%; border-bottom:1px solid #eeeeee}
+.navContent li .title{ width:100%;font-size:16px; line-height:30px; color:#666; margin-top:5px;}
+.navContent li .item{ overflow:hidden;padding-bottom:5px;}
+.navContent li .item a{ padding-left:10px; padding-right:10px; border:1px solid #CCC; line-height:30px; display:inline-block;   -moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px; margin-right:5px; margin-bottom:10px;}
+.navContent li .item a.hover{ background:#dd2726; color:#FFF; border:1px solid #dd2726; -moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}
+
+.navContent li .purchase{ font-size:14px; line-height:25px; color:#666;}
+.navContent li .purchase_v{font-size:16px; line-height:25px; color:#dd2724; font-weight:bold}
+.navContent li h2{ font-size:18px; line-height:30px; color:#333; font-weight:normal}
+.navContent li p{ width:95%; overflow:hidden; height:25px; line-height:25px; margin:auto}
+.navContent li .key{ display:block; float:left; width:30%; font-size:14px; color:#666; text-align:right;}
+.navContent li .p-price-v{display:block;width:70%; float:left; font-size:16px;color:#dd2724;}
+
+
+
+.navContent li .title1{ width:100%;font-size:16px; height:20px; line-height:20px; color:#666; padding-top:10px}
+.navContent li .item1{ width:100%;height:50px; overflow:hidden; padding-bottom:5px;}
+.navContent li .item1 a{ padding-left:10px; padding-right:10px; border:1px solid #CCC; line-height:30px; display:inline-block;  -moz-border-radius:4px;-webkit-border-radius:4px;border-radius:4px; margin-right:5px; margin-bottom:10px;}
+.navContent li .item1 a.hover{ background:#dd2726; color:#FFF; border:0;    -moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}
+.navContent li .item1 .ui-number{ border:1px solid #ddd9da; overflow:hidden; height:30px; display:block; margin-top:10px; float:left;}
+.navContent li .item1 em{ display:block; float:left; height:30px; margin-top:10px; font-size:14px; line-height:30px; color:#999; margin-left:10px;}
+
+.navContent li .item1 .ui-number .decrease{ display:inline-block; background:none; font-size:24px; line-height:30px; border:0; float:left; height:30px; color:#F8849C; border-right:1px solid #ddd9da;text-indent:-9999px;background: url(../images/shop-cart.png) no-repeat 6px -25px; background-size: 60px;padding: 0 0.4rem 0 0.3rem;}
+.navContent li .item1 .ui-number .num{display:inline-block;border:0;width:40px; height:30px;float:left; text-align:center; font-size:12px; line-height:30px; color:#666;font-size:20px;text-align:center}
+.navContent li .item1 .ui-number .increase{display:inline-block;background:none;border:0;border-left:1px solid #ddd9da;float:left; height:30px;font-size:24px; line-height:30px;color:#F8849C;background: url(../images/shop-cart.png) no-repeat -23px -25px; background-size: 60px;text-indent:-9999px;padding: 0 0.4rem 0 0.3rem;}

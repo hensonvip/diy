@@ -1,0 +1,146 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,selectzone.js,validator.js"}
+
+<form method="post" action="exchange_goods.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--关键字-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.keywords}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="keywords" >
+                <input type="button" value="{$lang.button_search}" class="layui-btn" onclick="searchGoods()" {if $form_action eq 'update'} disabled="true" {/if}>
+            </div>
+        </div>
+        <!--商品-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticegoodsid');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.goodsid}
+            </label>
+            <div class="layui-input-block">
+                <select name="goods_id">
+                    {$goods.option}
+                </select>
+                <span class="notice-span" {if $help_open}style="display:initial;line-height:40px;" {else} style="display:none" {/if} id="noticegoodsid">{$lang.notice_goodsid}</span>
+            </div>
+        </div>
+        <!--积分值-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticepackagePrice');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.integral}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="exchange_integral" value="{$goods.exchange_integral}" class="layui-input"/>
+                <span class="notice-span" {if $help_open}style="display:initial;line-height:40px;" {else} style="display:none" {/if} id="noticepackagePrice">{$lang.notice_integral}</span>
+            </div>
+        </div>
+        <!--是否可兑换-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.is_exchange}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_exchange" value="1" {if $goods.is_exchange eq 1}checked{/if} title="{$lang.isexchange}"> 
+                <input type="radio" name="is_exchange" value="0" {if $goods.is_exchange eq 0}checked{/if} title="{$lang.isnotexchange}"> 
+            </div>
+        </div>
+        <!--是否热销-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.is_hot}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_hot" value="1" {if $goods.is_hot eq 1}checked{/if} title="{$lang.ishot}"> 
+                <input type="radio" name="is_hot" value="0" {if $goods.is_hot eq 0}checked{/if} title="{$lang.isnothot}"> 
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+
+<script language="JavaScript">
+
+{literal}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+function validate()
+{
+  var validator = new Validator('theForm');
+  validator.isNullOption("goods_id", no_goods_id);
+  validator.isNumber("exchange_integral", invalid_exchange_integral, true);
+
+
+  return validator.passed();
+}
+
+function searchGoods()
+{
+    var filter = new Object;
+    filter.keyword = document.forms['theForm'].elements['keywords'].value;
+
+    Ajax.call('exchange_goods.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON')
+}
+
+function searchGoodsResponse(result)
+{
+  var frm = document.forms['theForm'];
+  var sel = frm.elements['goods_id'];
+
+  if (result.error == 0)
+  {
+    /* 清除 options */
+    sel.length = 0;
+
+    /* 创建 options */
+    var goods = result.content;
+    if (goods)
+    {
+        for (i = 0; i < goods.length; i++)
+        {
+            var opt = document.createElement("OPTION");
+            opt.value = goods[i].goods_id;
+            opt.text  = goods[i].goods_name;
+            sel.options.add(opt);
+        }
+    }
+    else
+    {
+        var opt = document.createElement("OPTION");
+        opt.value = 0;
+        opt.text  = search_is_null;
+        sel.options.add(opt);
+    }
+  }
+
+  if (result.message.length > 0)
+  {
+    alert(result.message);
+  }
+
+    var form = layui.form();
+    form.render(); //更新全部
+}
+
+{/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,73 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <a href="{:url('User/index')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">我的优惠券</h1>
+</header>	
+<div class="content">
+    <div class="con14">
+        <ul class="con14_list clearfix bgc">
+            <li>
+                <a  href="{:url('User/bonus')}">未使用</a>
+            </li>
+             <li class="on">
+                <a  href="{:url('User/bonusNoUsed')}">已过期</a>
+            </li>
+        </ul>
+        <div class="con14_wrap">
+            <div class="con14_con" style="display: block;">
+                <ul class="use_list">
+                    {foreach $data.list as $key =>$vo}
+                    <li class="clearfix selected">
+                        <div class="c7_l fl">
+                            ￥{$vo.type_money}
+                        </div>
+                        <div class="c7_r fl">
+                            <h2 class="fl">满{$vo.min_goods_amount}可用</h2>
+                            <em>{$vo.use_startdate}—{$vo.use_enddate}</em>
+                        </div>
+                        <a class="fr" href="{:url('Goods/index',array('cat_id'=>0))}">已<br>经<br>无<br>效<br></a>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="con14_con">已过期</div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+	//单独页面上的js
+
+	$(".red-radio").change(function(){
+        $(this).parents("li").addClass("selected").siblings().removeClass("selected");
+    })
+
+
+    /*tab('.con14_list li','.con14_wrap>.con14_con');
+        function tab(a,b){
+        $(a).click(
+            function(){
+                var i = $(this).index();
+                if($(this).hasClass('on')){
+                }else{
+                    $(this).addClass('on').siblings().removeClass('on');
+                    $(b).hide();
+                    $(b).eq(i).fadeIn();
+                }
+                
+            }
+        )
+    }*/
+
+
+</script>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.fullPage.css" type="text/css" rel="stylesheet" /><!--仅在当前页面使用-->
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+	{if condition="$user_id"}
+        {include file="public/user_right" /}
+    {else/}
+        {include file="public/right" /}
+    {/if}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--Main Start-->
+<div id="dowebok">
+    <div class="section section1 fp-section" style="background-color: #f3f1f3; background-image: url(__IMGPC__/abg1.jpg);">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box1">
+                <div class="act_left">
+                	<div class="act_verti">
+	                	<div class="act_tit">{$about_us.title}<span><img src="__IMGPC__/atxt1.png"></span></div>
+	                	<div class="act_text">
+							{$about_us.content}
+	                	</div>
+	                </div>
+                </div>
+                <div class="act_right" style="background-image: url({$webUrl}{$about_us.file_url});"></div>
+            </div>
+        </div>
+    </div>
+    <div class="section section2 fp-section i_loadbg" style="background-color: #f2f1f1;" i_bgsrc="__IMGPC__/abg2.jpg">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box2">
+            	<div class="act_left" style="background-image: url({$webUrl}{$user_agreement.file_url});"></div>
+                <div class="act_right">
+                	<div class="act_verti">
+	                	<div class="act_tit">{$user_agreement.title}<span><img src="__IMGPC__/atxt2.png"></span></div>
+	                	<div class="act_text">
+	                		<div class="act_txt">
+								{$user_agreement.content}
+							</div>
+							<div class="act_more"><font>read more</font> <i></i></div>
+	                	</div>
+	                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section section3 fp-section i_loadbg" style="background-color: #f3f2f1;" i_bgsrc="__IMGPC__/abg3.jpg">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box3">
+            	<div class="act_left" style="background-image: url({$webUrl}{$services.category_info.file_url});"></div>
+                <div class="act_right">
+                	<div class="act_verti">
+	                	<div class="act_tit">{$services.category_info.cat_name}<span><img src="__IMGPC__/atxt3.png"></span></div>
+	                	<div class="act_over">
+		                	<ul class="act_list clearfix">
+                                {foreach $services.list as $key =>$vo}
+                                <li>
+                                    <div class="icon"><img src="{$webUrl}/{$vo.file_url}"></div>
+                                    <h2>{$vo.title}</h2>
+                                    <div class="line"></div>
+                                    <div class="text">
+                                        <p>{$vo.content}</p>
+                                    </div>
+                                </li>
+                                {/foreach}
+		                	</ul>
+		                </div>
+	                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section section4 fp-section i_loadbg" style="background-color: #f3f2f1;" i_bgsrc="__IMGPC__/abg4.jpg">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box4">
+            	<div class="act_left" style="background-image: url({$webUrl}{$question_cat_tree.category_info.file_url});"></div>
+                <div class="act_right">
+                    <div class="act_verti">
+                        <div class="act_tit">常见问题<span><img src="__IMGPC__/atxt4.png"></span></div>
+                        <div class="act_over">
+                            <ul class="act_list">
+                                {foreach $question_cat_tree.cat_tree as $key =>$vo}
+                                <li data-id="{$vo.id}">
+                                    <div class="icon" style="background-image: url({$webUrl}/{$vo.file_url});"></div>
+                                    <p>{$vo.name}</p>
+                                </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="act_answer">
+                        {include file="help/question_list_ajax" /}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section section5 fp-section i_loadbg" style="background-color: #f3f1f3;" i_bgsrc="__IMGPC__/abg5.jpg">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box5">
+                <div class="act_left">
+                	<div class="act_over">
+                		<div class="act_verti">
+		                	<div class="act_tit">{$contact_us.title}<span><img src="__IMGPC__/atxt5.png"></span></div>
+		                	<div class="act_text">
+                                {if $contact_us.content}
+								    {$contact_us.content}
+                                {else}
+                                    <p><img src="__IMGPC__/aicon14.png">{$sys_cfg.shop_address}</p>
+                                    <p><img src="__IMGPC__/aicon15.png">{$sys_cfg.service_phone}</p>
+                                {/if}
+		                	</div>
+		                </div>
+	                </div>
+	                <div class="act_btn">
+                		<a href="" class="kefu">在线客服</a>
+                		<a href="http://wpa.qq.com/msgrd?v=1&uin={$sys_cfg.qq}&site=qq&menu=yes" class="qq">在线QQ</a>
+                	</div>
+                </div>
+                <div class="act_right" style="background-image: url({$webUrl}/{$contact_us.file_url});"></div>
+            </div>
+        </div>
+    </div>
+    <div class="section section6 fp-section i_loadbg" style="background-color: #f2f1f1;" i_bgsrc="__IMGPC__/abg6.jpg">
+        <div class="fp-tableCell">
+            <div class="act_wrap act_box6">
+            	<div class="act_left" style="background-image: url({$webUrl}/{$research.file_url});"></div>
+                <div class="act_right">
+                	<div class="act_verti">
+	                	<div class="act_tit">{$research.title}<span><img src="__IMGPC__/atxt6.png"></span></div>
+	                	<div class="act_6dl">
+	                		<dl>
+	                			<dd>
+	                				<div class="title">意见反馈</div>
+	                				<form action="{:url('Help/do_research')}" class="act_form" method="post">
+	                					<textarea id="textarea" name="content" maxlength="500" placeholder="限制500字以内"></textarea>
+	                					<div class="tr">
+	                						<input type="submit" value="提 交" class="act_tsub nb_t1">
+	                					</div>
+									</form>
+	                			</dd>
+	                			<dd>
+	                				<a href="" class="title">问卷调查</a>
+	                			</dd>
+	                		</dl>
+	                	</div>
+	                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="float_prev"></div>
+<div class="float_next"></div>
+<!--Main End-->
+</body>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script type="text/javascript" src="__JSPC__/jquery.fullPage.js"></script><!--只在本页面引用-->
+<script>
+$(function(){
+	$('body').css({"padding-top":"0"});
+	$('#dowebok').fullpage({
+        verticalCentered: !1,
+        navigation: !0,
+        navigationPosition: "left",
+        autoScrolling: false,
+        loopTop: true,
+        loopBottom: true,
+        navigationTooltips:['关于OTEE','用户协议','企业服务','常见问题','联系我们'],
+        onLeave: function(index, nextIndex, direction){
+        },
+        afterLoad: function(anchorLink, index){
+        	LoadPage(index);
+            LoadPage(index+1);
+        }
+    });
+
+    $('.float_prev').click(function() {
+    	$.fn.fullpage.moveSectionUp()
+    });
+
+    $('.float_next').click(function() {
+    	$.fn.fullpage.moveSectionDown()
+    });
+
+    $.fn.fullpage.setAllowScrolling(false);
+
+    $('.act_wrap').height(($(window).height() - 70) * .7934);
+
+    autoScrolling();
+    checkHeight();
+    $(window).resize(function(){
+        autoScrolling();
+        checkHeight();
+        $('.act_wrap').height(($(window).height() - 70) * .7934);
+    });
+
+    $('.act_scroll').click(function() {
+        $.fn.fullpage.moveSectionDown()
+    });
+
+    $('.act_box1 .act_left,.act_box2 .act_right,.act_box3 .act_over,.act_box4 .act_over,.act_box4 .act_ancon,.act_box5 .act_over').mCustomScrollbar({
+        axis: "y",
+        scrollInertia: 100,
+        scrollButtons: {
+            enable: true,
+            scrollSpeed: 20
+        },
+        theme: "3d"
+    });
+
+    $('.act_box2 .act_more').click(function() {
+    	if($(this).hasClass('on')){
+    		$('.act_box2').removeClass('open');
+    		$(this).removeClass('on');
+    		$(this).find("font").text("read more");
+    		$('.act_box2 .act_right').mCustomScrollbar("update");
+    	}else{
+    		$('.act_box2').addClass('open');
+    		$(this).addClass('on');
+    		$(this).find("font").text("read less");
+    		$('.act_box2 .act_right').mCustomScrollbar("update");
+    	}
+    });
+
+    //展开问题答案
+    $(document).on('click', '.act_box4 .act_ancon .act_antop', function(event) {
+        if($(this).parents('dd').hasClass('on')){
+            $(this).parents('dd').removeClass('on');
+            $(this).next('.act_anbot').slideUp(300,function(){
+                $('.act_box4 .act_ancon').mCustomScrollbar("update");
+            });
+        }else{
+            $(this).parents('dd').addClass('on');
+            $(this).next('.act_anbot').slideDown(300,function(){
+                $('.act_box4 .act_ancon').mCustomScrollbar("update");
+            });
+        }
+    });
+
+    //展示问题列表
+    $('.act_list li').click(function() {
+        $('.act_answer').html('<p>数据加载中...</p>');
+        $('.act_box4 .act_ancon').mCustomScrollbar("update");
+        $('.act_answer').addClass('show');
+        $.ajax({
+            url: '/help/question_list',
+            type: 'GET',
+            dataType: 'html',
+            data: {cat_id: $(this).attr('data-id')},
+            success: function(res) {
+                $('.act_answer').html(res);
+            }
+        });
+    });
+
+    //隐藏问题列表
+    $(document).on('click', '.act_back', function(event) {
+        $('.act_box4 .act_ancon').mCustomScrollbar("update");
+        $('.act_answer').removeClass('show');
+        $('.act_box4 .act_ancon dd').removeClass('on');
+        $('.act_box4 .act_ancon .act_antop').next('.act_anbot').slideUp(0,function(){
+            $('.act_box4 .act_ancon').mCustomScrollbar("update");
+        });
+    });
+
+    limitImport('#textarea',500);
+});
+function checkLoad(){
+    var myVid=document.getElementById("act_video");
+    myVid.canplaythrough = $('.sys_bg').removeClass('loading').addClass('loaded');
+    t = setTimeout("vidPlay()",600);
+}
+function vidPlay(){
+    var myVid=document.getElementById("act_video");
+    $('#act_video').show();
+    myVid.play();
+}
+function vidStop(){
+    var myVid=document.getElementById("act_video");
+    $('#act_video').hide();
+    myVid.pause();
+    myVid.load();
+}
+function LoadPage(nextIndex){
+    if($('.section' + nextIndex).hasClass('loadFinished')){ return false; }
+
+    $('.section' + nextIndex).find('.i_loadimg').each(function(index, el) {
+        var realsrc = $(this).attr("i_imgsrc");
+        $(this).attr("src",realsrc);
+    });
+    $('.section' + nextIndex).find('.i_loadbg').each(function(index, el) {
+        var realbg = $(this).attr("i_bgsrc");
+        $(this).css("background-image","url(" + realbg + ")");
+    });
+    if($('.section' + nextIndex).hasClass('i_loadbg')){
+        var sec_bg = $('.section' + nextIndex + '.i_loadbg').attr("i_bgsrc");
+        $('.section' + nextIndex).css("background-image","url(" + sec_bg + ")");
+    }
+
+    $('.section' + nextIndex).addClass('loadFinished');
+}
+function autoScrolling(){
+    var $ww = $(window).width();
+    if($ww < 1280){
+        $.fn.fullpage.setAutoScrolling(false);
+    } else {
+        $.fn.fullpage.setAutoScrolling(true);
+    }
+}
+function limitImport(str,num){
+	$(document).on('input propertychange',str,function(){
+	 var self = $(this);
+	 var content = self.val();
+	 if (content.length > num){
+	  self.val(content.substring(0,num));
+	 }
+	 self.siblings('span').text(self.val().length+'/'+num);
+	});
+}
+function checkHeight(){
+	if($(window).height() < 800){
+		$('.act_wrap').addClass('small');
+	}else{
+		$('.act_wrap').removeClass('small');
+	}
+}
+</script>
+</html>

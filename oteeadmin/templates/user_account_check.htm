@@ -1,0 +1,98 @@
+{include file="pageheader.htm"}
+<div class="main-div">
+<form method="post" action="user_account.php" name="theForm" onsubmit="return validate();" class="layui-form">
+<table border="0" width="100%">
+  {if $bank_info neq ''}
+    <tr>
+      <td colspan="2" style="padding-left:10px;"><strong>银行卡信息：</strong><hr /></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="padding-left:10px;">
+        <strong>真实姓名：</strong>{$bank_info.real_name}<br/><br/>
+        <strong>银行卡号码：</strong>{$bank_info.card_number}<br/><br/>
+        <strong>开户支行名称：</strong>{$bank_info.card_name}<br/><br/>
+        <strong>银行卡信息：</strong>{$bank_info.card_info}<br/><br/><hr />
+      </td>
+    </tr>
+  {/if}
+  <tr>
+    <td colspan="2" style="padding-left:10px;"><strong>{$lang.surplus_info}：</strong><hr /></td>
+  </tr>
+  <tr>
+    <td colspan="2" style="padding-left:10px;">
+      <strong>{$lang.user_id}：</strong>{$user_name}<br/><br/>
+      <strong>{$lang.surplus_amount}：</strong>{$surplus.amount} <br/><br/>
+      <strong>{$lang.add_date}：</strong>{$surplus.add_time}<br/><br/>
+      <strong>{$lang.process_type}：</strong>{$process_type}<br/><br/>
+      {if $surplus.pay_method}
+      <strong>{$lang.pay_method}：</strong>{$surplus.payment}
+      {/if}
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" style="padding-left:10px;"><strong>{$lang.surplus_desc}：</strong>{$surplus.user_note}<hr /></td>
+  </tr>
+  <tr>
+    <th width="15%" valign="middle" align="right">{$lang.surplus_notic}：</th>
+    <td width="85%">
+      <textarea name="admin_note" cols="55" rows="5">{$surplus.admin_note}</textarea><span class="require-field">*</span>
+    </td>
+  </tr>
+  <tr>
+    <th width="15%" valign="middle" align="right">扣除手续费：</th>
+    <td width="85%">
+      <input type="text" name="poundage" value="{$surplus.poundage}">元
+    </td>
+  </tr>
+  <tr>
+    <th width="15%" valign="middle" align="right">{$lang.status}：</th>
+    <td>
+      <input type="radio" name="is_paid" value="0" checked="true" title="{$lang.unconfirm}" />
+      <input type="radio" name="is_paid" value="1" title="{$lang.confirm}" />
+      <font color="red">设置“已完成”状态，系统会自动扣除用户申请提现的余额！</font>
+    </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>
+      <input type="hidden" name="act" value="action" />
+      <input type="hidden" name="id" value="{$id}" />
+      <input name="submit" type="submit" value="{$lang.button_submit}" class="layui-btn" />
+      <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['admin_note'].focus();
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("admin_note",  deposit_notic_empty);
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部 
+    });
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,32 @@
+<div class="rep_bg">
+    <div class="rep_wrap">
+        <i class="del"></i>
+        <div class="mem_rtit">我要举报</div>
+        <form class="rep_form tc">
+            <div class="item" >
+                <span>举报对象:</span>
+                <div class="r_box">
+                    <font class="rep_name"></font>
+                </div>
+            </div>
+            <div class="item">
+                <span>原 因:</span>
+                <div class="r_box">
+                    <select name="reason" id="reason" class="select">
+                        {foreach name="$reason_list" item="item"}
+                        <option value="{$item.content}">{$item.content}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="item w100">
+                <input type="hidden" name="msg_id" id="msg_id" value="">
+                <input type="button" value="提 交" class="rep_sub nb_t2">
+                <input type="hidden"  class="com_id" value="">
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var report_ajax = "{:url('Originality/report_ajax')}";
+</script>

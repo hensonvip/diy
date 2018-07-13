@@ -1,0 +1,37 @@
+{if $data.list}
+    {foreach $data.list as $key =>$vo}
+    <li {if $vo.is_default}class="on"{/if} style="background:{$vo.bank_color}" onclick="bank_card_default({$vo.id});">
+       <div class="bank_t clearfix">
+           <div class="fl"><img src="{$webUrl}/{$vo.bank_icon}"></div>
+           <div class="fl">
+               <h2>{$vo.bank_name}</h2>
+               <p>{$vo.card_type}</p>
+           </div>
+           <div class="fr">
+               {if $vo.is_default}<span>默认</span>{/if}
+               <em class="icon"></em>
+           </div>
+       </div>
+       <div class="bank_b clearfix">
+          <span>****</span> <span>****</span> <span>****</span>
+          <h1 class="fr">{$vo.card_number_short}</h1>
+       </div> 
+    </li>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    <p align="center" style="margin-top:0.3rem;"><a href="{:url('User/bank_card_add')}" style="color:red;">快去添加一个吧</a></p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

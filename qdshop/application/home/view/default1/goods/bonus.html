@@ -1,0 +1,86 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">我的优惠券</h1>
+</header>	
+<div class="content">
+    <div class="con7">
+        <ul class="con7_list clearfix bgc">
+            <li class="on">
+                <a href="javascript:;">可用优惠券</a>
+            </li>
+            <li>
+                <a href="javascript:;">不可用优惠券</a>
+            </li>
+        </ul>
+        <div class="con7_wrap">
+            <div class="con7_con" style="display: block;">
+                <ul class="use_list">
+                    {foreach $data1 as $key =>$vo}
+                    <a href="{:url('Goods/setCookie')}?bonus{$supplier_id}={$vo.bonus_id}">
+                    <li class="clearfix selected"><label >
+                        <div class="c7_l fl">
+                            ￥{$vo.type_money}
+                        </div>
+                        <div class="c7_r fl">
+                            <div class="clearfix">
+                                <h2 class="fl">满{$vo.min_goods_amount}可用</h2>
+                             </div>
+                            <em>{$vo.use_startdate}—{$vo.use_enddate}</em>
+                        </div>
+                        </label>
+                    </li>
+                    </a>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="con7_con">
+                <ul class="use_list">
+                    {foreach $data2 as $key =>$vo}
+                    <li class="clearfix selected"><label >
+                        <div class="c7_l fl">
+                            ￥{$vo.type_money}
+                        </div>
+                        <div class="c7_r fl">
+                            <div class="clearfix">
+                                <h2 class="fl">满{$vo.min_goods_amount}可用</h2>
+                             </div>
+                            <em>{$vo.use_startdate}—{$vo.use_enddate}</em>
+                        </div>
+                        </label>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+	//单独页面上的js
+    tab('.con7_list li','.con7_wrap>.con7_con');
+        function tab(a,b){
+        $(a).click(
+            function(){
+                var i = $(this).index();
+                if($(this).hasClass('on')){
+                }else{
+                    $(this).addClass('on').siblings().removeClass('on');
+                    $(b).hide();
+                    $(b).eq(i).fadeIn();
+                }
+                
+            }
+        )
+    }
+
+</script>

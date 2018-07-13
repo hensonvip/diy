@@ -1,0 +1,197 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<!--<div class="form-div" style="height: 48px;">
+  <form action="javascript:search()" name="searchForm" class="layui-form">
+    &lt;!&ndash;<img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" style="float:left;margin-top:10px;" />&ndash;&gt;
+    <select name="state_cate" >
+      <option value="0">全部分类</option>
+      <option value="1">待审核</option>
+      <option value="2">未通过</option>
+      <option value="3">已通过</option>
+    </select>
+    <input type="submit" value="搜索" class="layui-btn" style="margin-top: 5px;" />
+  </form>
+</div>-->
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+<!--搜索区域-->
+<div class="form-div">
+    <form action="javascript:search_invoice()" name="search_form" class="layui-form">
+        <table>
+            <tr>
+                <td>选择设计作品发布时间范围：</td>
+                <td>
+                    <input name="start_time" id="start_time" type="text" placeholder="点击开始时间" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
+                </td>
+                <td>
+                    <input name="end_time" id="end_time" type="text" placeholder="点击结束时间" readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
+                </td>
+                <td>
+                    <select name='zuopin_tags'  style='width:123px;'>
+                        <option value='' selected='selected'>请选择设计作品标签</option>
+                        <option value='provided'>{$lang.provided}</option>
+                        <option value='unprovided'>{$lang.unprovided}</option>
+                    </select>
+                </td>
+                <td>
+                    <select name='zuopin_cate'  style='width:123px;'>
+                        <option value='' selected='selected'>请选择设计作品类别</option>
+                        <option value='provided'>{$lang.provided}</option>
+                        <option value='unprovided'>{$lang.unprovided}</option>
+                    </select>
+                </td>
+                <td>
+                    <select name='inv_status'  style='width:123px;'>
+                <td>设计师会员名称：</td>
+                <td><input name="user_name" id="user_name" type="text" size="16" maxlength="60"></td>
+                <td>手机号：</td>
+                <td><input name="user_name" id="phone_number" placeholder="请输入手机号码" type="text" size="16" maxlength="60"></td>
+            </tr>
+            <tr>
+                <td>设计作品关键词：</td>
+                <td><input name='order_sn' type='text' size='20'/></td>
+                <td><input class="layui-btn" type="submit" value=" 搜索 "></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<form method="POST" action="find_list.php" name="listForm" class="layui-form">
+    <!-- start type list -->
+    <div class="list-div" id="listDiv">
+        {/if}
+        <table cellspacing='1' cellpadding='3' id='list-table' class="layui-table">
+            <tr>
+                <th>
+                   <input type="checkbox" lay-filter="sel_all_checkboxes">
+                    <a href="javascript:listTable.sort('type_id'); ">编号</a>{$find_id}
+                </th>
+                <th><a href="javascript:listTable.sort('title'); ">标题</a>{$title}</th>
+                <th><a href="javascript:listTable.sort('author'); ">作者</a>{$author}</th>
+                <th><a href="javascript:listTable.sort('short'); ">作品简介</a>{$short}</th>
+                <th><a href="javascript:listTable.sort('add_time'); ">提交时间</a>{$add_time}</th>
+                <th><a href="javascript:listTable.sort('state'); ">审核状态</a>{$state}</th>
+                <th>操作</th>
+            </tr>
+            {foreach from=$graph_list item=list}
+            <tr>
+                <td><span><input name="checkboxes[]" type="checkbox" value="{$list.find_id}"{if $list.find_id <= 0 }disabled="true"{/if}/>{$list.find_id}</span></td>
+                <td align="title">{$list.title}</td>
+                <td align="author"><span>{$list.author}</span></td>
+                <td align="short"><span>{$list.short}</span></td>
+                <td align="add_time"><span>{$list.add_time}</span></td>
+                <td align="state">
+                    <!--<span>{if $list.state eq 1 }待审核{else}<img src="images/{if $list.state eq 3}yes{elseif $list.state eq 2}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_state', {$list.find_id})" title="更改状态" />{/if}</span>-->
+                    {if $list.state eq 1 }
+                        待审核
+                    {elseif $list.state eq 2 }
+                        未通过
+                    {elseif $list.state eq 3 }
+                        已通过
+                    {/if}
+                </td>
+                <td>
+                   <span>
+                    <a href="find_list.php?act=see&id={$list.find_id}" title="查看"><img src="images/icon_view.gif" border="0" height="16" width="16" /></a>&nbsp;
+                    <a href="find_list.php?act=see&id={$list.find_id}" title="编辑"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>&nbsp;
+                    {if $list.state eq 1 }<a href="javascript:;" onclick="listTable.toggle(this, 'toggle_state', {$list.find_id})" title="变更审核状态"><img src="images/{if $list.state eq 3}yes{elseif $list.state eq 2}no{/if}.gif" border="0" height="16" width="16" /></a>{/if}&nbsp;
+                    <a href="javascript:;" onclick="listTable.remove({$list.find_id}, '您确认要删除吗？')" title="移除"><img src="images/icon_drop.gif" border="0" height="16" width="16"></a>
+                   </span>
+                </td>
+            </tr>
+            {foreachelse}
+            <tr><td class="no-records" colspan="10">您现在还没有任何项目</td></tr>
+            {/foreach}
+            <tr>&nbsp;
+                <td align="right" nowrap="true" colspan="8">{include file="page.htm"}</td>
+            </tr>
+        </table>
+
+        {if $full_page}
+    </div>
+    <div>
+        <input type="hidden" name="act" value="batch" />
+        <select name="type" id="selAction" lay-filter="selAction">
+            <option value="">请选择...</option>
+            <option value="button_remove">批量删除</option>
+        </select>
+
+        <input type="submit" value="确定" id="btnSubmit" name="btnSubmit" class="layui-btn"  style="margin-left:10px;"/>
+    </div>
+</form>
+
+<!-- end type list -->
+<script type="text/javascript" language="JavaScript">
+    listTable.recordCount = {$record_count};
+    listTable.pageCount = {$page_count};
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    {literal}
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+    /**
+     * @param: bool ext 其他条件：用于转移分类
+     */
+    function confirmSubmit(frm, ext)
+    {
+        if (frm.elements['type'].value == 'button_remove')
+        {
+            return confirm('您确定要删除吗?');
+        }
+        else if (frm.elements['type'].value == '')
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    function changeAction()
+    {
+
+        var frm = document.forms['listForm'];
+
+        if (!document.getElementById('btnSubmit').disabled &&
+                confirmSubmit(frm, false))
+        {
+            frm.submit();
+        }
+
+        var form = layui.form();
+        form.render(); //更新全部
+    }
+
+  /* 搜索 */
+function search()
+    {
+        listTable.filter.state_cate = parseInt(document.forms['searchForm'].elements['state_cate'].value);
+        listTable.filter.page = 1;
+        listTable.loadList();
+    }
+    {/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('checkbox(sel_all_checkboxes)', function(data){
+            listTable.selectAll(this, "checkboxes");
+            form.render(); //更新全部
+        });
+
+        form.on('select(selAction)', function(data){
+            changeAction();
+        });
+    });
+</script>
+{include file="pagefooter.htm"}
+{/if}

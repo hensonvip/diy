@@ -1,0 +1,104 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <!-- <h1 class="tc col">会员中心</h1> -->
+</header>	
+<div class="content">
+	<div class="con13 ">
+		<div class="y1 clearfix">
+			<div class="pic fl">
+				<a href="{:url('User/headicon')}"><img src="{$webUrl}/{$data.headimg}" style="border-radius:50%;"></a>
+			</div>
+			<div class="y1_r fl">
+				<h2>{$data.user_name}</h2>
+				<p><img src="__IMGWAP__/v.png">{$data.rank_name}</p>
+			</div>
+		</div>
+			<ul class="y2 clearfix bgc">
+				<li >
+					<a href="{:url('User/bonus')}">
+						<img src="__IMGWAP__/icon25.png" alt="">
+						<p>优惠券{$data.bonus_count}</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/account')}">
+						<img src="__IMGWAP__/icon26.png" alt="">
+						<p>余额 {$data.surplus}</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/integral')}">
+						<img src="__IMGWAP__/icon27.png" alt="">
+						<p>积分 {$data.integral}</p>
+					</a>
+				</li>
+			</ul>
+		<div class="y3 bgc">
+			<div class="md">
+				<h2 class="clearfix">我的订单<a class="fr" href="{:url('User/order_list')}">查看全部</a></h2>
+			</div>
+			<ul class="y3_list clearfix ">
+				<li >
+					<a href="{:url('User/order_list',array('status'=>2))}">
+						<div class="pic"><img src="__IMGWAP__/icon28.png" alt=""></div>
+						<p>待付款</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/order_list',array('status'=>3))}">
+						<div class="pic"><img src="__IMGWAP__/icon29.png" alt=""></div>
+						<p>待发货</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/order_list',array('status'=>4))}">
+						<div class="pic"><img src="__IMGWAP__/icon30.png" alt=""></div>
+						<p>待收货</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/order_list',array('status'=>5))}">
+						<div class="pic"><img src="__IMGWAP__/icon31.png" alt=""></div>
+						<p>已完成</p>
+					</a>
+				</li>
+				<li >
+					<a href="{:url('User/refund_list')}">
+						<div class="pic"><img src="__IMGWAP__/icon32.png" alt=""></div>
+						<p>退款/售后</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="y4 bgc">
+			<dl>
+				<dd><a href="{:url('User/user_info')}"><span class="l3"><em><img src="__IMGWAP__/icon33.png"></em>我的信息</span></a></dd>
+				<dd><a href="{:url('User/collect_goods')}"><span class="l4"><em><img src="__IMGWAP__/icon34.png"></em>我的收藏</span></a></dd>
+				<dd><a href="{:url('Article/news')}"><span class="l5"><em><img src="__IMGWAP__/icon35.png"></em>文章资讯</span></a></dd>
+				<dd><a href="{:url('User/my_message')}"><span class="l6"><em><img src="__IMGWAP__/icon36.png"></em>我的消息</span></a></dd>
+				<dd><a href="{:url('User/bargain')}"><span class="l6"><em><img src="__IMGWAP__/bargain_icon.png"></em>我的砍价</span></a></dd>
+				<dd><a href="{:url('User/setting')}"><span class="l5"><em><img src="__IMGWAP__/icon38.png"></em>设置</span></a></dd>
+			</dl>
+		</div>
+		<a href="{:url('User/logout')}"><div class="tcu hc tc bgc"><img src="__IMGWAP__/icon39.png"> 退出登录</div></a>
+	</div>
+</div>
+
+{include file="public/footer" /}
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+	//单独页面上的js
+	$('.danx label').click(function(){
+		$(this).toggleClass('on')
+	})
+</script>

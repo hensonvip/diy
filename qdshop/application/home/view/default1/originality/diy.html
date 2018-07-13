@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html style="overflow-y: hidden;height: 100%;position: relative;width: 100%" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link href="__DIYPC__/css/style.css" type="text/css" rel="stylesheet" />
+<script src="__DIYPC__/js/jquery.js"></script>
+<!--[if IE 9]>
+<script src="__DIYPC__/js/ie9.js"></script>
+<![endif]-->
+<script src="__DIYPC__/js/jui.js"></script>
+<script src="__DIYPC__/js/jcanvas.min.js"></script>
+<script src="__DIYPC__/js/canvg.min.js"></script>
+<script src="__DIYPC__/js/jscolor.js"></script>
+<script src="__DIYPC__/js/webfontloader.js"></script>
+<script src="__DIYPC__/js/cropper.min.js"></script>
+<script src="__DIYPC__/js/alloyimage-1.1.js"></script>
+<script src="__DIYPC__/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__DIYPC__/js/layer.js"></script>
+<script src="__DIYPC__/js/jquery.easing.1.3.js"></script>
+<script src="__DIYPC__/js/common.js"></script>
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body style="background:url(__DIYPC__/images/playbg1.png) repeat;min-width: 1250px;height: 100%;width: 100%;position: relative;overflow-y: hidden;">
+	<!-- <div class="cart_bg">
+	    <div class="cart_wrap"> <i class="del"></i>
+	        <h2>请选择购买类别</h2>
+	        <div class="wrap">
+	            <div class="box box1 on">
+	                <div class="bar">一件定制</div>
+	                <div class="t2_wrap">
+	                    <div class="cart_box">
+	                        <div class="cart_pic">
+	                            <img src="__DIYPC__/images/icon61.png"></div>
+	                        <div class="cart_type">
+	                            <div class="mep_tright">
+	                                <div class="r_box">
+	                                    <span>款式</span>
+	                                    <div class="cr_b sex_box">
+	                                        <label class="on" style="background-image: url(__DIYPC__/images/icon47.png);">
+	                                            <input type="radio" name="sex" value="">
+	                                        </label>
+	                                        <label style="background-image: url(__DIYPC__/images/icon48.png);">
+	                                            <input type="radio" name="sex" value="">
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                                <div class="r_box">
+	                                    <span>颜色</span>
+	                                    <div class="cr_b color_box">
+	                                        <label class="white on" style="background-color: #fff;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #999;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #030000;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #7d0000;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #ec6941;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #fff45c;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #89c997;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #7ecef4;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #8f82bc;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #1d2088;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                                <div class="r_box">
+	                                    <span>尺码</span>
+	                                    <div class="cr_b size_box">
+	                                        <label class="on">
+	                                            <input type="radio" name="size" value="">S
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">M
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">L
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">XL
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">XXL
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="box box2">
+	                <div class="bar">多件定制</div>
+	                <div class="t2_wrap">
+	                    <div class="cart_box">
+	                        <div class="cart_pic">
+	                            <img src="__DIYPC__/images/icon61.png"></div>
+	                        <div class="cart_type">
+	                            <div class="mep_tright">
+	                                <div class="r_box">
+	                                    <span>款式</span>
+	                                    <div class="cr_b sex_box">
+	                                        <label class="on" style="background-image: url(__DIYPC__/images/icon47.png);">
+	                                            <input type="radio" name="sex" value="">
+	                                        </label>
+	                                        <label style="background-image: url(__DIYPC__/images/icon48.png);">
+	                                            <input type="radio" name="sex" value="">
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                                <div class="r_box">
+	                                    <span>颜色</span>
+	                                    <div class="cr_b color_box">
+	                                        <label class="white on" style="background-color: #fff;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #999;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #030000;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #7d0000;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #ec6941;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #fff45c;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #89c997;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #7ecef4;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #8f82bc;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                        <label style="background-color: #1d2088;">
+	                                            <input type="radio" name="color" value="">
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                                <div class="r_box">
+	                                    <span>尺码</span>
+	                                    <div class="cr_b size_box">
+	                                        <label class="on">
+	                                            <input type="radio" name="size" value="">S
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">M
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">L
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">XL
+	                                        </label>
+	                                        <label>
+	                                            <input type="radio" name="size" value="">XXL
+	                                        </label>
+	                                    </div>
+	                                </div>
+	                                <div class="r_box">
+	                                    <span>数量</span>
+	                                    <div class="cr_b ipd_type">
+	                                    	<div class="num_box" data-max="20">
+	                                            <input type="button" value="-" class="btn_m">
+	                                            <input type="text" value="1" class="btn_input">
+	                                            <input type="button" value="+" class="btn_a">
+	                                       	</div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div> <i class="a_btn"></i>
+	                        <i class="m_btn"></i>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="btn">
+	            <div class="cart_abtn nb_t2"> <b></b>
+	                加入购物袋
+	                <i class="aicon"></i>
+	            </div>
+	        </div>
+	    </div>
+	</div> -->
+	{include file="diy/attr_box_ajax" /}
+	<div class="ylImg">
+		<i><em></em></i>
+		<div class="ylImgbox">
+			<img src="" alt="">
+		</div>
+	</div>
+	<div class="loads">
+		<div class="loaders">
+			<span>O</span>
+			<span class="span2">T</span>
+			<span class="span3">E</span>
+			<span class="span4">E</span>
+		</div>
+		<div class="spinner">
+			<div class="bounce1"></div>
+			<div class="bounce2"></div>
+			<div class="bounce3"></div>
+		</div>
+	</div>
+
+	<div class="imgC">
+		<img src="" alt="">
+	</div>
+	<div class="fixbg"></div>
+	<div class="cutImgBox">
+		<div class="cutImgWrap">
+			<div class="container">
+				<img src="" alt="">
+			</div>
+			<div class="cutImgBtns">
+				<span class="cutImgYes">裁剪</span>
+				<span class="cutImgNo">取消</span>
+			</div>
+		</div>
+	</div>
+	<div class="header first second fixed">
+	    {include file="public/nav" /}
+	    {include file="public/user_right" /}
+	</div>
+	<div class="leftbar">
+		<div id="tabs">
+			<ul class="tabs_hd clearfix">
+				<li><a href="#tabs-1">{$goods_type.cat_name}</a></li>
+				<li><a href="#tabs-2">文字</a></li>
+				<li><a href="#tabs-3">图形</a></li>
+				<li><a href="#tabs-4">蒙版</a></li>
+				<li class="spe"><a href="#tabs-5"></a></li>
+			</ul>
+			<div id="tabs-1">
+				<div class="sbr" style="top:65px">
+						<div class="boxlayout">
+						<h5 class="boxTit">{$style.attr_name}</h5>
+						<div class="tKs">
+							{foreach name="$style.icon_list" item="item"}
+							<span style="background-image: url({$webUrl}{$item.default_icon})" data-img="{$webUrl}{$item.default_icon}" data-imgon="{$webUrl}{$item.select_icon}" class="n" data-attr="{$item.attr_id}_{$item.attr_value_name}"></span>
+							{/foreach}
+						</div>
+						<h5 class="boxTit">{$color.attr_name}</h5>
+						<div class="tColorBox">
+							{foreach name="$style.icon_list" item="item2"}
+							<ul class="tColor clearfix">
+								{foreach name="$item2.color_file" item="item"}
+								<li data-src="{$item.data_src}"  data-tw="915" data-th="938" data-x="{$goods_type.edit_area_x}" data-y="{$goods_type.edit_area_y}" data-w="{$goods_type.edit_area_w}" data-h="{$goods_type.edit_area_h}" style="background-color: #{$item.color_code};" data-attr="{$item2.attr_id}_{$item2.attr_value_name},{$item.attr_id}_{$item.color_name}">
+								</li>
+								{/foreach}
+							</ul>
+							{/foreach}
+						</div>
+
+						<div class="Timg">
+							{foreach name="$attr_group_img" item="item"}
+							<img class="{$item.data_src}" src="{$webUrl}{$item.file_url}" alt="{$item.attr_group}">
+							{/foreach}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabs-2">
+				<div class="boxlayout" style="margin-bottom: 6px">
+					<textarea placeholder="输入文字添加图层或者选择文字图层修改文字" id="textInput"></textarea>
+				</div>
+				<div id="textActBox" style="border-top: 1px solid #d9d9d9;" class="actbox">
+					<div class="actbox_B actbox_btns">
+						<i class="ic"></i>
+					</div>
+					<div class="actbox_I actbox_btns">
+						<i class="ic"></i>
+
+					</div>
+					<div class="actbox_U actbox_btns">
+						<i class="ic"></i>
+
+					</div>
+					<div class="actbox_LH actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po5">
+							<div class="clearfix " style="overflow: hidden;">
+								<span class="fl">字距</span>
+								<em id="letterSlideVal" class="fr">0</em>
+							</div>
+							<div id='letterSlide'></div>
+							<div class="clearfix " style="overflow: hidden;">
+								<span class="fl">行距</span>
+								<em id="lhSlideVal" class="fr">0</em>
+							</div>
+							<div id='lhSlide'></div>
+						</div>
+					</div>
+					<div class="actbox_SI actbox_btns hasPo">
+						<i class="ic"><b id="fontSizeVal" class="fontSizeText">25</b></i>
+
+						<div class="actbox-po po6">
+							<div id='fontSizeSlide'></div>
+						</div>
+					</div>
+					<div class="actbox_AL actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po7">
+							<b class="alCho l"></b>
+							<b class="alCho r"></b>
+							<b class="alCho c"></b>
+						</div>
+
+					</div>
+					<div class="actbox_SH actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po8">
+							<div class="clearfix">
+								<span class="fl">投影</span>
+								<em class="fr"><b id="showOpenTextShadow" class="kgopen"><strong></strong></b></em>
+							</div>
+							<div class="por">
+								<div class="zz"></div>
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button id="valueInput4_btn" class="colorbox-tb jscolor {valueElement:'valueInput4',value:'66ccff',onFineChange:'updateShColor(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput4" type="text"  class="colorbox-sj">
+											<i data-set="valueInput4_btn" class="xgset"></i>
+										</div>
+
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysShadowText" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">模糊度</span>
+										<em id="shadowTextBlurVal" class="fr">0</em>
+									</div>
+									<div id='shadowTextBlur'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">X偏移</span>
+										<em id="shadowTextXVal"  class="fr">0</em>
+									</div>
+									<div id='shadowTextX'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">Y偏移</span>
+										<em id="shadowTextYVal"  class="fr">0</em>
+									</div>
+									<div id='shadowTextY'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">透明度</span>
+										<em id="shadowTextOpVal"  class="fr">0</em>
+									</div>
+									<div id='shadowTextOp'></div>
+
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+					<div class="actbox_BO actbox_btns hasPo">
+						<i class="ic"><b id="textBorderIcon" class="icon_border">A</b></i>
+						<div class="actbox-po po11">
+							<div class="clearfix">
+								<span class="fl">文字背景</span>
+								<em class="fr"><b id="showOpenTextStroke" class="kgopen "><strong></strong></b></em>
+							</div>
+							<div class="por">
+								<div class="zz"></div>
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button id="valueInput6_btn" class="colorbox-tb jscolor {valueElement:'valueInput6',value:'66ccff',onFineChange:'updateTextStroke(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput6" type="text" value="#666666" class="colorbox-sj">
+											<i data-set="valueInput6_btn" class="xgset"></i>
+										</div>
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysTextBorder" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+									<!--<div class="clearfix" style="overflow: hidden;">-->
+										<!--<span class="fl">粗细</span>-->
+										<!--<em id="strokeWidthTextSlideVal" class="fr">0</em>-->
+									<!--</div>-->
+									<!--<div id='strokeWidthTextSlide'></div>-->
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">透明度</span>
+										<em id="strokeOpacityTextSlideVal"  class="fr">0</em>
+									</div>
+									<div id='strokeOpacityTextSlide'></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="actbox_OP actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po9">
+							<div class="clearfix " style="overflow: hidden;">
+								<span class="fl">透明度</span>
+								<em id="opacityTextSlideVal" class="fr">0</em>
+							</div>
+							<div id='opacityTextSlide'></div>
+						</div>
+
+					</div>
+					<div class="actbox_CO actbox_btns hasPo">
+						<i class="ic"><b id="textColorIcon" class="icon_color"></b></i>
+						<div class="actbox-po po10">
+							<div class="por">
+								<div class="act-wrap" style="border: none;">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button  id="valueInput5_btn" class="colorbox-tb jscolor {valueElement:'valueInput5',value:'66ccff',onFineChange:'updateTextColor(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput5" type="text" value="#666666" class="colorbox-sj">
+											<i data-set="valueInput5_btn" data-t="t5" class="xgset"></i>
+										</div>
+
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysTextColor" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+					<div class="sbr" style="top: 244px">
+						<div class="boxlayout">
+							<div style="padding-bottom: 20px;">
+								{foreach name="font_list" item="type"}
+									<h5 class="lantit">{$type.type_name}</h5>
+									{foreach name="$type._child" item="type2"}
+									<div class="menu" id="chFont"  data-ch="none">
+										<h3 class="menu-tit">{$type2.type_name}</h3>
+										<div class="menu-bd">
+											<dl>
+												{foreach name="$type2.font_list" item="font"}
+												<dd data-type="{$type.type_short_name}" data-name="{$font.font_name}" class="fontCho" ><img src="{$webUrl}{$font.font_img}" alt="{$font.font_name}"><i class="load"></i></dd>
+												{/foreach}
+											</dl>
+										</div>
+									</div>
+									{/foreach}
+								{/foreach}
+							</div>
+						</div>
+					</div>
+			</div>
+			<div id="tabs-3">
+				<div id="svgActBox" class="actbox">
+					<div class="actbox_color actbox_btns hasPo">
+						<i class="ic"><b id="svgColorIcon" class="icon_color"></b></i>
+						<div class="actbox-po po4">
+							<div class="por">
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button  id="valueInput3_btn" class="colorbox-tb jscolor {valueElement:'valueInput3',value:'66ccff',onFineChange:'updateSvgColor(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput3" type="text" value="#666666" class="colorbox-sj">
+											<i data-set="valueInput3_btn" class="xgset"></i>
+										</div>
+
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysColor" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="actbox_border actbox_btns hasPo">
+						<i class="ic"><b id="svgBorderIcon" class="icon_border"></b></i>
+						<div class="actbox-po po2">
+							<div class="clearfix">
+								<span class="fl">描边</span>
+								<em class="fr"><b id="showOpenStroke" class="kgopen "><strong></strong></b></em>
+							</div>
+							<div class="por">
+								<div class="zz"></div>
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button id="valueInput_btn" class="colorbox-tb jscolor {valueElement:'valueInput',value:'66ccff',onFineChange:'updateSvgStroke(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput" type="text" value="#666666" class="colorbox-sj">
+											<i data-set="valueInput_btn" class="xgset"></i>
+										</div>
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysBorder" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">粗细</span>
+										<em id="strokeWidthSlideVal" class="fr">0</em>
+									</div>
+									<div id='strokeWidthSlide'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">透明度</span>
+										<em id="strokeOpacitySlideVal"  class="fr">0</em>
+									</div>
+									<div id='strokeOpacitySlide'></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="actbox_opacity actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po1">
+							<div class="clearfix " style="overflow: hidden;">
+								<span class="fl">透明度</span>
+								<em id="opacitySlideVal" class="fr">0</em>
+							</div>
+							<div id='opacitySlide'></div>
+						</div>
+					</div>
+					<div class="actbox_shadow actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po3">
+							<div class="clearfix">
+								<span class="fl">投影</span>
+								<em class="fr"><b id="showOpenSvgShadow" class="kgopen "><strong></strong></b></em>
+							</div>
+							<div class="por">
+								<div class="zz"></div>
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button id="valueInput2_btn" class="colorbox-tb jscolor {valueElement:'valueInput2',value:'66ccff',onFineChange:'updateShColor(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput2" type="text"  class="colorbox-sj">
+											<i data-set="valueInput2_btn" class="xgset"></i>
+										</div>
+
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysShadow" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">模糊度</span>
+										<em id="shadowSvgBlurVal" class="fr">0</em>
+									</div>
+									<div id='shadowSvgBlur'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">X偏移</span>
+										<em id="shadowSvgXVal"  class="fr">0</em>
+									</div>
+									<div id='shadowSvgX'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">Y偏移</span>
+										<em id="shadowSvgYVal"  class="fr">0</em>
+									</div>
+									<div id='shadowSvgY'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">透明度</span>
+										<em id="shadowSvgOpVal"  class="fr">0</em>
+									</div>
+									<div id='shadowSvgOp'></div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="sbr" style="top: 131px;">
+					<div class="boxlayout">
+						<div class="menu" style="padding: 20px 0">
+							{foreach name="graph_list" item="type"}
+							<h3 class="menu-tit">{$type.type_name}</h3>
+							<div class="menu-bd">
+								<ul>
+									{foreach name="type.graph_list" item="graph"}
+									<li data-int="false" data-name="{$graph.graph_name}"  class="svgtiem xz" data-svg="{$webUrl}{$graph.graph_file}"></li>
+									{/foreach}
+								</ul>
+							</div>
+							{/foreach}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabs-4">
+				<div class="sbr" style="top: 65px">
+					<div class="boxlayout">
+						<div class="menu">
+							<div class="menu-bd">
+								<div class="imgShowType ">
+									<div class="clearfix">
+										{foreach name="mask_list" item="mask"}
+										<div data-name="{$mask.mask_name}" class="mb"><img src="{$webUrl}{$mask.mask_img}" alt="{$mask.mask_name}"></div>
+										{/foreach}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div id="tabs-5">
+				<div id="imgActBox" class="actbox">
+					<div class="actbox_shadow actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po13">
+							<div class="clearfix">
+								<span class="fl">投影</span>
+								<em class="fr"><b id="showOpenImgShadow" class="kgopen "><strong></strong></b></em>
+							</div>
+							<div class="por">
+								<div class="zz"></div>
+								<div class="act-wrap">
+									<div class=" clearfix colorbox">
+										<div class="colorbox-show fl">
+											<button id="valueInput7_btn" class="colorbox-tb jscolor {valueElement:'valueInput7',value:'66ccff',onFineChange:'updateShColor(this)'}"></button>
+										</div>
+										<div class="colorbox-show2 fr">
+											#&nbsp;<input id="valueInput7" type="text"  class="colorbox-sj">
+											<i data-set="valueInput7_btn" class="xgset"></i>
+										</div>
+
+									</div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">预设</span>
+									</div>
+									<ul id="ysShadowImg" class="color-ys clearfix">
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="f55255" style="background:#f55255;"></li>
+										<li data-color="fed150" style="background:#fed150;"></li>
+										<li data-color="f9f458" style="background:#f9f458;"></li>
+										<li data-color="9ad45c" style="background:#9ad45c;"></li>
+										<li data-color="30b55c" style="background:#30b55c;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+										<li data-color="39a6f8" style="background:#39a6f8;"></li>
+									</ul>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">模糊度</span>
+										<em id="shadowImgBlurVal" class="fr">0</em>
+									</div>
+									<div id='shadowImgBlur'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">X偏移</span>
+										<em id="shadowImgXVal"  class="fr">0</em>
+									</div>
+									<div id='shadowImgX'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">Y偏移</span>
+										<em id="shadowImgYVal"  class="fr">0</em>
+									</div>
+									<div id='shadowImgY'></div>
+									<div class="clearfix" style="overflow: hidden;">
+										<span class="fl">透明度</span>
+										<em id="shadowImgOpVal"  class="fr">0</em>
+									</div>
+									<div id='shadowImgOp'></div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="actbox_imgCut actbox_btns">
+						<i class="ic"></i>
+					</div>
+					<div class="actbox_opacity actbox_btns hasPo">
+						<i class="ic"></i>
+						<div class="actbox-po po12">
+							<div class="clearfix " style="overflow: hidden;">
+								<span class="fl">透明度</span>
+								<em id="opacityImgSlideVal" class="fr">0</em>
+							</div>
+							<div id='opacityImgSlide'></div>
+						</div>
+					</div>
+
+				</div>
+				<div class="sbr" style="top: 131px;">
+					<div class="boxlayout">
+						<h5 class="lantit">滤镜</h5>
+						<div class="menu">
+							<div class="menu-bd">
+								<div class="imgShowType">
+									<div class="clearfix">
+										<div data-type="none" class="imgShowTypeItem"><b><i>原图</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="softenFace" class="imgShowTypeItem"><b><i>美肤</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="sketch" class="imgShowTypeItem"><b><i>素描</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="softEnhancement" class="imgShowTypeItem"><b><i>自然增强</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="purpleStyle" class="imgShowTypeItem"><b><i>紫调</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="soften" class="imgShowTypeItem"><b><i>柔焦</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="vintage" class="imgShowTypeItem"><b><i>复古	</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="gray" class="imgShowTypeItem"><b><i>黑白</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="lomo" class="imgShowTypeItem"><b><i>仿lomo</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="strongEnhancement" class="imgShowTypeItem"><b><i>亮白增强</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="strongGray" class="imgShowTypeItem"><b><i>灰白</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="lightGray" class="imgShowTypeItem"><b><i>灰色</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="warmAutumn" class="imgShowTypeItem"><b><i>暖秋</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="carveStyle" class="imgShowTypeItem"><b><i>木雕</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+										<div data-type="rough" class="imgShowTypeItem"><b><i>粗糙</i><img src="__DIYPC__/images/e1.jpg" alt=""></b></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="rightbar">
+		<h4 class="pdName"><input class="pdNameText"  value="未命名作品" type="text" name="" id=""></h4>
+		<h5 class="addImgTit">导入图片</h5>
+		<span class="addImgBtn">
+			<i><input class="addImgFile" accept="image/jpeg,image/jpg,image/png"  type="file" name="" id=""></i><br/>
+			须为.jpeg,.jpg,.png格式高清图
+		</span>
+		<div class="sbr le" style="top: 315px;bottom: 163px">
+			<ul class="imgBox">
+			</ul>
+		</div>
+		<div class="ylbtn">
+			<span class="b1">预  览</span>
+			<span class="b2">完  成</span>
+		</div>
+	</div>
+	<div class="boxT">
+		<div class="moveC"></div>
+		<div class="sl">
+			<div class="slactBox">
+				<div class="slact"></div>
+			</div>
+		</div>
+		<div class="someAct">
+			<span id="sc"></span>
+		<span id="fz">
+			<div class="fzbox">
+				<i class="s"><em>上移一层</em></i>
+				<i class="x"><em>下移一层</em></i>
+				<i class="t"><em>置顶</em>   </i>
+				<i class="b"><em>置底</em>   </i>
+			</div>
+		</span>
+			<span id="sx"></span>
+			<span id="fd"></span>
+		</div>
+		<div class="datashow">
+			<i id="rotateMsg" class="xz">R:<em>0</em>°</i>
+			<i id="aspectMsg" class="cd">W:<b>0</b> H:<em>0</em></i>
+			<i id="positionMsg" class="xy">X:<b>0</b> Y:<em>0</em></i>
+			<i id="zoom"></i>
+		</div>
+		<div class="cbox">
+			<div id="diybox">
+				<div id="imgAct"><i id="rotateAct"></i></div>
+				<canvas style="display: block;margin:0 auto;" id="canvas_1"></canvas>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script>
+	var upload_file_url = "{:url('diy/upload_file')}";
+	var delete_file = "{:url('diy/delete_file')}";
+	var create_goods = "{:url('diy/create_goods')}";
+	var type_id = parseInt("{$type_id}");
+</script>
+<script src="__DIYPC__/js/mask.js"></script>
+<script src="__DIYPC__/js/js.js"></script>

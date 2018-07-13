@@ -1,0 +1,357 @@
+<!DOCTYPE html >
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>{$page_title}</title>
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<link rel="stylesheet" type="text/css" href="themesmobile/default/css/public.css"/>
+<link rel="stylesheet" type="text/css" href="themesmobile/default/css/index.css"/>
+<script type="text/javascript" src="themesmobile/default/js/TouchSlide.1.1.js"></script>
+</head>
+<body>
+<div class="body_bj">
+
+<header id="header"> <!-- #BeginLibraryItem "/library/page_header.lbi" --> <!-- #EndLibraryItem --> </header>
+<!--banner--> 
+<!-- #BeginLibraryItem "/library/index_ad.lbi" --> <!-- #EndLibraryItem --> 
+<!--banner end--> 
+
+<div class="index_search">
+  <div class="index_search_mid"> <a href="searchindex.php"> <em>请输入您所搜索的商品</em> <span><img src="themesmobile/default/images/icosousuo.png"></span> </a> </div>
+</div>
+<!-- #BeginLibraryItem "/library/index_icon.lbi" --><!-- #EndLibraryItem --> 
+
+<!---商城热点-->
+<div class="hot">
+<h3></h3>
+<ul id="mq" onmouseover="iScrollAmount=0"onmouseout="iScrollAmount=1">
+  <!-- TemplateBeginEditable name="首页商城热点" -->
+<!-- #BeginLibraryItem "/library/cat_articles.lbi" -->
+
+			{foreach from=$articles item=article_item name=articles}
+			<li{if $smarty.foreach.articles.first} class="first"{/if}><span>推荐</span><a href="{$article_item.url}" title="{$article_item.title|escape:html}">{$article_item.short_title|escape:html}</a></li>
+			{/foreach}
+
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+</ul>
+</div>
+<script>
+var oMarquee = document.getElementById("mq"); //滚动对象
+var iLineHeight = 30; //单行高度，像素
+var iLineCount = 7; //实际行数
+var iScrollAmount = 1; //每次滚动高度，像素
+function run() {
+oMarquee.scrollTop += iScrollAmount;
+if ( oMarquee.scrollTop == iLineCount * iLineHeight )
+oMarquee.scrollTop = 0;
+if ( oMarquee.scrollTop % iLineHeight == 0 ) {
+window.setTimeout( "run()", 2000 );
+} else {
+window.setTimeout( "run()", 50 );
+}
+}
+oMarquee.innerHTML += oMarquee.innerHTML;
+window.setTimeout( "run()", 2000 );
+</script>
+
+
+
+<div class="brand">
+<h4><span>{$lang.index_brand}</span><i><a href="brand.php">更多</a></i></h4>
+<dl>
+<a href="{$wap_index_brand[0].ad_link}"><img src="./../{$wap_index_brand[0].image}"></a>
+</dl>
+<ul>
+<!-- TemplateBeginEditable name="首页推荐品牌" -->
+<!-- #BeginLibraryItem "/library/brands.lbi" -->
+
+{if $brand_list}
+{foreach from=$brand_list item=brand name=brand}
+{if $smarty.foreach.brand.iteration < 7}
+<li class="image"><a href="{$brand.url}" title="{$brand.brand_name|escape:html}"><img src="{$brand.brand_logo}" alt="{$brand.brand_name|escape:html}"/></a></li>
+{/if}
+{/foreach}
+{/if}
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+</ul>
+</div>
+
+<!--促销商品-->
+<!-- TemplateBeginEditable name="首页促销模块" -->
+<!-- #BeginLibraryItem "/library/recommend_promotion.lbi" -->
+
+{if $promotion_goods}
+
+<script>
+var Tday = new Array();
+var daysms = 24 * 60 * 60 * 1000
+var hoursms = 60 * 60 * 1000
+var Secondms = 60 * 1000
+var microsecond = 1000
+var DifferHour = -1
+var DifferMinute = -1
+var DifferSecond = -1
+function clock(key)
+{
+   var time = new Date()
+   var hour = time.getHours()
+   var minute = time.getMinutes()
+   var second = time.getSeconds()
+   var timevalue = ""+((hour > 12) ? hour-12:hour)
+   timevalue +=((minute < 10) ? ":0":":")+minute
+   timevalue +=((second < 10) ? ":0":":")+second
+   timevalue +=((hour >12 ) ? " PM":" AM")
+   var convertHour = DifferHour
+   var convertMinute = DifferMinute
+   var convertSecond = DifferSecond
+   var Diffms = Tday[key].getTime() - time.getTime()
+   DifferHour = Math.floor(Diffms / daysms)
+   Diffms -= DifferHour * daysms
+   DifferMinute = Math.floor(Diffms / hoursms)
+   Diffms -= DifferMinute * hoursms
+   DifferSecond = Math.floor(Diffms / Secondms)
+   Diffms -= DifferSecond * Secondms
+   var dSecs = Math.floor(Diffms / microsecond)
+  
+      if(convertHour != DifferHour) a=DifferHour+":";
+   if(convertMinute != DifferMinute) b=DifferMinute+":";
+   if(convertSecond != DifferSecond) c=DifferSecond+":";
+     d=dSecs;
+     if (DifferHour>0) {a=a}
+     else {a=''}
+   document.getElementById("jstimerBox"+key).innerHTML = a + b + c + d; //显示倒计时信息
+}
+</script>
+<section class="floor_body">
+  <h4><span>{$lang.promotion_goods}</span><i><a href="../search.php?intro=promotion">更多</a></i></h4>
+    <div id="scroll_promotion" style=" background:#eeeeee">
+        <ul>
+          {foreach from=$promotion_goods item=goods name=promotion_goods key=key}
+          <li>
+            
+             <div class="index_pro"> 
+              <div class="products_kuang">
+               {if $goods.is_exclusive}
+               <div class="best_phone"> 手机专享</div>
+               {/if}
+              <div class="timerBox" id="jstimerBox{$key}">正在加载...</div>
+              
+               <a href="{$goods.url}" title="{$goods.name|escape:html}"> <img src="{$option.static_path}{$goods.thumb}"></a>
+                </div>
+              <div class="goods_name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.name}</a></div>
+              <div class="price">
+              <a href="javascript:addToCart({$goods.id})" class="btns">
+                  <img src="themesmobile/default/images/index_flow.png"></a>
+                  
+                  <span>{$goods.final_price}</span><em>{if $goods.promote_price}{$goods.shop_price}{else}{$goods.market_price}{/if}</em>
+              </div>  
+</div>
+<script>
+Tday[{$key}] = new Date("{$goods.gmt_end_time}");  
+window.setInterval(function()    
+{clock({$key});}, 1000);  
+</script>
+          </li>
+      <!--{if $smarty.foreach.promotion_goods.iteration%3 eq 0 && $smarty.foreach.promotion_goods.iteration neq $smarty.foreach.promotion_goods.total}--> </ul>
+        <ul>
+          <!--{/if}-->
+          
+          {/foreach}
+</div>
+  </section>
+{/if}
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable --> 
+
+<!---------------end-------------> 
+<!-- TemplateBeginEditable name="首页推荐模块" -->
+<!-- #BeginLibraryItem "/library/recommend_new.lbi" -->
+
+{if $new_goods}
+
+<section class="index_floor">
+
+  <h4><span>{$lang.new_goods}</span><i><a href="../search.php?intro=new">更多</a></i></h4>
+   
+    <div id="scroll_new" class="scroll_hot">
+      <div class="bd">
+        <ul>
+          {foreach from=$new_goods item=goods name=new_goods}
+          <li>
+             <div class="index_pro"> 
+              <div class="products_kuang">
+                {if $goods.is_exclusive} <div class="best_phone">手机专享</div>{/if}
+                <a href="{$goods.url}" title="{$goods.name|escape:html}">  <img src="{$option.static_path}{$goods.thumb}"> </a></div>
+              <div class="goods_name">  <a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.name}</a></div>
+              <div class="price">
+                 <a href="javascript:addToCart({$goods.id})" class="btns">
+                    <img src="themesmobile/default/images/index_flow.png">
+                </a>
+                <span>{$goods.final_price}</span><em>{if $goods.promote_price}{$goods.shop_price}{else}{$goods.market_price}{/if}</em>
+              </div>
+              </div>
+          </li>
+
+          <!--{if $smarty.foreach.new_goods.iteration%3 eq 0 && $smarty.foreach.new_goods.iteration neq $smarty.foreach.new_goods.total}--> </ul>
+        <ul>
+          <!--{/if}-->{/foreach}</div>
+        <div class="hd">
+          <ul></ul>
+        </div>
+      </div>
+
+  </section>
+
+  <script type="text/javascript">
+    TouchSlide({ 
+      slideCell:"#scroll_new",
+      titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+      effect:"leftLoop", 
+      autoPage:true, //自动分页
+      //switchLoad:"_src" //切换加载，真实图片路径为"_src" 
+    });
+  </script>
+{/if}
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/recommend_hot.lbi" -->
+
+{if $hot_goods}
+<section class="index_floor">
+
+    <h4><span>{$lang.hot_goods}</span><i><a href="../search.php?intro=hot">更多</a></i></h4>
+   
+    <div id="scroll_hot" class="scroll_hot">
+      <div class="bd">
+        <ul>
+          {foreach from=$hot_goods item=goods name=hot_goods}
+          <li>
+           
+             <div class="index_pro"> 
+              <div class="products_kuang">
+            {if $goods.is_exclusive} <div class="best_phone">手机专享</div>{/if}
+               <a href="{$goods.url}" title="{$goods.name|escape:html}">
+                <img src="{$option.static_path}{$goods.thumb}"> </a></div>
+              <div class="goods_name"> <a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.name}</a></div>
+              <div class="price">
+                   <a href="javascript:addToCart({$goods.id})" class="btns">
+                    <img src="themesmobile/default/images/index_flow.png">
+                </a>
+                 <span>{$goods.final_price}</span><em>{if $goods.promote_price}{$goods.shop_price}{else}{$goods.market_price}{/if}</em>
+              </div>
+              </div>
+           
+          </li>
+
+          <!--{if $smarty.foreach.hot_goods.iteration%3 eq 0 && $smarty.foreach.hot_goods.iteration neq $smarty.foreach.hot_goods.total}--> </ul>
+        <ul>
+          <!--{/if}-->{/foreach}</div>
+        <div class="hd">
+          <ul></ul>
+        </div>
+      </div>
+
+  </section>
+
+  <script type="text/javascript">
+    TouchSlide({ 
+      slideCell:"#scroll_hot",
+      titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+      effect:"leftLoop", 
+      autoPage:true, //自动分页
+      //switchLoad:"_src" //切换加载，真实图片路径为"_src" 
+    });
+  </script>
+{/if}
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable --> 
+
+
+
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable --> 
+<!--精品推荐轮播广告位--> 
+<div id="index_banner" class="index_banner">
+<div class="bd">
+<ul>
+			{foreach from=$wap_index_img item=ad name=wap_index_img}
+          <li><a href="{$ad.url}"><img src="./../{$ad.image}" width="100%" /></a></li>
+          {/foreach}
+					</ul>
+</div>
+<div class="hd">
+					<ul></ul>
+				</div>
+</div>
+<script type="text/javascript">
+				TouchSlide({ 
+					slideCell:"#index_banner",
+					titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+					mainCell:".bd ul", 
+					effect:"leftLoop", 
+					autoPage:true,//自动分页
+					autoPlay:true //自动播放
+				});
+			</script>
+ <!--精品推荐轮播广告位end-->  
+
+<!--首页精品推荐动态加载-->
+ <div class="floor_body2" >
+    <h2>————&nbsp;{$lang.best_goods}&nbsp;————</h2>
+    <div id="J_ItemList">
+      <ul class="product single_item info">
+      </ul>
+      <a href="javascript:;" class="get_more"> </a> 
+      </div>
+  </div>
+<!--首页精品推荐动态加载end-->
+<!-- #BeginLibraryItem "/library/footer_nav.lbi" --> <!-- #EndLibraryItem --> 
+<!---返回顶部-->
+<script type="text/javascript" src="themesmobile/default/js/jquery.js"></script>
+{insert_scripts files='jquery.json.js,transport.js'}
+<script type="text/javascript" src="themesmobile/default/js/touchslider.dev.js"></script>
+<script type="text/javascript" src="themesmobile/default/js/jquery.more.js"></script>
+{insert_scripts files='common.js'}
+<script type="text/javascript">
+var url = 'index_bestgoods.php?act=ajax';
+$(function(){
+	$('#J_ItemList').more({'address': url});
+});
+
+</script> 
+<script>
+function goTop(){
+	$('html,body').animate({'scrollTop':0},600);
+}
+</script>
+<a href="javascript:goTop();" class="gotop"><img src="themesmobile/default/images/topup.png"></a>
+<script type="Text/Javascript" language="JavaScript">
+
+{literal}
+function selectPage(sel)
+{
+   sel.form.submit();
+}
+{/literal}
+
+</script>
+<script type="text/javascript">
+{foreach from=$lang.compare_js item=item key=key}
+{if $key neq 'button_compare'}
+var {$key} = "{$item}";
+{else}
+var button_compare = "";
+{/if}
+{/foreach}
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+</div> 
+</body>
+</html>

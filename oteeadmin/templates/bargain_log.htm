@@ -1,0 +1,82 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <strong>活动商品名称：</strong>{$info.goods_name} <a href="bargain.php?act=edit&id={$info.id}"> [ {$lang.view} ] </a> <br/>
+  <strong>活动开始时间：</strong>{$info.start_time} <br/>
+  <strong>活动结束时间：</strong>{$info.end_time} <br/>
+  <strong>商品原价：</strong>{$info.shop_price} <br/>
+  <strong>商品最低价：</strong>{$info.low_price} 
+</div>
+
+<form method="post" action="bargain.php?act=view_log" name="listForm" onsubmit="return confirm(batch_drop_confirm);" class="layui-form">
+<!-- start bargain list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+  <table cellpadding="3" cellspacing="1" class="layui-table">
+    <tr>
+      <th>用户</th>
+      <th>总砍价价格</th>
+      <th>现价</th>
+      <th>状态</th>
+      <th>砍价时间</th>
+    </tr>
+
+    {foreach from=$bargain_log item=log }
+    <tr>
+      <td>{$log.user_name}</td>
+      <td align="center">{$log.format_bargain_price}</td>
+      <td align="center">{$log.format_now_price}</td>
+      <td align="center">{if $log.status eq 1}<font color="green">已下单</font>{else}<font color="red">砍价进行中</font>{/if}</td>
+      <td align="center">{$log.format_add_time}</td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="4">没有记录</td></tr>
+    {/foreach}
+  </table>
+
+  <table cellpadding="4" cellspacing="0">
+    <tr>
+      <td><input type="hidden" name="act" value="view_log" /></td>
+      <td align="right">{include file="page.htm"}</td>
+    </tr>
+  </table>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+    });
+</script>
+
+{if $full_page}
+</div>
+<!-- end auction list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+
+    startCheckOrder();
+
+    listTable.query = "query_log";
+  }
+
+  {/literal}
+//-->
+</script>
+
+{include file="pagefooter.htm"}
+{/if}

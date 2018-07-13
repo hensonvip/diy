@@ -1,0 +1,77 @@
+{include file="pageheader.htm"}
+
+<form method="post" action="virtual_goods_card.php" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--商品名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.lab_goods_name}</label>
+            <div class="layui-input-block">
+                <input type="text" name="goods_name" maxlength="60"  value="{$card.goods_name}" disabled="true" class="layui-input" />
+            </div>
+        </div>
+        <!--卡片序号-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.lab_card_sn}</label>
+            <div class="layui-input-block">
+                <input type="text" name="card_sn" maxlength="60"  value="{$card.card_sn}" disabled="true" class="layui-input" />
+            </div>
+        </div>
+        <!--截至使用日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.lab_end_date}</label>
+            <div class="layui-input-block">
+                {html_select_date prefix="end_date" field_order="YMD" month_format="%m"  day_value_format="%02d" start_year="-1" end_year="+50" display_days=yes time=$card.end_date}
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="hidden" name="act" value="action" />
+            <input type="hidden" name="goods_id" value="{$card.goods_id}" />
+            <input type="hidden" name="old_card_sn" value="{$card.card_sn}" />
+            <input type="hidden" name="card_id" value="{$card.card_id}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn"  />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script language="javascript" src="js/validator.js"></script>
+<script language="JavaScript">
+<!--
+{literal}
+document.forms['theForm'].elements['card_sn'].focus();
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  var frm = document.forms['theForm'];
+  if ((frm.elements['card_sn'].value.length > 0) || (frm.elements['card_password'].value.length > 0))
+  {
+    return true;
+  }
+  else
+  {
+    alert(no_card_sn);
+    return false;
+  }
+}
+//-->
+{/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

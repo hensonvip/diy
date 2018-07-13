@@ -1,0 +1,268 @@
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form action="ads.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--广告名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('NameNotic');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.ad_name}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入广告名称" autocomplete="off" name="ad_name" value="{$ads.ad_name}" >
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="NameNotic">{$lang.ad_name_notic}</span>
+            </div>
+        </div>
+        {if $action eq "add"}
+        <!--广告名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.media_type}
+            </label>
+            <div class="layui-input-block">
+                <select name="media_type" lay-filter="sel_media_type">
+                    <option value='0'>{$lang.ad_img}</option>
+<!--                     <option value='1'>{$lang.ad_flash}</option>
+                    <option value='2'>{$lang.ad_html}</option>
+                    <option value='3'>{$lang.ad_text}</option> -->
+                </select>
+            </div>
+        </div>
+        {else}
+        <input type="hidden" name="media_type" value="{$ads.media_type}" />
+        {/if}
+        <!--广告位置-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.position_id}
+            </label>
+            <div class="layui-input-block">
+                <select class="chzn-select" name="position_id">
+                        <option value='0'>{$lang.outside_posit}</option>
+                        {html_options options=$position_list selected=$ads.position_id}
+                    </select>
+            </div>
+        </div>
+        <!--开始日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.start_date}
+            </label>
+            <div class="layui-input-block">
+                <input name="start_time" type="text" id="start_time" size="22" value='{$ads.start_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="layui-input" />
+            </div>
+        </div>
+        <!--结束日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.end_date}
+            </label>
+            <div class="layui-input-block">
+                <input name="end_time" type="text" id="end_time" size="22" value='{$ads.end_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="layui-input" />
+            </div>
+        </div>
+        {if $ads.media_type eq 0 OR $action eq "add"}
+        <div id="0">
+            <!--广告链接-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.ad_link}
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" name="ad_link" value="{$ads.ad_link}" class="layui-input" />
+                </div>
+            </div>
+            <!--上传广告图片-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <a href="javascript:showNotice2('AdCodeImg');" title="{$lang.form_notice}">
+                        <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                    </a>
+                    {$lang.require_field} {$lang.upfile_img}
+                </label>
+                <div class="layui-input-block">
+                    <input type='file' name='ad_img' size='35' style="margin-left:10px;margin-top:5px;" />
+                    <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="AdCodeImg">{$lang.ad_code_img}</span>
+                    {if $ads.ad_code neq ''}<br/><br/><a href="../data/afficheimg/{$ads.ad_code}" target="_blank"><img src="../data/afficheimg/{$ads.ad_code}" style="max-height:100px;margin-left:10px;" /></a>{/if}
+                </div>
+            </div>
+            <!--或图片网址-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.img_url}
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" name="img_url" value="{$url_src}" class="layui-input" />
+                </div>
+            </div>
+
+        </div>
+        {/if}
+        {if $ads.media_type eq 1 OR $action eq "add"}
+        <div id="1" style="{if $ads.media_type neq 1 OR $action eq 'add'}display:none{/if}">
+            <!--上传Flash文件-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <a href="javascript:showNotice2('AdCodeFlash');" title="{$lang.form_notice}">
+                        <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                    </a>
+                    {$lang.upfile_flash}
+                </label>
+                <div class="layui-input-block">
+                    <input type='file' name='upfile_flash' size='35' style="margin-left:10px;margin-top:5px;" />
+                    <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="AdCodeFlash">{$lang.ad_code_flash}</span>
+                </div>
+            </div>
+            <!--或Flash网址-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.flash_url}
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" name="flash_url" value="{$flash_url}" class="layui-input" />
+                </div>
+            </div>
+        </div>
+        {/if}
+        {if $ads.media_type eq 2 OR $action eq "add"}
+        <div id="2" style="{if $ads.media_type neq 2 OR $action eq 'add'}display:none{/if}">
+            <!--输入广告代码-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.enter_code}
+                </label>
+                <div class="layui-input-block">
+                    <textarea name="ad_code" cols="50" rows="7">{$ads.ad_code}</textarea>
+                </div>
+            </div>
+        </div>
+        {/if}
+        {if $ads.media_type eq 3 OR $action eq "add"}
+        <div id="3" style="{if $ads.media_type neq 3 OR $action eq 'add'}display:none{/if}">
+            <!--广告链接-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.ad_link}
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" name="ad_link2" value="{$ads.ad_link}" class="layui-input" />
+                </div>
+            </div>
+            <!--广告内容 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.ad_code}
+                </label>
+                <div class="layui-input-block">
+                    <textarea name="ad_text" cols="50" rows="7">{$ads.ad_code}</textarea>
+                </div>
+            </div>
+        </div>
+        {/if}
+        <!--是否开启-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.enabled}
+            </label>
+            <div class="layui-input-block">
+                <input type="radio" name="enabled" value="1" {if $ads.enabled eq 1} checked="true" {/if} title="{$lang.is_enabled}" />
+                <input type="radio" name="enabled" value="0" {if $ads.enabled eq 0} checked="true" {/if} title="{$lang.no_enabled}" />
+            </div>
+        </div>
+        <!--广告联系人-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.link_man}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="link_man" value="{$ads.link_man}" class="layui-input" />
+            </div>
+        </div>
+        <!--广告联系人-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.link_email}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="link_email" value="{$ads.link_email}" class="layui-input" />
+            </div>
+        </div>
+        <!--联系电话-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.link_phone}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="link_phone" value="{$ads.link_phone}" class="layui-input" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="id" value="{$ads.ad_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+<script language="JavaScript">
+    /*$().ready(function(){
+        $(".chzn-select").chosen();
+    });*/
+    document.forms['theForm'].elements['ad_name'].focus();
+    <!--
+    var MediaList = new Array('0', '1', '2', '3');
+    {literal}
+    function showMedia(AdMediaType)
+    {
+        for (I = 0; I < MediaList.length; I ++)
+        {
+            if (MediaList[I] == AdMediaType)
+                document.getElementById(AdMediaType).style.display = "";
+            else
+                document.getElementById(MediaList[I]).style.display = "none";
+        }
+    }
+
+    /**
+     * 检查表单输入的数据
+     */
+    function validate()
+    {
+        validator = new Validator("theForm");
+        validator.required("ad_name",     ad_name_empty);
+        validator.islt('start_time', 'end_time', '结束日期不能小于开始日期');
+
+        return validator.passed();
+    }
+
+    onload = function()
+    {
+        // 开始检查订单
+        startCheckOrder();
+        document.forms['theForm'].reset();
+    }
+
+    //-->
+    {/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+        //监听指定开关
+        form.on('select(sel_media_type)', function(data){
+            showMedia(data.value);
+        });      
+
+    });
+</script>
+{include file="pagefooter.htm"}

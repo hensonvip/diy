@@ -1,0 +1,957 @@
+{include file="public/header" /}
+<style type="text/css">
+    .xq2 .xq2_tit img,.xq2 .xq2_inf{margin:0;padding:0;}
+</style>
+
+<body data-psd-width="840">
+<div class="pr hg header2">
+    <div class="pa back " onclick="history.go(-1)"></div>
+    <div class="sw">
+        <a class="on" href="javascript:;">商品</a>
+        <a href="javascript:;">详情</a>
+        <a  href="javascript:;" id="comment">评论</a>
+    </div>
+    <div class="fx clearfix">
+        <a href="{:url('Cart/index')}"><i class="icon fl"></i></a>
+        <em class="icon fl" onclick="do_share()"></em>
+    </div>
+</div>
+<div class="pool_box">
+    <div class="pool_wrap on">
+        <div class="content">
+            <div class="shang">
+                <div class="shang1 bgc">
+                    <div class="swiper-container shang_ban">
+                        <div class="swiper-wrapper">
+                            {foreach $data.goods_gallery as $key => $vo}
+                            <div class="swiper-slide"><img src="{$webUrl}/{$vo.img_url}"></div>
+                            {/foreach}
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+
+                    <!--限时促销价-->
+                    {if $data.discount_price gt 0}
+                    <div class="active_price clearfix">
+                        <ul>
+                            <li>
+                                <h3>{$data.format_discount_price}</h3>
+                            </li>
+                            <li>
+                                <h6>{$data.format_market_price}</h6>
+                            </li>
+                            <li id="discount_time">
+                                <span>距优惠结束</span>
+                                <div class="clearfix surplus_time">
+                                    <em>01</em><i>:</i>
+                                    <em>17</em><i>:</i>
+                                    <em>52</em>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    {/if}
+
+                    <!--砍价活动-->
+                    {if $data.is_bargain eq 1}
+                    <div class="active_price clearfix">
+                        <ul>
+                            <li>
+                                <p>最低价</p>
+                                <h2>{$data.bargain_info.format_low_price}</h2>
+                            </li>
+                            <li>
+                                <p>原价</p>
+                                <span>{$data.bargain_info.shop_price}</span>
+                            </li>
+                            <li id="bargain_time">
+                                <span>距活动结束</span>
+                                <div class="clearfix surplus_time">
+                                    <em>01</em><i>:</i>
+                                    <em>17</em><i>:</i>
+                                    <em>52</em>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    {/if}
+
+                    <div class="pin_mes">
+                        <h1 class="my_t">{$data.goods_name}</h1>
+                        <div class="xq1_tit">
+
+                            {if $data.is_group eq 1}
+                                <!--拼团活动-->
+                                <div class="pin_price">
+                                    <div class="clearfix"><span>{$data.group_info.format_group_price}</span><em>{$data.group_info.format_shop_price}</em><i class="fr">已拼{$data.group_info.join_num}件</i></div>
+                                    <h6>活动时间：{$data.group_info.format_start_time} — {$data.group_info.format_end_time}</h6>
+                                </div>
+                            {else}
+                                <!--普通购物流程-->
+                                {if $data.discount_price eq 0 && $data.is_bargain eq 0}
+                                <div class="jff">
+                                    <em class="hc"><font>{$data.format_shop_price}</font></em>
+                                    <i>{$data.format_market_price}</i>
+                                </div>
+                                {/if}
+                            {/if}
+
+                            <div class="sps clearfix" style="padding-top: .25rem;border-bottom: 0;">
+                                <span>库存：{$data.goods_number}</span>
+                                <span>评价：{$data.comment_count}</span>
+                                <span>销量：{$data.selled_count}</span>
+                                {if $data.is_virtual}
+                                <span style="width:100%;">有效日期：{$data.format_valid_date}</span>
+                                {else}
+                                <span style="width:100%;">{$data.shipping_str}</span>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <div class="quan" style="display:none;">
+                            <a class="quans clearfix" href="###">
+                                <span class="fl">领券：</span>
+                                <ul class="clearfix fl djuan">
+                                    <li>满99减10</li>
+                                    <li>满199减20</li>
+                                    <li>满199减20</li>
+                                    <li>满199减20</li>
+                                </ul>
+                            </a>
+                        </div>
+
+                        <div class="cu_xiao clearfix" {if !empty($data['promotion']) and $data['give_integral'] eq 0}style="display:none;"{/if}>
+                            <span class="sp1">促销：</span>
+                            <ul class="cux_list">
+                                {if $data.give_integral > 0}
+                                <li class="clearfix">
+                                    <span>积分</span>
+                                    <p>购买可得{$data.give_integral}积分</p>
+                                </li>
+                                {/if}
+
+                                {if $data.promotion}
+                                    {foreach $data.promotion as $key => $vo}
+                                    <li class="clearfix">
+                                        <span>{$vo.act_type}</span>
+                                        <p>{$vo.act_name}</p>
+                                    </li>
+                                    {/foreach}
+                                {/if}
+
+                                {if $data.buymax gt 0}
+                                <li class="clearfix">
+                                    <span>限购</span>
+                                    <p>每人限购{$data.buymax}件</p>
+                                </li>
+                                {/if}
+
+                                <!-- <li class="clearfix">
+                                    <span>满赠</span>
+                                    <p>满40元即赠送神秘礼物，赠完即止哦</p>
+                                </li>
+                                <li class="clearfix">
+                                    <a href="javascript:;" class="clearfix cux_btn">
+                                        <span>优惠套餐</span>
+                                        <p>进入选择优惠组合</p>
+                                    </a>
+                                </li> -->
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                {if $data.is_bargain eq 1}
+                <!--砍价-->
+                <ul class="relation bgc clearfix">
+                    <li>
+                        <h4>{$data.bargain_info.guanzhu_num}</h4>
+                        <span>人关注</span>
+                    </li>
+                    <li>
+                        <h4>{$data.bargain_info.join_num}</h4>
+                        <span> 人参与</span>
+                    </li>
+                    <li>
+                        <h4>{$data.bargain_info.bargain_num}</h4>
+                        <span>人帮砍</span>
+                    </li>
+                </ul>
+                {/if}
+
+
+                {if $data.is_group eq 1 && !empty($data.group_log)}
+                <!--拼团-->
+                <div class="merge bgc" style="margin-top: 0.3rem;">
+                    <dl class="merge_list">
+                        <dt><a href="javascript:;">{$data.group_num}人正在拼单</a></dt>
+                        {foreach $data.group_log as $key => $vo}
+                        <dd class="clearfix" id="group_box_{$vo.id}">
+                            <div class="pic clearfix">
+                                <span><img src="/{$vo.headimg}" style="border-radius: 50%;"></span>
+                                <em>{$vo.user_name}</em>
+                            </div>
+                            <div class="tit">
+                                <a class="go" href="javascript:;" onclick="choose_attr(1,102,{$vo.id})">去拼单</a>
+                                <div class="fall">
+                                    <p>还差{$vo.differ_num}人</p>
+                                    <div class="fall_time" id="group_time_{$vo.id}">
+                                        <span>剩余</span>
+                                        <em>21</em><i>：</i>
+                                        <em>24</em><i>：</i>
+                                        <em>01</em><i>：</i>
+                                        <em>6</em>
+                                    </div>
+                                </div>
+                            </div>
+                        </dd>
+                        {/foreach}
+                    </dl>
+                </div>
+                {/if}
+
+
+                {if $data.properties}
+                <div class="gge bgc">
+                    <a href="javascript:;" onclick="choose_attr(0)">
+                        选择：种类 规格
+                    </a>
+                </div>
+                {/if}
+
+                {if $comment_count}
+                <div class="gge bgc">
+                    <a href="javascript:;" onclick="$('#comment').click();">
+                        商品评论（{$data.comment_count}）
+                    </a>
+                </div>
+                <div class="ping bgc">
+                    <ul>
+                        <li class="clearfix">
+                            <div class="fl pic"> <img src="{$webUrl}/{$data.comment.0.headimg}" style="border-radius: 50%;"></div>
+                            <div class="fr pl_t">
+                                <div class="clearfix name">
+                                    <em >{$data.comment.0.user_name}</em>
+                                    <img  src="{$webUrl}__IMGWAP__/plxing{$data.comment.0.comment_rank}.png">
+                                    <span >{$data.comment.0.add_time_str}</span>
+                                </div>
+                                <p>{$data.comment.0.content}</p>
+                                <!-- <span>颜色：15531-262女款</span> -->
+                                {if $data.comment.0.shaidan_imgs}
+                                <dl class="clearfix">
+                                    {foreach $data.comment.0.shaidan_imgs as $key => $vo}
+                                    <dd><img src="{$webUrl}/{$vo.thumb}"></dd>
+                                    {/foreach}
+                                </dl>
+                                {/if}
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="more"> <a href="javascript:;" onclick="$('#comment').click();">查看全部评论</a></div>
+                </div>
+                {/if}
+
+                {if $data.supplier_id > 0}
+                <div class="ping_qj bgc">
+                    <div class="qj_name">
+                        <div class="pic fl"><img src="__IMGWAP__/qj.png"> </div>
+                        <div class="qj_tit">
+                            <h2 style="padding-top: 0.2rem;text-align: center;">{$data.supplier_name}</h2>
+                            <!-- <span>满足需求 不将就</span> -->
+                        </div>
+                    </div>
+                    <ul class="clearfix">
+                        <li><a href="">
+                            <h2>{$data.supplier.sell_num}</h2>
+                            <span>全部商品</span>
+                        </a></li>
+                        <li><a href="">
+                            <h2>{$data.supplier.fensi}</h2>
+                            <span>关注人数</span>
+                        </a></li>
+                        <li><a href="javascript:;">
+                            <div>{$data.supplier.rank_name}</div>
+                            <span>店铺等级</span>
+                        </a></li>
+                    </ul>
+                    <div class="lick clearfix">
+                        <a class="a1" href="javascript:;" onclick="guanzhu({$data.supplier_id});"><i></i>关注店铺</a>
+                        <a class="a2" href="{:url('Supplier/supplier_details',array('supplier_id'=>$data.supplier_id))}"><i></i>进入店铺</a>
+                    </div>
+                </div>
+                {/if}
+
+                <div class="lve">
+                    <h1 class="bgc">猜你喜欢</h1>
+                    <ul class="clearfix">
+                        {foreach $data2.list as $key => $vo}
+                        <li><a href="{:url('Goods/details',array('goods_id'=>$vo['goods_id']))}">
+                            <div class="pic"><img src="{$webUrl}/{$vo.goods_thumb}"></div>
+                            <p>{$vo.goods_name}</p>
+                            <span><i>￥</i>{$vo.shop_price}</span>
+                        </a></li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pool_wrap">
+        <div class="content">
+            <div class="shang xq">
+                <div class="xq2 bgc" style="margin-top:0px;">
+                    <h1>商品详情</h1>
+                    <div class="xq2_tit">
+                        <div class="xq2_inf clearfix">
+                            {if $data.goods_desc neq ''}{$data.goods_desc}{else}<p align="center">商品暂无描述！</p>{/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pool_wrap">
+        <div class="content">
+            <div class="shang">
+                <div class="">
+                    <div class="coment">
+                        <div class="all2 bgc">
+                            <ul class="clearfix">
+                                <li class="on">
+                                    <a href="javascript:;" onclick="do_reset(0)">
+                                    <p>全部</p>
+                                    <span>{$comment_data.rank_num.rank_a + $comment_data.rank_num.rank_b + $comment_data.rank_num.rank_c}</span>
+                                    </a>
+                                </li>
+                                <li ><a href="javascript:;" onclick="do_reset(1)">
+                                    <p>好评</p>
+                                    <span>{$comment_data.rank_num.rank_a}</span></a>
+                                </li>
+                                <li ><a href="javascript:;" onclick="do_reset(2)">
+                                    <p>中评</p>
+                                    <span>{$comment_data.rank_num.rank_b}</span></a>
+                                </li>
+                                <li ><a href="javascript:;" onclick="do_reset(3)">
+                                    <p>差评</p>
+                                    <span>{$comment_data.rank_num.rank_c}</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="coment_wrap">
+                            <div class="coment_con" style="display: block;">
+                                <ul class="bgc" id="load_box">
+                                    {include file="goods/comment_list_ajax" /}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer2 clearfix">
+    <ul class="hanker clearfix">
+        <li class="li1 on ">
+            {if $data.chat}
+                {if $data.chat.0.cus_type eq 0}
+                <a title="点击这里给我发消息" alt="点击这里给我发消息" href="http://wpa.qq.com/msgrd?v=3&uin={$data.chat.0.cus_no}&site=qq&menu=yes" target="_blank">
+                {else}
+                <a title="点击这里给我发消息" alt="点击这里给我发消息" href="http://amos1.taobao.com/msg.ww?v=2&uid={$data.chat.0.cus_no}&s=2" target="_blank">
+                {/if}
+            {else}
+            <a href="javascript:;" onclick="noChat()">
+            {/if}
+                <i class="icon"></i>
+                <p>客服</p>
+            </a>
+        </li>
+        <li class="li2 ">
+            <a href="javascript:;" onclick="collectGoods({$data.goods_id})" id="collect_btn">
+                <i class="icon {if $data.is_collected}on{/if}"></i>
+                <p>收藏</p>
+            </a>
+        </li>
+        {if $data.supplier_id > 0}
+        <li class="li3 ">
+            <a href="{:url('Supplier/supplier_details',array('supplier_id'=>$data.supplier_id))}">
+                <i class="icon"></i>
+                <p>店铺</p>
+            </a>
+        </li>
+        {/if}
+    </ul>
+    <div class="like clearfix">
+        {if $data.is_bargain eq 1}
+            <!--砍价活动-->
+            <a href="javascript:;" class="lk2" onclick="do_bargain('{$user_id}','{$bargain_id}')">立即砍价</a>
+            <a href="javascript:;" class="lk1" onclick="choose_attr(0,0)">原价购买</a>
+        {elseif $data.is_group eq 1}
+            <!--拼团活动-->
+            <a href="javascript:;" class="lk2" onclick="choose_attr(1,102)">发起拼单</a>
+            <a href="javascript:;" class="lk1" onclick="choose_attr(0,0)">原价购买</a>
+        {else}
+            {if $data.is_virtual}
+            <!--虚拟服务商品-->
+            <a href="javascript:;" class="lk2" onclick="choose_attr(1,7)">立刻购买</a>
+            {else}
+            <!--普通购物流程-->
+            <a href="javascript:;" class="lk2" onclick="choose_attr(1,0)">立刻购买</a>
+            <a href="javascript:;" class="lk1" onclick="choose_attr(0,0)">加入购物车</a>
+            {/if}
+        {/if}
+    </div>
+</div>
+
+<input type="hidden" id="goods_id" value="{$goods_id}">
+<input type="hidden" id="flow_type" value="0"><!--拼团选属性计算用，0为普通商品类型，102为拼团商品类型-->
+
+<!-- 购物车弹出代码-->
+<link href="__CSSWAP__/goods.css" type="text/css" rel="stylesheet" />
+<section class="f_mask" style="display: none;"></section>
+<section class="f_block" id="choose_attr" style="height:0; overflow:hidden;">
+<form action="javascript:addToCart({$goods_id});" method="post" id="purchase_form">
+    <div class="f_title_attr">
+        <img  id="ECS_GOODS_ATTR_THUMB" src="{$webUrl}/{$data.goods_img}" style=" float:left;">
+        <div class="f_title_arr_r">
+            <span>价格：<i id="GOODS_AMOUNT_CHOOSE">¥{$data.shop_price}</i></span>
+            <span>库存：<i id="GOODS_NUMBER">{$data.goods_number}</i>件</span>
+            <span id="ECS_GOODS_ATTR"></span>
+        </div>
+        <a class="c_close_attr" href="javascript:void(0)" onclick="close_choose_attr();"></a>
+        <div style="height:0px; line-height:0px; clear:both;"></div>
+    </div>
+    <div class="f_content_attr">
+        <ul class="navContent" style="display:block;">
+        {foreach $data.properties as $spec_key => $spec}
+            <li class="arrt_box">
+                <div class="title">{$spec.name}</div>
+                <div class="item">
+                  {if $spec.attr_type eq 1}
+                  {foreach $spec.values as $key => $value}
+                  <a href="javascript:;" {if $key eq 0}class="hover"{/if} name="{$value.id}" onclick="changeAtt(this);" for="spec_value_{$value.id}" title="{if $value.price gt 0}加{$value.format_price|abs}{elseif $value.price lt 0}减{$value.format_price|abs}{/if}"><input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked{/if} />
+                  {$value.label}  {if $value.price gt 0}<font>+ {$value.format_price|abs}</font>{elseif $value.price lt 0}<font>- {$value.format_price|abs}</font>{/if}
+
+                  </a>
+                  {/foreach}
+                  {else}
+                  {foreach $spec.values as $key => $value}
+                  <a href="javascript:;" {if $key eq 0}class="hover"{/if} name="{$value.id}" onclick="changeAtt1(this)" for="spec_value_{$value.id}" title="{if $value.price gt 0}加{$value.format_price|abs}{elseif $value.price lt 0}减{$value.format_price|abs}{/if}"><input type="checkbox" style=" display:none" name="spec_{$spec_key}" value="{$value.id}" id="spec_value_{$value.id}" {if $key eq 0}checked{/if}/>
+                {$value.label} {if $value.price gt 0}<font>+ {$value.format_price|abs}</font>{elseif $value.price lt 0}<font>- {$value.format_price|abs}</font>{/if}
+                   </a>
+                   {/foreach}
+                   {/if}
+                </div>
+            </li>
+        {/foreach}
+            <li style=" border-bottom:1px solid #eeeeee">
+                <div class="title1">购买数量</div>
+                <div class="item1">
+                 <script language="javascript" type="text/javascript">  function goods_cut(){  var num_val=document.getElementById('number');  var new_num=num_val.value;  var Num = parseInt(new_num);  if(Num>1)Num=Num-1;  num_val.value=Num;  }  function goods_add(){  var num_val=document.getElementById('number');  var new_num=num_val.value;  var Num = parseInt(new_num);  Num=Num+1;  num_val.value=Num;  } </script>
+                 <span class="ui-number">
+                  <button type="button" class="decrease" onclick="goods_cut();changePrice();"></button>
+                  <input type="number" class="num" id="number" onblur="changePrice();" name="number" value="1" min="1" style=" text-align:center"/>
+                  <button type="button" class="increase" onclick="goods_add();changePrice();"></button>
+                  </span>
+              </div>
+
+            </li>
+        </ul>
+    </div>
+    <div class="f_foot">
+        <input type="submit"  border="0" class="add_gift_attr" value="确认" />
+        <div style=" height:30px"></div>
+    </div>
+</form>
+</section>
+
+<input type="hidden" id="type" value="{$type}">
+<input type="hidden" id="page" value="{$page}">
+
+{if $data.is_bargain eq 1}
+<!--砍价-->
+<div class="kan_mask">
+    <div class="box">
+        <div class="pic" id="headimg"><img src="__IMGWAP__/v103_img6.png"></div>
+        <h2>砍掉  <span><em id="bargain_price">1.5</em></span> 元</h2>
+        <p id="bargain_str">手起刀落，成功帮TA砍下一刀</p>
+        <a href="{:url('Bargain/details',array('bargain_id'=>$bargain_id))}"><button>确定</button></a>
+    </div>
+</div>
+{/if}
+
+<!--领券弹窗-->
+<div class="receive_box">
+    <div class="receive">
+        <div class="receive_t clearfix">领券<img class="close" src="__IMGWAP__/v103_close.png"> </div>
+        <ul class="receive_list">
+            <li class="clearfix on">
+                <h2>￥30</h2>
+                <div class="tit">
+                    <p>订单金额满588元可使用</p>
+                    <p>有限期：2017.07.04—2017.07.30</p>
+                </div>
+                <i class="icon"></i>
+            </li>
+            <li class="clearfix ">
+                <h2>￥30</h2>
+                <div class="tit">
+                    <p>订单金额满588元可使用</p>
+                    <p>有限期：2017.07.04—2017.07.30</p>
+                </div>
+                <i class="icon"></i>
+            </li>
+            <li class="clearfix ">
+                <h2>￥30</h2>
+                <div class="tit">
+                    <p>订单金额满588元可使用</p>
+                    <p>有限期：2017.07.04—2017.07.30</p>
+                </div>
+                <i class="icon"></i>
+            </li>
+         </ul>
+    </div>
+</div>
+
+<!--促销弹窗-->
+<div class="promotion_box">
+    <div class="promotion">
+        <div class="promotion_t clearfix">促销<img class="close" src="__IMGWAP__/v103_close.png"></div>
+        <div class="cu_xiao clearfix bgc">
+            <span class="sp1">促销：</span>
+            <ul class="cux_list">
+                <li class="clearfix"><a href="" class="clearfix">
+                    <span>限购</span>
+                    <p>每笔订单限购4件/（每个会员限购4件），超 该商品全部恢复非活动价出则</p>
+                </a></li>
+                <li class="clearfix"><a href="">
+                    <span>积分</span>
+                    <p>购买可得400积分</p>
+                </a></li>
+                <li class="clearfix"><a href="">
+                    <span>满减</span>
+                    <p>每满50元，减5元；每满100元，减20元；每 满300元，减80元</p>
+                </a></li>
+                <li class="clearfix"><a href="">
+                    <span>满赠</span>
+                    <p>满40元即赠送神秘礼物，赠完即止哦</p>
+                </a></li>
+                <li class="clearfix"><a href="" class="clearfix">
+                    <span>优惠套餐</span>
+                    <p>最高省<font>100元</font></p>
+                    <i>共7款</i>
+                </a></li>
+            </ul>
+        </div>
+        <div class="choose">
+            <ul class="choose_list">
+                <li class="clearfix">
+                    <span>套餐1</span>
+                    <div class="choose_r clearfix">
+                        <div class="pic"><img src="__IMGWAP__/v103_img13.png"></div>
+                        <i class="icon"></i>
+                        <div class="pic"><img src="__IMGWAP__/v103_img14.png"></div>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <span>套餐1</span>
+                    <div class="choose_r clearfix">
+                        <div class="pic"><img src="__IMGWAP__/v103_img13.png"></div>
+                        <i class="icon"></i>
+                        <div class="pic"><img src="__IMGWAP__/v103_img14.png"></div>
+                        <i class="icon"></i>
+                        <div class="pic"><img src="__IMGWAP__/v103_img15.png"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!-- share css & js -->
+<link rel="stylesheet" href="__EXTENDWAP__/share/css/share.min.css">
+<script src="__EXTENDWAP__/share/js/social-share.min.js"></script>
+<style type="text/css">
+    .social-share .social-share-icon{width: 50px !important;height: 50px !important;line-height: 50px !important;margin-left: 0.5rem;}
+    .share_title{color:#c01414;text-align: center;font-size: 0.38rem;line-height: 1rem;}
+</style>
+<div id="share_box" style="display:none;">
+    <h1 class="share_title">分享到</h1>
+    <div class="social-share" data-initialized="true" style="text-align: center;" data-url="{$share_url}"  data-title="{$data.goods_name}">
+        <a href="#" class="social-share-icon icon-weibo"></a>
+        <a href="#" class="social-share-icon icon-wechat"></a>
+        <a href="#" class="social-share-icon icon-qq"></a>
+        <a href="#" class="social-share-icon icon-qzone"></a>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+<script type="text/javascript">
+    function noChat(){
+        layer.open({
+            content: '该商家暂无客服！'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+</script>
+<script type="text/javascript">
+    //重置
+    function do_reset(type){
+        var index = layer.open({type: 2,content: '加载中'});
+        $('#load_box').html('');
+        $('#type').val(type);
+        $('#page').val(2);
+        var goods_id = $('#goods_id').val();
+        $.ajax({
+            type: 'GET',
+            url: "{:url('Goods/comment')}",
+            data:{is_ajax:1,page:1,type:type,goods_id:goods_id},
+            dataType: 'html',
+            success: function(result){
+                layer.close(index);
+                setTimeout(function(){
+                    //追加页面数据
+                    $('#load_box').append(result);
+                },500);
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    var goods_id = $('#goods_id').val();
+    // dropload
+    $('.coment_wrap').dropload({
+        scrollArea : window,
+        domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+            domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+            domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+        },
+        domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+            domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+            domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+        },
+        loadUpFn : function(me){
+            setTimeout(function(){
+               window.location.reload();
+            },100);
+        },
+        loadDownFn : function(me){
+            var page = $('#page').val();//翻页
+            var type = $('#type').val();
+            $.ajax({
+                type: 'GET',
+                url: "{:url('Goods/comment')}",
+                data:{is_ajax:1,page:page,type:type,goods_id:goods_id},
+                dataType: 'html',
+                success: function(result){
+                    $('#page').val(parseInt(page)+parseInt(1));//翻页
+                    setTimeout(function(){
+                        //追加页面数据
+                        $('#load_box').append(result);
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                    },500);
+                },
+                error: function(xhr, type){
+                    // alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                    // me.noData();
+
+                }
+            });
+        }
+
+    });
+</script>
+<script>
+    //单独页面上的js
+    $(function(){
+
+        //领券弹窗
+        $('.quans').click(function(){
+            $('.receive_box').fadeIn();
+        })
+        $('.receive_box .close').click(function(){
+            $('.receive_box').fadeOut();
+        })
+
+        //促销弹窗
+        $('.cux_btn').click(function(){
+            $('.promotion_box').fadeIn();
+        })
+        $('.promotion_box .close').click(function(){
+            $('.promotion_box').fadeOut();
+        })
+
+        var mySwiper = new Swiper('.shang_ban',{
+            loop: true,
+            // autoplay: 3000,
+            autoHeight: true,
+            pagination : '.swiper-pagination',
+            paginationType : 'fraction',
+         })
+
+        $('.sw a').click(function(){
+            $(this).siblings().removeClass('on');
+            $(this).addClass('on');
+            var num=$(this).index();
+            $('.pool_box .pool_wrap').siblings().removeClass('on');
+            $('.pool_box .pool_wrap').eq(num).addClass('on');
+        })
+        tab('.all2 li','.coment_wrap>.coment_con');
+
+        function tab(a,b){
+            $(a).click(
+                function(){
+                    var i = $(this).index();
+                    if($(this).hasClass('on')){
+                    }else{
+                        $(this).addClass('on').siblings().removeClass('on');
+                        // $(b).hide();
+                        // $(b).eq(i).fadeIn();
+                    }
+
+                }
+            )
+        }
+
+        //收藏状态切换
+        $('#collect_btn').click(function(){
+            $('#collect_btn i').toggleClass('on');
+        })
+
+        {if $data.discount_price > 0}
+        //促销倒计时
+        jisuandaojishi('discount_time','{$data.discount_end_time}');
+        {/if}
+
+        {if $data.is_bargain > 0}
+        //砍价倒计时
+        jisuandaojishi('bargain_time','{$data.bargain_info.end_time}');
+        {/if}
+
+        {if $data.is_group > 0}
+        //拼团倒计时
+        {foreach $data.group_log as $key => $vo}
+            jisuandaojishi2('{$vo.id}','{$vo.end_time}');
+        {/foreach}
+        {/if}
+
+    })
+</script>
+
+<script type="text/javascript">
+var goods_id = $('#goods_id').val();
+//属性选择窗口
+function choose_attr(quick,extCode,group_log_id){
+    $('#flow_type').val(extCode);//更新商品类型
+    changePrice();
+
+    document.body.style.overflow='hidden';
+    $("#choose_attr").animate({height:'80%'},[10000]);
+
+        var total=0,h=$(window).height(),
+        top =$('.f_title_attr').height()||0,
+        bottom =$('#choose_attr .f_foot').height()||0,
+        con = $('.f_content_attr');
+        total = 0.8*h;
+        con.height(total-top-bottom+'px');
+        $(".f_mask").show();
+        var actionForm = document.getElementById('purchase_form');
+        actionForm.action = "javascript:addToCart({$goods_id},"+quick+",0,"+extCode+",0,"+group_log_id+"),close_choose_attr()";
+
+}
+//关闭属性窗口
+function close_choose_attr(){
+    document.body.style.overflow='';
+    $(".f_mask").hide();
+    $('#choose_attr').animate({height:'0'},[10000]);
+}
+//选择属性的状态
+function changeAtt(t) {
+    t.lastChild.checked='checked';
+    for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+            if (t.parentNode.childNodes[i].className == 'hover') {
+                t.parentNode.childNodes[i].className = '';
+                t.childNodes[0].checked="checked";
+            }
+        }
+    t.className = "hover";
+    changePrice();
+}
+//选择属性之后获取新的商品信息
+function changePrice(){
+    //var index = layer.open({type: 2,content: '加载中'});
+    //获取属性值
+    var chk_value = new Array();
+    $('.arrt_box input:checked').each(function(){
+        chk_value.push($(this).val());
+    });
+    //alert(chk_value);return false;//获取的值
+    var number = $('#number').val();
+    if(number <= 0){
+        $('#number').val(1);
+        number = 1;
+    }
+
+    //商品类型
+    var flow_type = $('#flow_type').val();
+
+    $.ajax({
+        type: "post",
+        url: "{:url('Goods/changePrice')}",
+        dataType: 'json',
+        data:{attr_id:chk_value,number:number,goods_id:goods_id,flow_type:flow_type},
+        success: function(result){
+            $('#GOODS_AMOUNT_CHOOSE').html(result.data.result);
+            $('#GOODS_NUMBER').html(result.data.attr_num);
+            //layer.close(index);
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+</script>
+
+<script type="text/javascript">
+//普通购物流程优惠活动、砍价活动，计算倒计时
+function jisuandaojishi(id , closeTime)
+{
+    var timestamp = Date.parse(new Date());//当前时间
+
+    var closeTime = closeTime - timestamp/1000;
+    var displayTime;
+    function showTime(){
+        var day = Math.floor(closeTime / (60 * 60 * 24));
+        var hour = Math.floor(closeTime / (3600)) - (day * 24);
+        var minute = Math.floor(closeTime / (60)) - (day * 24 * 60) - (hour * 60);
+        var second = Math.floor(closeTime) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        closeTime -= 1;
+        //var html = '距离结束：'+day+'天'+hour+'小时'+minute+'分'+second+'秒';
+
+        var html = '';
+        if(day > 0){
+            html += '<span>距离优惠结束'+day+'天</span>';
+        }else{
+            html += '<span>距离优惠结束</span>';
+        }
+        html += '<div class="clearfix surplus_time">';
+            html += '<em>'+hour+'</em><i>:</i>';
+            html += '<em>'+minute+'</em><i>:</i>';
+            html += '<em>'+second+'</em>';
+        html += '</div>';
+
+        jQuery('#'+id).html(html);
+        if(closeTime <= -1)
+        {
+            clearInterval(displayTime);
+            //document.location.href = document.location.href;
+            location.reload();
+            return;
+        }
+    }
+    showTime();
+    displayTime = setInterval(function(){
+            showTime();
+    }, 1000)
+}
+</script>
+
+<script type="text/javascript">
+
+//立即砍价、帮砍
+function do_bargain(user_id,bargain_id){
+    var index = layer.open({type: 2,content: '加载中'});
+    $.ajax({
+       type: "post",
+       url: "{:url('Bargain/do_bargain')}",
+       dataType: 'json',
+       data:{help_user_id:user_id,bargain_id:bargain_id},
+       success: function(result){
+            layer.close(index);
+            if(result.code == 200){
+                $('#headimg').html('<img src="/'+result.data.headimg+'">');
+                $('#bargain_price').html(result.data.bargain_price);
+                $('#bargain_str').html(result.data.bargain_str);
+                $('.kan_mask').show();
+            }else{
+                layer.open({
+                    content: result.message
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            }
+       }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+//拼团
+function jisuandaojishi2(id , closeTime)
+{
+    var timestamp = Date.parse(new Date());//当前时间
+
+    var closeTime = closeTime - timestamp/1000;
+    var displayTime;
+    function showTime(){
+        var day = Math.floor(closeTime / (60 * 60 * 24));
+        var hour = Math.floor(closeTime / (3600)) - (day * 24);
+        var minute = Math.floor(closeTime / (60)) - (day * 24 * 60) - (hour * 60);
+        var second = Math.floor(closeTime) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        closeTime -= 1;
+        var html = '';
+        html += '<span>剩余'+day+'天</span>';
+        html += '<em>'+hour+'</em><i>：</i>';
+        html += '<em>'+minute+'</em><i>：</i>';
+        html += '<em>'+second+'</em><i>';
+        //var html = '距离结束：'+day+'天'+hour+'小时'+minute+'分'+second+'秒';
+        jQuery('#group_time_'+id).html(html);
+        if(closeTime <= -1)
+        {
+            clearInterval(displayTime);
+            //document.location.href = document.location.href;
+            //location.reload();
+            jQuery('#group_box_'+id).hide();
+            return;
+        }
+    }
+    showTime();
+    displayTime = setInterval(function(){
+            showTime();
+    }, 1000)
+}
+</script>
+
+<script type="text/javascript">
+    //分享弹出页面层
+    function do_share(){
+        layer.open({
+        type: 1
+        ,content: $('#share_box').html()
+        ,anim: 'up'
+        ,style: 'position:fixed; bottom:0; left:0; width: 100%; padding:10px 0; border:none;'
+        });
+    }
+</script>

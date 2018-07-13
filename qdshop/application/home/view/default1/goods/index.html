@@ -1,0 +1,368 @@
+{include file="public/header" /}
+{include file="public/right" /}
+<div class="main">
+    <div class="w1200">
+        <div class="hot-rec">
+            <div class="title">热卖推荐</div>
+            <ul class="hr-list">
+			{volist name="rexiao.list" id="vo"}
+				<li>
+                    <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="img-box"><img src="{$webUrl}{$vo.goods_thumb|default=""}" alt=""></a>
+                    <div class="text">
+                        <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="name">{:mbSubstr($vo['goods_name'],28)}</a>
+                        <div class="price">{$vo.format_shop_price}</div>
+                    </div>
+                </li>
+			{/volist}
+            </ul>
+        </div>
+        <div class="thumb1">
+            <div class="w1200">
+				<span class="level1"><a href="/">首页</a></span>
+                <span class="gt">&gt;</span>
+				{if condition="isset($crumbs) and $crumbs"}
+				{volist name="crumbs" id="vo"}
+				<span class="level1">{$vo.cat_name}</span>
+				{/volist}
+				{/if}
+				{if condition="$keywords"}
+				<span class="gt">&gt;</span>
+				{/if}
+				<span class="level-last">{$keywords}</span>
+            </div>
+        </div>
+        <div class="filter-b">
+            <div class="classify">
+                <div class="classify-group">
+                    <div class="type">品牌</div>
+                    <div class="classify-list">
+						{volist name="filter.brand" id="vo"}
+						<a href="javascript:js_aup6('brand_id','{$vo.brand_id}','param');" data-id="{$vo.brand_id}"><i></i>{$vo.brand_name}</a>
+						{/volist}
+                        <!-- <a class="selected" href=""><i></i>百雀羚（PECHOIN）</a> -->
+
+                        <div class="btns">
+                            <a class="btn btn-sure">确定</a>
+                            <a class="btn btn-cancel">取消</a>
+                        </div>
+                    </div>
+                    <div class="operation">
+                        <a class="icon btn-show"></a>
+                        <a class="icon btn-checkbox"></a>
+                    </div>
+                </div>
+				{volist name="filter.attr" id="vo"}
+				<div class="classify-group">
+                    <div class="type">{$vo.attr_name}</div>
+                    <div class="classify-list">
+						{volist name="vo.attr_values" id="v"}
+						<a href="" data-id="{$v}"><i></i>{$v}</a>
+						{/volist}
+                        <!-- <a href=""><i></i>补水</a> -->
+                        <div class="btns">
+                            <a class="btn btn-sure">确定</a>
+                            <a class="btn btn-cancel">取消</a>
+                        </div>
+                    </div>
+                    <div class="operation">
+                        <a class="icon btn-show"></a>
+                        <a class="icon btn-checkbox"></a>
+                    </div>
+                </div>
+				{/volist}
+            </div>
+        </div>
+        <div class="main-b">
+            <div class="main-l">
+                <div class="ml-title">
+                    <span>新品推荐</span>
+                </div>
+                <ul class="ml-list">
+
+					{volist name="xinpin.list" id="vo"}
+					<li>
+                        <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="img-box"><img src="{$webUrl}{$vo.goods_thumb|default=""}" alt=""></a>
+                        <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="name">{:mbSubstr($vo['goods_name'],28)}</a>
+                        <div class="price">
+                            <span class="p1">{$vo.format_shop_price}</span>
+                            <s class="p2">{$vo.format_market_price}</s>
+                        </div>
+                    </li>
+					{/volist}
+
+                </ul>
+            </div>
+            <div class="main-r">
+                <div class="mr-bar">
+                    <div class="filter-bar">
+                        <div class="filter-items">
+                            <a href="javascript:;" class="filter-one selected up"><!-- 加上类up箭头向上，不加up箭头向下 -->
+                                <span class="filter-title">新品</span>
+                            </a>
+                            <a href="javascript:;" class="filter-one up">
+                                <span class="filter-title">销量</span>
+                            </a>
+                            <a href="javascript:;" class="filter-one">
+                                <span class="filter-title">价格</span>
+                            </a>
+                            <a href="javascript:;" class="filter-one">
+                                <span class="filter-title">更新</span>
+                            </a>
+                            <a href="javascript:;" class="filter-one">
+                                <span class="filter-title">人气</span>
+                            </a>
+                        </div>
+                        <div class="page-control">
+                            <span class="total-goods">
+                                共 <span class="total-num">23</span> 个商品
+                            </span>
+                            <a href="javascript:;" class="icon btn-arrow btn-prev"></a>
+                            <span class="cur-page">
+                                <span class="cur">1</span>
+                                /
+                                <span class="total">24</span>
+                            </span>
+                            <a href="javascript:;" class="icon btn-arrow btn-next"></a>
+                        </div>
+                    </div>
+                    <div class="view-bar">
+                        <a class="show-on unselect"><i class="icon"></i>仅显示有货</a>
+                        <div class="view-type">
+                            <a class="icon view1"></a>
+                            <a class="icon view2 selected"></a>
+                            <a class="icon view3"></a>
+                        </div>
+                    </div>
+                </div>
+                <ul class="p-list">
+				{foreach $goods_list['list'] as $vo}
+					<li>
+                        <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="img-box">
+                            <img src="{$webUrl}{$vo.goods_thumb|default=""}" alt="">
+                            <div class="finish" {if condition="$vo['goods_number'] eq 0"}show{/if}><!-- 加类show出现，不加show隐藏 -->
+                                <span class="text">已售罄</span>
+                            </div>
+
+                            <span class="t1">爆款</span>
+							{/if}
+							{if condition="$vo['is_best'] eq 1"}
+                            <span class="t2">精品</span>
+							{/if}
+                        </a>
+                        <a target="_blank" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}" class="name">{$vo.goods_name|default=""}</a>
+                        <div class="state">
+                            <div class="price">{$vo.format_shop_price}</div>
+                            <div class="sell">已售{$vo.sold_count|default=0}件</div>
+                            <div class=" {if condition="$vo['goods_number'] eq 0"}bell{else/}add{/if}"></div><!-- 加类add显示购物车图标，加类bell显示铃铛 -->
+                        </div>
+                        <div class="p-bar">
+                            <!-- <a class="pb1"><i></i>对比</a> -->
+                            <a class="pb2 {if $vo.is_collected eq 1}red{/if}"  data-id="{$vo.goods_id}"><i></i>收藏</a>
+                            <a class="pb3"><i></i>{$vo.comment_count}</a>
+                        </div>
+                    </li>
+				{/foreach}
+
+                </ul>
+				{$toPage}
+            </div>
+        </div>
+        <div class="gh-b">
+            <div class="gh-bar">
+                <div class="gh-tabs">
+                    <a class="gh-tab selected">猜你喜欢</a>
+                    <a class="gh-tab">浏览历史</a>
+                </div>
+                <a class="btn-empty">清空</a>
+            </div>
+            <div class="gh-cont">
+                <ul class="gh-list show"><!-- 猜你喜欢 -->
+				{if condition="$user_like"}
+				{volist name="user_like" id="vo"}
+                    <li>
+                        <a class="img-box" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}"><img src="{$webUrl}{$vo.goods_thumb|default=""}" alt=""></a>
+                        <a class="title" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}">{$vo.goods_name|default=""}</a>
+                        <div class="pc-row">
+                            <div class="price">{$vo.format_shop_price}</div>
+                            <a class="speak">{$vo.comment_count}</a>
+                        </div>
+                    </li>
+				{/volist}
+				{/if}
+                </ul>
+                <ul class="gh-list"><!-- 浏览历史 -->
+				{if condition="$records_list"}
+				{volist name="records_list" id="vo"}
+                    <li>
+                        <a class="img-box" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}"><img src="{$webUrl}{$vo.goods_thumb|default=""}" alt=""></a>
+                        <a class="title" href="{:url('goods/details',array('goods_id'=>$vo['goods_id']))}">{$vo.goods_name|default=""}</a>
+                        <div class="pc-row">
+                            <div class="price">{$vo.format_shop_price}</div>
+                            <a class="speak">{$vo.comment_count}</a>
+                        </div>
+                    </li>
+				{/volist}
+				{/if}
+                </ul>
+            </div>
+        </div>
+        <div class="cl-b">
+            <div class="cl-bar">
+                <div class="cl-tabs">
+                    <a class="cl-tab selected">对比栏</a>
+                    <a class="cl-tab">最近浏览</a>
+                </div>
+                <div class="cl-r">
+                    <a class="btn-empty">清空</a>
+                    <a class="btn-compare">对比</a>
+                </div>
+            </div>
+            <div class="cl-cont">
+                <ul class="cl-list show"><!-- 对比栏商品 -->
+                    <li>
+                        <a href="" class="img-box">
+                            <img src="images/gd1.jpg" alt="">
+                        </a>
+                        <div class="text">
+                            <a href="" class="title">欧珀莱 (AUPRES)俊士控油爽肤水</a>
+                            <div class="pc-row">
+                                <span class="price">&yen;359.00</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="" class="img-box">
+                            <img src="images/gd2.jpg" alt="">
+                        </a>
+                        <div class="text">
+                            <a href="" class="title">海尔（Haier）479升变频风冷无霜多门冰箱干湿分储 T.ABT除菌干湿分储 T.ABT除菌</a>
+                            <div class="pc-row">
+                                <span class="price">&yen;359.00</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="cl-list"><!-- 最近浏览商品 -->
+                    <li>
+                        <a href="" class="img-box">
+                            <img src="images/gd2.jpg" alt="">
+                        </a>
+                        <div class="text">
+                            <a href="" class="title">海尔（Haier）479升变频风冷无霜多门冰箱干湿分储 T.ABT除菌干湿分储 T.ABT除菌</a>
+                            <div class="pc-row">
+                                <a class="btn-compare"><i></i>对比</a>
+                                <span class="price">&yen;359.00</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="" class="img-box">
+                            <img src="images/gd1.jpg" alt="">
+                        </a>
+                        <div class="text">
+                            <a href="" class="title">欧珀莱 (AUPRES)俊士控油爽肤水</a>
+                            <div class="pc-row">
+                                <a class="btn-compare"><i></i>对比</a>
+                                <span class="price">&yen;359.00</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="public/footer" /}
+    <script>
+        $(function(){
+            //筛选
+            $(".btn-show").click(function(){
+                $(this).parents(".classify-group").toggleClass("show");
+            })
+            $(".classify-list").each(function(){
+                if($(this).height()<=30){
+                    $(this).siblings(".operation").children(".btn-show").addClass("hide");
+                }
+            })
+            $(".btn-checkbox").click(function(){
+                $(this).parents(".classify-group").addClass("showbox show").siblings().removeClass("showbox show");
+            })
+            $(".btn-cancel").click(function(){
+                $(this).parents(".classify-group").removeClass("showbox show");
+                $(".classify-list>a").removeClass("selected");
+            })
+            $(".classify-list>a").click(function(e){
+                if($(this).parents(".classify-group").hasClass("showbox")){
+                    e.preventDefault();
+                   $(this).toggleClass("selected");
+                }
+            })
+            //点击筛选项
+            $(".filter-one").click(function(){
+                $(this).addClass("selected").siblings().removeClass("selected");
+            })
+            //点击下一页
+            $(".btn-prev").click(function(){
+                var num = parseInt($(".cur-page .cur").text())-1;
+                var total = parseInt($(".cur-page .total").text());
+                if(num<=0){
+                    num = 1;
+                }else if(num>=total){
+                    num = total;
+                }
+                $(".cur-page .cur").text(num);
+            })
+            //点击上一页
+            $(".btn-next").click(function(){
+                var num = parseInt($(".cur-page .cur").text())+1;
+                var total = parseInt($(".cur-page .total").text());
+                if(num<=0){
+                    num = 1;
+                }else if(num>=total){
+                    num = total;
+                }
+                $(".cur-page .cur").text(num);
+            })
+            //点击仅显示有货
+            $(".show-on").click(function(){
+                $(this).toggleClass("selected");
+            })
+            //点击切换列表显示方式
+            $(".view-type>a").click(function(){
+                $(this).addClass("selected").siblings().removeClass("selected");
+            })
+            //点击对比
+            $(".pb1").click(function(){
+                $(this).toggleClass("red");
+            })
+            //点击收藏
+            $(".pb2").click(function(){
+				collectOne($(this).attr('data-id'))
+                $(this).toggleClass("red");
+            })
+            //点击收藏
+            $(".pb3").click(function(){
+                $(this).toggleClass("red");
+            })
+            //页码样式设置
+            if($(".pn-num.selected").text()=="1"){
+                $(".h-page").addClass("w1");
+            }
+            //猜你喜欢、浏览历史切换
+            $(".gh-tab").click(function(){
+                $(this).addClass("selected").siblings().removeClass("selected");
+                $(".gh-list").removeClass("show").eq($(this).index()).addClass("show");
+            })
+            //对比栏、最近浏览切换
+            $(".cl-tab").click(function(){
+                $(this).addClass("selected").siblings().removeClass("selected");
+                $(".cl-list").removeClass("show").eq($(this).index()).addClass("show");
+            })
+            //点击对比栏的对比
+            $(".cl-list .btn-compare").click(function(){
+                $(this).toggleClass("red");
+            })
+        });
+    </script>
+</body>
+</html>

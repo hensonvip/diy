@@ -1,0 +1,550 @@
+{include file="public/originality_head" /}
+
+<body>
+
+<!--header start-->
+
+<div class="header first second fixed">
+
+    {include file="public/nav" /}
+
+    {if condition="$user_id"}
+
+    {include file="public/user_right" /}
+
+    {else/}
+
+    {include file="public/right" /}
+
+    {/if}
+
+</div>
+
+<div class="float_right"></div>
+
+<!--header end-->
+
+<!--main start-->
+
+<div class="cylt_bg" style="background-color: #f2f0ee; background-image: url(__IMGPC__/bg1.jpg);"></div>
+
+<div class="cylt_popup">
+
+                    {include file="public/originality_right" /}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="cylt_bot clearfix">
+
+                <div class="cylt_bleft fl">
+
+                    <ul>
+
+                        <li><a {if $match_cycle eq 1 }class="show_join" href="javascript:void(0);"{else}href="{$url_title}"{/if}>{$left_list_title}</a></li>
+
+                        <li><a href="{:url('Originality/index')}">{$left_title.details}</a></li>
+
+                        <li class="on"><a href="javascript:void(0);">{$left_title.my_list}</a></li>
+
+                        <li><a href="{:url('Originality/competit_author_list')}">{$left_title.author_list}({$count})</a></li>
+
+                        <li><a href="{:url('Originality/competit_product_list')}">{$left_title.already_list}({$list_count})</a></li>
+
+                    </ul>
+
+                </div>
+
+            <div class="cylt_bright type2 fr">
+
+                <div class="cylt_br_bg parallax" style="background-image: url(__IMGPC__/bg3.jpg);"></div>
+
+                    <div class="pr">
+
+                        <ul class="clearfix cylt_bar">
+
+                            <li class="on"><a href="javascript:void(0);">已通过</a></li>
+
+                            <li><a href="javascript:void(0);">待审核</a></li>
+
+                            <li><a href="javascript:void(0);">未通过</a></li>
+
+                        </ul>
+
+                        <div class="cylt2_wrap">
+
+                            <div class="cylt2_box clearfix">
+
+                                <p class="cylt2_tips"></p>
+
+                                <ul class="cylt2_plist" id="already">
+
+                                    {include file="originality/already_my_list_ajax"}
+
+                                </ul>
+
+                            </div>
+
+                            <div class="cylt2_box clearfix">
+
+                                <p class="cylt2_tips"></p>
+
+                                <ul class="cylt2_plist" id="wait">
+
+                                    {include file="originality/wait_my_list_ajax"}
+
+                                </ul>
+
+                            </div>
+
+                            <div class="cylt2_box clearfix">
+
+                                <p class="cylt2_tips">作品内容含有侵权、色情、暴力、政治，等违法内容</p>
+
+                                <ul class="cylt2_plist" id="not">
+
+                                    {include file="originality/not_my_list_ajax"}
+
+                                </ul>
+
+                            </div>
+
+                            <i class="base-load"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--footer start-->
+
+        {include file="public/footer" /}
+        <!--footer end-->
+
+    </div>
+
+</div>
+
+<!--main end-->
+
+
+
+<!--    <div class="p_y">
+
+        <div class="p_ycon2">
+
+            <h4>发送私信</h4>
+
+            <div class="p_ycon2b fix">
+
+                <div class="p_img fl">
+
+                    <img src="__IMGPC__/refer/p_peo3.png" alt="">
+
+                    <p>UMI</p>
+
+                </div>
+
+
+
+                <div class="p_txt fl">
+
+                    <textarea placeholder="私信内容"></textarea>
+
+                </div>
+
+            </div>
+
+            <a href="#" class="p_fs nb_t2">发 送</a>
+
+            <div class="p_pclo1"></div>
+
+        </div>
+
+    </div>-->
+
+    <div class="ipro_bg"></div>
+
+    <i class="ipro_close"></i>
+
+    <a href="javascript:void(0)" class="ipro_prev" onclick="switch_prev()"><span style="display: none"></span></a>
+
+    <a href="javascript:void(0)" class="ipro_next" onclick="switch_next()"><span style="display: none"></span></a>
+
+    <!--<div class="ipro_popup">
+
+        <div class="ipro_inner">&lt;!&ndash;已通过&ndash;&gt;
+
+            <div class="ipro_content dpro_content cylt_content">-->
+
+                <!--详情弹窗-->
+
+            <div id="already_box" data-count="" >
+                <div class="ipro_popup"></div>
+            </div>
+
+          <!--  </div>
+
+        </div>-->
+
+        <!--<div class="ipro_inner disabled">&lt;!&ndash;待审核&ndash;&gt;
+
+            <div class="ipro_content dpro_content cylt_content">-->
+
+                <!--详情弹窗-->
+
+            <div id="wait_box" data-count="">
+                <div class="ipro_popup"></div>
+            </div>
+
+            <!--</div>
+
+        </div>-->
+
+        <!--<div class="ipro_inner disabled">&lt;!&ndash;未通过&ndash;&gt;
+
+            <div class="ipro_content dpro_content cylt_content">-->
+
+                <!--详情弹窗-->
+
+            <div id="not_box" data-count="">
+
+                <div class="ipro_popup"></div>
+
+            </div>
+
+            <!--</div>
+
+        </div>
+
+    </div>-->
+
+
+
+<!--    <div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+
+        <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+
+            <span class="lightbox-spinner"></span>
+
+        </div>
+
+        <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+
+            <div class="js-img-wrap" id="lightbox-img-wrap">
+
+                <div class="lightbox-extra control prev js-control js-prev hidden">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+
+                    </svg>
+
+                </div>
+
+                <div class="lightbox-extra control next js-control js-next hidden">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+
+                    </svg>
+
+                </div>
+
+                <div class="lightbox-extra control close js-control js-close">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+
+                        <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+
+                        <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+
+                    </svg>
+
+                </div>
+
+                <div class="lightbox-contents js-contents"></div>
+
+            </div>
+
+        </div>
+
+    </div>-->
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+    <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+        <span class="lightbox-spinner"></span>
+    </div>
+    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+        <div class="js-img-wrap" id="lightbox-img-wrap">
+            <div class="lightbox-extra control prev js-control js-prev hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+            </div>
+            <div class="lightbox-extra control next js-control js-next hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+            </div>
+            <div class="lightbox-extra control close js-control js-close">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                    <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                    <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                </svg>
+            </div>
+            <div class="lightbox-contents js-contents"></div>
+        </div>
+    </div>
+</div>
+
+
+    <div id="fancybox-loading"></div>
+<!--举报-->
+
+{include file="public/report" /}
+<!--私信-->
+
+{include file="public/private_message" /}
+<!--其他弹窗-->
+
+{include file="originality/popup" /}
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+    //originality_popup.js 相关异步url
+
+    var zan_reduce = "{:url('Originality/zan_reduce')}";
+
+    var zan_increase = "{:url('Originality/zan_increase')}";
+
+    var comment = "{:url('Originality/comment')}";
+
+    var reply = "{:url('Originality/reply')}";
+
+    var comment_list = "{:url('Originality')}";
+
+    var popup_ajax ="{:url('Originality/popup_ajax')}";
+
+    var vote = "{:url('Originality/vote_ajax')}";
+
+    var letter = "{:url('Originality/private_message')}";
+
+</script>
+
+<script>
+
+    var from_ajax ="{:url('Originality/from_ajax')}";
+
+    var competit_product_list_ajax ="{:url('Originality/competit_product_list_ajax')}";
+
+    var product_state_ajax ="{:url('Originality/competit_my_list')}";
+
+</script>
+
+<script>
+
+    var this_count;
+
+    $(function() {
+
+        check_move();
+
+        //列表下拉刷新
+
+        $(window).scroll(function () {
+
+            //alert($('#already').children("li").length);
+
+            var winH = $(window).height();
+
+            var pageH = $(document.body).height();
+
+            var scrollT = $(window).scrollTop();
+
+            //var page = 2;//翻页
+
+            var code = $(".pr .clearfix .on a").text();
+
+            switch(code) {
+
+                case '已通过':
+
+                    var page_size =  "{$already_my_list.pager.page_size}";
+
+                    var record_count = parseInt("{if empty($already_my_list.pager.count)}0{else}{$already_my_list.pager.count}{/if}");
+
+                    //var _li = $('#already').children("li").length;
+
+                    this_count = $('#already').children().length;
+                    //alert(this_count);
+
+                    var state = 2;//已通过
+
+                    //this_count = "{$already_my_list.pager.page_size}";//当前列表显示的条数
+
+                    break;
+
+                case '未通过':
+
+                    var page_size =  "{$wait_my_list.pager.page_size}";
+
+                    var record_count = parseInt("{if empty($not_my_list.pager.count)}0{else}{$not_my_list.pager.count}{/if}");
+
+                    //var _li = $('#not').children("li").length;
+
+                    this_count = $('#not').children().length;
+
+                    var state = 1;//未通过
+
+                    //this_count = "{$not_my_list.pager.page_size}";//当前列表显示的条数
+
+                    break;
+
+                case '待审核':
+
+                    var page_size =  "{$wait_my_list.pager.page_size}";
+
+                    var record_count = parseInt("{if empty($wait_my_list.pager.count)}0{else}{$wait_my_list.pager.count}{/if}");
+
+                    //var _li = $('#wait').children("li").length;
+
+                    this_count = $('#wait').children().length;
+
+                    var state = 0;//待审核
+
+                    //this_count = "{$wait_my_list.pager.page_size}";//当前列表显示的条数
+
+                    break;
+
+            }
+
+            //var record_count = parseInt("{if empty($already_my_list.pager.count)}0{else}{$already_my_list.pager.count}{/if}");
+            //alert(this_count);
+            // 如果滚动条到达底部就获取新数据追加到容器
+
+            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+
+                $('.base-load').addClass('show');
+
+                if (this_count >= record_count) {
+
+                    setTimeout(function () {
+
+                        $('.base-load').removeClass('show');
+
+                        check_move();
+
+                        this_count;
+
+                        //layer.msg("没有更多数据了");
+
+                    }, 2000);
+
+                    return false;
+
+                }
+
+                var page = Math.ceil(_li/page_size)+1;
+
+                $.ajax({
+
+                    type: 'GET',
+
+                    url: product_state_ajax,
+
+                    data: {is_ajax: 1, page: page,state:state},
+
+                    dataType: 'json',
+
+                    success: function (result) {
+
+                        this_count;
+
+                        //page++;
+
+                        //setTimeout(function () {
+
+                        if(result.state == 2){
+
+                            //alert(result.list);
+
+                            $('#already').append(result.list);
+
+                            $('#already_box').append(result.html_pop);
+
+                        }else if(result.state == 0){
+
+                            $('#wait').append(result.list);
+
+                            $('#wait_box').append(result.html_pop);
+
+                        }else if(result.state == 1){
+
+                            $('#not').append(result.list);
+
+                            $('#not_box').append(result.html_pop);
+
+                        }
+
+                        //$('#already').append(result);
+
+                        $('.base-load').removeClass('show');
+
+                        check_move();
+
+                        $('.lazybg').lazyload({d: 300, r: 250});
+
+                        //}, 2000);
+
+                    }
+
+                });
+
+            }
+
+        });
+
+
+
+        function check_move() {
+
+            var scrollTop = $(window).scrollTop();
+
+            $('.i_plist li').each(function (index, el) {
+
+                if (scrollTop > $(this).offset().top - $(window).height()) {
+
+                    $(this).addClass('in-view');
+
+                }
+
+            });
+
+        }
+
+    })
+
+</script>
+
+{include file="public/originality_footer" /}
+

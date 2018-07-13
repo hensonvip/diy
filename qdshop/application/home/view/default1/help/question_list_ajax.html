@@ -1,0 +1,16 @@
+{if condition="isset($question_list)"}
+<div class="act_tit_2">{$question_list.category_info.cat_name}</div>
+<div class="act_ancon">
+    <dl>
+        {foreach $question_list.list as $key =>$vo}
+        <dd>
+            <div class="act_antop"><span>{$vo.title}</span></div>
+            <div class="act_anbot">
+                {$vo.content}
+            </div>
+        </dd>
+        {/foreach}
+    </dl>
+</div>
+<div class="act_back"><i></i>back</div>
+{/if}

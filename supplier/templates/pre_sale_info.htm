@@ -1,0 +1,330 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,validator.js"}
+<script type="text/javascript" src="./js/validate/jquery.validate.js"></script>
+<script type="text/javascript" src="./js/validate/messages_zh.js"></script>
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<style type="text/css">
+label.error{
+  color: red;
+  background: url(./images/warning_small.gif) no-repeat;
+  padding-left: 18px;
+}
+
+.layui-form-label{width: 180px !important;}
+</style>
+
+
+<!-- 商品搜索 -->
+<div class="form-div">
+  <form action="javascript:searchGoods()" name="searchForm" class="layui-form">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" style="float:left;margin-top:10px;" />
+    <!-- 分类 -->
+    <select id="cat_id" name="cat_id"><option value="0">{$lang.all_cat}</caption>{$cat_list}</select>
+    <!-- 品牌 -->
+    <select id="brand_id" name="brand_id"><option value="0">{$lang.all_brand}</caption>{html_options options=$brand_list}</select>
+    <!-- 关键字 -->
+    <input type="text" id="keyword" name="keyword" size="20" />
+    <input type="submit" value="{$lang.button_search}" class="layui-btn" />
+  </form>
+</div>
+
+<form id="form1" method="post" action="pre_sale.php?act=insert_update" name="theForm" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--预售商品-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.label_goods_name}</label>
+            <div class="layui-input-block">
+                <select name="goods_id">
+                    {if $pre_sale.act_id}
+                    <option value="{$pre_sale.goods_id}">{$pre_sale.goods_name}</option>
+                    {else}
+                    <option value="0">{$lang.notice_goods_name}</option>
+                    {/if}
+                </select>
+            </div>
+        </div>
+        <!--活动开始时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_start_date}</label>
+            <div class="layui-input-block">
+                <input name="start_time" type="text" id="start_time" value="{$pre_sale.start_time}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--活动结束时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_end_date}</label>
+            <div class="layui-input-block">
+                <input name="end_time" type="text" id="end_time" value="{$pre_sale.end_time}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--定金-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice('noticDeposit');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.label_deposit}
+            </label>
+            <div class="layui-input-block">
+                <input name="deposit" type="text" id="deposit" value="{$pre_sale.deposit|default:0}" size="30" class="pnumber required layui-input" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                <span class="notice-span" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticDeposit">{$lang.notice_deposit}</span>
+            </div>
+        </div>
+        <!--预售库存-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticRestrict');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.label_restrict_amount}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="restrict_amount" value="{$pre_sale.restrict_amount|default:0}" size="30"  class="pnumber required layui-input" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticRestrict">{$lang.notice_restrict_amount}</span>
+            </div>
+        </div>
+        <!--赠送积分数-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_gift_integral}</label>
+            <div class="layui-input-block">
+                <input type="text" name="gift_integral" value="{$pre_sale.gift_integral|default:0}" size="30" class="pnumber required layui-input" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+            </div>
+        </div>
+        <!--尾款支付开始时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticRetainageStart');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.label_retainage_start}
+            </label>
+            <div class="layui-input-block">
+                {if $pre_sale.deposit != 0}
+                <input name="retainage_start" type="text" id="retainage_start" value="{$pre_sale.retainage_start}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                {else}
+                <input name="retainage_start" type="text" id="retainage_start" value="{$pre_sale.retainage_start}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" disabled="disabled"/>
+                {/if}
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticRetainageStart">{$lang.notice_retainage_start}</span>
+            </div>
+        </div>
+        <!--尾款支付结束时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticRetainageEnd');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.label_retainage_end}
+            </label>
+            <div class="layui-input-block">
+                {if $pre_sale.deposit != 0}
+                <input name="retainage_end" type="text" id="retainage_end" value="{$pre_sale.retainage_end}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                {else}
+                <input name="retainage_end" type="text" id="retainage_end" value="{$pre_sale.retainage_end}" readonly="readonly" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" disabled="disabled"/>
+                {/if}
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticRetainageEnd">{$lang.notice_retainage_end}</span>
+            </div>
+        </div>
+        <!--开始发货时间描述-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice('noticDeliverGoods');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.label_deliver_goods}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="deliver_goods" value="{$pre_sale.deliver_goods}" size="30" class="required layui-input" style="width:80%;" />
+                <span class="notice-span" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticDeliverGoods">{$lang.notice_deliver_goods}</span>
+            </div>
+        </div>
+        <table id="group-table" style="width:100%;">
+            {foreach from=$pre_sale.price_ladder key=key item=item}
+                {if $key eq 0}
+                <tr>
+                    <td class="label">{$lang.label_price_ladder}</td>
+                    <td>
+                        {$lang.notice_ladder_amount} <input type="text" name="ladder_amount[]" value="{$item.amount}" class="layui-input" />&nbsp;&nbsp;
+                        {$lang.notice_ladder_price} <input type="text" name="ladder_price[]" value="{$item.price}" class="layui-input" />
+                        <a href="javascript:;" onclick="addLadder(this)"><strong>[+]</strong></a>    
+                    </td>
+                </tr>
+                {else}
+                <tr>
+                    <td></td>
+                    <td>
+                        {$lang.notice_ladder_amount} <input type="text" name="ladder_amount[]" value="{$item.amount}" class="layui-input" />&nbsp;&nbsp;
+                        {$lang.notice_ladder_price} <input type="text" name="ladder_price[]" value="{$item.price}" class="layui-input" />
+                        <a href="javascript:;" onclick="removeLadder(this)"><strong>[-]</strong></a>    
+                    </td>
+                </tr>
+                {/if}
+            {/foreach}
+        </table>
+        <!--活动说明-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_desc}</label>
+            <div class="layui-input-block">
+                <textarea  name="act_desc" cols="112" rows="3"  >{$pre_sale.act_desc}</textarea>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input name="act_id" type="hidden" id="act_id" value="{$pre_sale.act_id}">
+            <input type="button" id="btn_submit" name="btn_submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            {if $pre_sale.status eq 1}
+            <input type="submit" name="finish" value="{$lang.button_finish}" class="layui-btn" onclick="return confirm('{$lang.notice_finish}')"/>
+            {elseif $pre_sale.status eq 2}
+            <input type="submit" name="succeed" value="{$lang.button_succeed}" class="layui-btn" onclick="return confirm(succeed_confirm)" />{$lang.notice_succeed}
+            <input type="submit" name="fail" value="{$lang.button_fail}" class="layui-btn" onclick="return confirm(fail_confirm)" />{$lang.notice_fail}
+            {elseif $pre_sale.status eq 3}
+            <input type="submit" name="mail" value="{$lang.button_mail}" class="layui-btn" onclick="return confirm('{$lang.notice_mail}')" />
+            {/if}
+        </p>
+    </div>
+</div>
+</form>
+
+<script language="JavaScript">
+{literal}
+
+// 检查新订单
+startCheckOrder();
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  var eles = document.forms['theForm'].elements;
+
+  var goods_id = eles['goods_id'].value;
+  if (goods_id <= 0)
+  {
+    validator.addErrorMsg(error_goods_null);
+  }
+  validator.isNumber('deposit', error_deposit, false);
+  validator.isInt('restrict_amount', error_restrict_amount, false);
+  validator.isInt('gift_integral', error_gift_integral, false);
+  return validator.passed();
+}
+
+/**
+ * 搜索商品
+ */
+function searchGoods()
+{
+  var filter = new Object;
+  filter.cat_id   = document.forms['searchForm'].elements['cat_id'].value;
+  filter.brand_id = document.forms['searchForm'].elements['brand_id'].value;
+  filter.keyword  = document.forms['searchForm'].elements['keyword'].value;
+
+  Ajax.call('pre_sale.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+  
+}
+
+function searchGoodsResponse(result)
+{
+  
+  if (result.error == '1' && result.message != '')
+  {
+    alert(result.message);
+  return;
+  }
+
+  var sel = document.forms['theForm'].elements['goods_id'];
+
+  sel.length = 0;
+
+  /* 创建 options */
+  var goods = result.content;
+  if (goods)
+  {
+    for (i = 0; i < goods.length; i++)
+    {
+      var opt = document.createElement("OPTION");
+      opt.value = goods[i].goods_id;
+      opt.text  = goods[i].goods_name;
+      sel.options.add(opt);
+    }
+  }
+  else
+  {
+    var opt = document.createElement("OPTION");
+    opt.value = 0;
+    opt.text  = search_is_null;
+    sel.options.add(opt);
+  }
+
+  var form = layui.form();
+  form.render(); //更新全部
+  return;
+}
+/**
+ * 新增一个价格阶梯
+ */
+function addLadder(obj, amount, price)
+{
+  var src  = obj.parentNode.parentNode;
+  var idx  = rowindex(src);
+  var tbl  = document.getElementById('group-table');
+  var row  = tbl.insertRow(idx + 1);
+  var cell = row.insertCell(-1);
+  cell.innerHTML = '';
+  var cell = row.insertCell(-1);
+  cell.innerHTML = src.cells[1].innerHTML.replace(/(.*)(addLadder)(.*)(\[)(\+)/i, "$1removeLadder$3$4-");;
+}
+
+/**
+ * 删除一个价格阶梯
+ */
+function removeLadder(obj)
+{
+  var row = rowindex(obj.parentNode.parentNode);
+  var tbl = document.getElementById('group-table');
+
+  tbl.deleteRow(row);
+}
+
+$().ready(function(){
+  $("#deposit").blur(function(){
+    if($.trim($(this).val()).length == 0)
+    {
+      $(this).val(0);
+    }
+    if($(this).val() == 0)
+    {
+      $("#retainage_end,#retainage_start").prop("disabled", "disabled");                                                                                 
+      //$("#retainage_end,#retainage_start").attr("class", "button_disabled");
+    }
+    else
+    {
+      $("#retainage_end,#retainage_start").removeProp("disabled");
+      //$("#retainage_end,#retainage_start").attr("class", "button");
+    }
+  });
+  
+  $("#deposit").blur();
+  
+  $("#btn_submit").click(function(){
+    $("#form1").submit();
+    return false;
+  });
+  
+  $.validator.messages["pnumber"] = "请输入大于或等于0的有效数字";
+  
+  $("#form1").validate();
+});
+
+{/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

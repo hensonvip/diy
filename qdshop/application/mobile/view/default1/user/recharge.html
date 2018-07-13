@@ -1,0 +1,74 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">充值</h1>
+</header>   
+<div class="content">
+    <div class="con18 ">
+        <form action="{:url('User/do_recharge')}" method="post" id="check_form">
+        <div class="cong bgc">
+            <div class="set_k clearfix">
+               <span>我的余额（{$data.surplus}）</span>
+            </div>
+            <div class="je clearfix">
+                <em class="fl icon"></em>
+                <input class="fl" type="number" placeholder="请输入充值金额" name="amount" id="amount" value="">
+            </div>
+        </div>
+        <h1> 请选择支付方式</h1>
+        <ul class="pay_list bgc">
+            {foreach $pay_list as $key => $vo}
+            <li><label>
+                <i class="icon" style="background-image: url({$webUrl}/{$vo.icon});"></i>
+                <span class="name">{$vo.pay_desc}</span>
+                <input class="red-radio" type="radio" name="pay_id" value="{$vo.pay_id}">
+                <span class="radio-box"></span>
+            </label></li>
+            {/foreach}
+        </ul>
+        </form>
+    </div>
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" onclick="btn_recharge();">确定</a>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $(".red-radio").change(function(){
+        $(this).parents("li").addClass("selected").siblings().removeClass("selected");
+    })
+
+    function btn_recharge(){
+        var amount = $('#amount').val();
+        if(!amount){
+            layer.open({
+                content: '请填写充值金额'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        var pay_id = $('input:radio[name="pay_id"]:checked').val();
+        if(!pay_id){
+            layer.open({
+                content: '请选择支付方式'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+        $('#check_form').submit();
+    }
+</script>

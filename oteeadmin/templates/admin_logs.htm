@@ -1,0 +1,118 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="form-div">
+<table>
+    <tr>
+        <td>
+            <form name="theForm" action="javascript:searchInfo()" class="layui-form">
+                <span style="float:left;line-height:48px;">{$lang.view_admin}</span>
+                <select name="admin">
+                    <option value='0'>{$lang.select_admin}</option>
+                    {html_options options=$admin_list selected=$admin}
+                </select>
+                <span style="float:left;line-height:48px;">{$lang.view_ip}</span>
+                <select name="ip">
+                    <option value='0'>{$lang.select_ip}</option>
+                    {html_options options=$ip_list selected=$ip}
+                </select>
+                日期<input type="text" name="add_time1" id="add_time1" class="input_te"readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"   />&nbsp;&nbsp;至&nbsp;&nbsp;<input type="text" name="add_time2" id="add_time2" class="input_te"readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                <input type="submit" value="{$lang.comfrom}" class="layui-btn" />
+            </form>
+        </td>   
+    </tr>
+  <tr>
+      <td colspan="3">
+      <form name="Form2" action="admin_logs.php?act=batch_drop" method="POST" class="layui-form">
+      <span style="float:left;line-height:48px;">{$lang.drop_logs}</span>
+      <select name="log_date">
+        <option value='0'>{$lang.select_date}</option>
+        <option value='1'>{$lang.week_date}</option>
+        <option value='2'>{$lang.month_date}</option>
+        <option value='3'>{$lang.three_month}</option>
+        <option value='4'>{$lang.six_month}</option>
+        <option value='5'>{$lang.a_yaer}</option>
+      </select>
+      <input name="drop_type_date" type="submit" value="{$lang.comfrom}" class="layui-btn" style="margin-top:5px;" />
+      </form>
+      </td>
+    </tr>
+</table>
+</div>
+
+<form method="POST" action="admin_logs.php?act=batch_drop" name="listForm" class="layui-form">
+<!-- start admin_logs list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1" class="layui-table">
+  <tr>
+    <th><input type="checkbox" lay-filter="sel_all_checkboxes">
+    <a href="javascript:listTable.sort('log_id'); ">{$lang.log_id}</a>{$sort_log_id}</th>
+    <th><a href="javascript:listTable.sort('user_id'); ">{$lang.user_id}</a>{$sort_user_id}</th>
+    <th><a href="javascript:listTable.sort('log_time'); ">{$lang.log_time}</a>{$sort_log_time}</th>
+    <th><a href="javascript:listTable.sort('ip_address'); ">{$lang.ip_address}</a>{$sort_ip_address}</th>
+    <th>{$lang.log_info}</th>
+  </tr>
+  {foreach from=$log_list item=list}
+  <tr>
+    <td width="10%"><span><input name="checkboxes[]" type="checkbox" value="{$list.log_id}" />{$list.log_id}</span></td>
+    <td width="15%" class="first-cell"><span>{$list.user_name|escape:html}</span></td>
+    <td width="20%" align="center"><span>{$list.log_time}</span></td>
+    <td width="15%" align="left"><span>{$list.ip_address}</span></td>
+    <td width="40%" align="left"><span>{$list.log_info}</span></td>
+  </tr>
+  {/foreach}
+  <tr>
+    <td colspan="2"><input name="drop_type_id" type="submit" id="btnSubmit" value="{$lang.drop_logs}" class="layui-btn" /></td>
+    <td align="right" nowrap="true" colspan="10">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('checkbox(sel_all_checkboxes)', function(data){
+            listTable.selectAll(this, "checkboxes");
+            form.render(); //更新全部
+        });  
+
+    });
+</script>
+
+{if $full_page}
+</div>
+<!-- end ad_position list -->
+
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    // &#65533;&#65533;&#700;&#65533;&#65533;鹜&#65533;&#65533;
+    startCheckOrder();
+  }
+  {/literal}
+
+
+function searchInfo()
+{
+    listTable.filter['user_id'] = Utils.trim(document.forms['theForm'].elements['admin'].value);
+	listTable.filter.add_time1 = Utils.trim(document.forms['theForm'].elements['add_time1'].value);
+	listTable.filter.add_time2 = Utils.trim(document.forms['theForm'].elements['add_time2'].value);
+    listTable.filter['ip'] = Utils.trim(document.forms['theForm'].elements['ip'].value);
+	listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+</script>
+{include file="pagefooter.htm"}
+{/if}

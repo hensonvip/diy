@@ -1,0 +1,443 @@
+{include file="pageheader_bd.htm"}
+{insert_scripts files="../js/utils.js,selectzone_bd.js,colorselector.js"}
+
+<!--  促销商品时间精确到时分 Start -->
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+<!--  促销商品时间精确到时分 End -->
+<!-- zTree Style -->
+<link href="styles/zTree/zTreeStyle.css" rel="stylesheet" type="text/css" />
+{insert_scripts files='jquery.ztree.all-3.5.min.js,category_selecter.js'} {if $warning}
+<ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+	<li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;">{$warning}</li>
+</ul>
+{/if}
+
+
+<!-- start goods form -->
+<form enctype="multipart/form-data" action="" method="post" name="theForm" class="layui-form layui-form-pane">
+<div class="layui-tab layui-tab-card">
+  <ul class="layui-tab-title">
+	<li class="layui-this">{$lang.info}</li>
+    <li>{$lang.design_img}</li>
+    <li>{$lang.design_img_t}</li>
+    <li>{$lang.design_imgs}</li>
+    <li>奖励设置</li>
+  </ul>
+
+	<!-- 最大文件限制 -->
+	<input type="hidden" name="MAX_FILE_SIZE" value="2097152" />
+	<div class="layui-tab-content">
+		<!-- 通用信息 -->
+		<div class="layui-tab-item layui-show">
+			<!--作品名-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					{$lang.require_field}
+					{$lang.info_name}
+				</label>
+				<div class="layui-input-block">
+					<input class="layui-input" type="text" placeholder="标题" autocomplete="off" name="title" value="{$info.title}" >
+				</div>
+			</div>
+			<!--设计灵感（描述）-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					{$lang.info_describe}
+				</label>
+				<div class="layui-input-initial">
+					<textarea class="layui-textarea" name="describe" id="describe" placeholder="设计灵感" >{$info.describe}</textarea>
+				</div>
+			</div>
+			<!--标签-->
+			<div class="layui-form-item" >
+				<label class="layui-form-label">
+					<a href="javascript:showNotice2('noticeGoodsSN');" title="{$lang.form_notice}">
+						<img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+					</a>
+					{$lang.info_tags}
+				</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" id="tags_name" name="tags_name" value="{$info.tags_name}" size="20" />
+					<span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeGoodsSN">多个标签请用英文逗号隔开</span>
+				</div>
+			</div>
+			<!--类型-->
+			<div class="layui-form-item" >
+				<label class="layui-form-label">
+					{$lang.info_type}
+				</label>
+				<div class="layui-input-block">
+					<!-- <input type="text" class="layui-input" id="type" name="type" value="{$info.type}" size="20" /> -->
+					<select name="type_cat" id="type_cat" class="select" >
+						<!-- <option value="">选择类型</option> -->
+						{html_options options=$cat_list selected = $info.type }
+
+					</select>
+				</div>
+			</div>
+			<!--提交时间-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					{$lang.info_time}
+				</label>
+				<div class="layui-input-block">
+					<input name="time" type="text" id="time" class="layui-input" value='{$info.time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+				</div>
+			</div>
+			<!--是否通过-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					{$lang.info_examine}
+				</label>
+				<div class="layui-input-block">
+					<input type="radio" name="state" value="2" {if $info.state eq 2} checked="" {/if} title="通过"><div class="layui-unselect layui-form-radio {if $info.state eq 2} layui-form-radioed {/if}"><i class="layui-anim layui-icon"></i><span>通过</span></div>
+					<input type="radio" name="state" value="1" {if $info.state eq 1} checked="" {/if} title="不通过"><div class="layui-unselect layui-form-radio {if $info.state eq 1} layui-form-radioed {/if}"><i class="layui-anim layui-icon"></i><span>不通过</span></div>
+					<input type="radio" name="state" value="0"  {if $info.state eq 0} checked="" {/if} title="暂时不审"><div class="layui-unselect layui-form-radio {if $info.state eq 0} layui-form-radioed {/if}"><i class="layui-anim layui-icon"></i><span>暂时不审</span></div>
+				</div>
+			</div>
+			<!--不通过原因-->
+			<div class="layui-form-item" >
+				<label class="layui-form-label">
+					{$lang.info_reason}
+				</label>
+				<div class="layui-input-initial">
+					<textarea class="layui-textarea" name="reason" id="reason" placeholder="请填写审核不通过理由" ></textarea>
+				</div>
+			</div>
+		</div>
+		<!-- 设计图 -->
+		<div class="layui-tab-item">
+			<table width="100%"  align="center">
+				<div class="layui-upload">
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						{$lang.info_sjimg}(双击移除)：
+						<div class="layui-upload-list" id="design_img">
+							{if !empty($info.design_img) }
+							<div class="img"  style="margin:4px; position:relative;display:inline-block;" onmousemove="open_af('1', 'block')" onmouseout="open_af('1', 'none')" ondblclick="delImages(this,'design_img')">
+								<img  src="/{$info.design_img}" width="100px" style="cursor:pointer" />
+								<div id="open_af_1"  style="display:none; position:absolute;left:70px;top:-2px; float:left; z-index:1000; border:#E5E5E5 solid 2px">
+									<img src="/{$info.design_img}" width="500px" />
+								</div>
+							</div>
+							{/if}
+						</div>
+					</blockquote>
+					<button type="button" class="layui-btn" id="test3" style="margin-left: 50px;">点击上传图片</button>
+				</div>
+			</table>
+		</div>
+		<!-- 参赛作品图 -->
+		<script type="text/javascript" src="layui2/layui.all.js"></script>
+		<div class="layui-tab-item">
+			<table width="100%"  align="center">
+				<div class="layui-upload">
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						{$lang.info_img_t}(双击从列表中移除)：
+						<div class="layui-upload-list" id="design_img_t">
+							{if !empty($info.design_img_t_arr) }
+							{foreach from="$info.design_img_t_arr" key="key" item="dita" }
+							<div class="img"  style="margin:4px; position:relative;display:inline-block;" onmousemove="open_af('{$key}_t', 'block')" onmouseout="open_af('{$key}_t', 'none')" ondblclick="delImages(this,'design_img_t')">
+								<img  src="/{$dita}" width="100px" style="cursor:pointer" />
+								<div id="open_af_{$key}_t"  style="display:none; position:absolute;left:70px;top:-2px; float:left; z-index:1000; border:#E5E5E5 solid 2px">
+									<img src="/{$dita}" width="500px" />
+								</div>
+							</div>
+							{/foreach}
+							{/if}
+						</div>
+					</blockquote>
+					<button type="button" class="layui-btn" id="test1" style="margin-left: 50px;">点击上传图片</button>
+				</div>
+			</table>
+		</div>
+		<!-- 详情图 -->
+		<div class="layui-tab-item">
+			<table width="100%"  align="center">
+				<div class="layui-upload">
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						{$lang.info_imgs}(双击从列表中移除)：
+						<div class="layui-upload-list" id="imgs">
+							{if !empty($info.imgs_arr) }
+							{foreach from="$info.imgs_arr" key="key" item="dita" }
+							<div class="img"  style="margin:4px; position:relative;display:inline-block;" onmousemove="open_af('{$key}_t2', 'block')" onmouseout="open_af('{$key}_t2', 'none')" ondblclick="delImages(this,'imgs')">
+								<img  src="/{$dita}" width="100px" style="cursor:pointer" />
+								<div id="open_af_{$key}_t2"  style="display:none; position:absolute;left:70px;top:-2px; float:left; z-index:1000; border:#E5E5E5 solid 2px">
+									<img src="/{$dita}" width="500px" />
+								</div>
+							</div>
+							{/foreach}
+							{/if}
+						</div>
+					</blockquote>
+					<button type="button" class="layui-btn" id="test2" style="margin-left: 50px;">点击上传图片</button>
+				</div>
+			</table>
+		</div>
+
+		<script language="javascript">
+			function open_af(m_id, m_t)
+			{
+				document.getElementById("open_af_" + m_id).style.display = m_t;
+			}
+		</script>
+
+		<div class="layui-tab-item">
+			{if !empty($vote_end_time)&&$vote_end_time lt $gmtime }
+			<div class="layui-form-item">
+				<label class="layui-form-label">选择奖项</label>
+				<div class="layui-input-block">
+					<select name="cat_id" id="cat_id" class="select"  style="display: block;height: 38px;">
+						<option value="0">暂不设置奖项</option>
+						{html_options options=$rewards  }
+
+					</select>
+				</div>
+			</div>
+			<table width="100%"  align="center">
+				<div class="layui-upload">
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						奖品图(双击移除)：
+						<div class="layui-upload-list" id="prize_img">
+							<div class="img"  style="margin:4px; position:relative;display:inline-block;" onmousemove="open_af('1', 'block')" onmouseout="open_af('1', 'none')" ondblclick="delImages(this,'prize_img')">
+								<img  src="" width="100px" style="cursor:pointer" />
+								<div id="open_af_1"  style="display:none; position:absolute;left:70px;top:-2px; float:left; z-index:1000; border:#E5E5E5 solid 2px">
+									<img src="" width="500px" />
+								</div>
+							</div>
+						</div>
+					</blockquote>
+					<button type="button" class="layui-btn" id="test4" style="margin-left: 50px;">点击上传图片</button>
+				</div>
+			</table>
+
+			{else}
+				当前时间无法设置奖项
+			{/if}
+		</div>
+
+
+		<div class="button-div" style="margin:15px 100px;" >
+			<input type="hidden" name="record_id" value="{$info.record_id}" />
+			<!-- 主要是给这两个INPUT各自增加了一个ID， id="goods_info_submit"  id="goods_info_reset" -->
+			<input id="info_submit" type="submit" value="{$lang.button_submit}" class="layui-btn" />
+			<!--<input id="info_reset" type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />-->
+		</div>
+		<input type="hidden" name="act" value="{$form_action}" />
+	</div>
+</div>
+
+</form>
+<!-- end goods form -->
+
+{insert_scripts files="validator.js,tab.js"}
+<script language="JavaScript">
+	function validate()
+	{
+		var validator = new Validator('theForm');
+		validator.required('name', "比赛名不能为空");
+
+		return validator.passed();
+	}
+</script>
+<script>
+	var key = 1;
+	layui.use('upload', function(){
+		var $ = layui.jquery,upload = layui.upload;
+		var id = '{$info.record_id}';
+		var x = '_x';
+		var str = 'design_img_t';
+		//var btn = '#'+$('#'+str).parents('.layui-upload').find('.layui-btn').attr('id');
+		//var strs = "'"+str+"'";
+		//多图片上传
+		upload.render({
+			elem: '#test1'
+			,url: 'originality_examine.php?act=t_imgs_update'
+			,data:{record_id:id,str:str}
+			,multiple: true
+			,before: function(obj){
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result){
+				});
+			}
+			,done: function(res){
+				//上传完毕
+				if(res){
+					if(res['code'] == 1){
+						//console.log(btn);
+						var html = '<div class="img" style="margin:4px; position:relative;display:inline-block;"' +
+								' onmousemove="open_af("'+key+x+'", "block")"' +
+								' onmouseout="open_af("'+key+x+'","none")" ondblclick="delImages(this,'+strs+')">' +
+								' <img class="img" src="'+res["url"]+'" width="100px" style="cursor:pointer" /> ' +
+								'<div id="open_af_'+key+x+'"  style="display:none; position:absolute;left:70px;top:-2px; ' +
+								'float:left; z-index:1000; border:#E5E5E5 solid 2px">' +
+								' <img src="'+res["url"]+'" width="500px" /> </div> </div>';
+						$('#'+str).append(html);
+						key++;
+						layer.msg('添加成功！')
+					}else{
+						layer.msg('添加失败，请稍后重试！')
+					}
+				}
+
+			}
+		});
+	})
+
+	layui.use('upload', function(){
+		var $ = layui.jquery,upload = layui.upload;
+		var id = '{$info.record_id}';
+		var x = '_x';
+		//var str = $('.layui-elem-quote .layui-upload-list ').attr('id');
+		var str = 'imgs';
+		//var btn = '#'+$('#'+str).parents('.layui-upload').find('.layui-btn').attr('id');
+		var strs = "'"+str+"'";
+		//多图片上传
+		upload.render({
+			elem: '#test2'
+			,url: 'originality_examine.php?act=t_imgs_update'
+			,data:{record_id:id,str:str}
+			,multiple: true
+			,before: function(obj){
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result){
+				});
+			}
+			,done: function(res){
+				//上传完毕
+				if(res){
+					if(res['code'] == 1){
+						console.log(str);
+						var html = '<div class="img" style="margin:4px; position:relative;display:inline-block;"' +
+								' onmousemove="open_af("'+key+x+'", "block")"' +
+								' onmouseout="open_af("'+key+x+'","none")" ondblclick="delImages(this,'+strs+')">' +
+								' <img class="img" src="'+res["url"]+'" width="100px" style="cursor:pointer" /> ' +
+								'<div id="open_af_'+key+x+'"  style="display:none; position:absolute;left:70px;top:-2px; ' +
+								'float:left; z-index:1000; border:#E5E5E5 solid 2px">' +
+								' <img src="'+res["url"]+'" width="500px" /> </div> </div>';
+						$('#'+str).append(html);
+						key++;
+						layer.msg('添加成功！')
+					}else{
+						layer.msg('添加失败，请稍后重试！')
+					}
+				}
+
+			}
+		});
+	})
+
+	layui.use('upload', function(){
+		var $ = layui.jquery,upload = layui.upload;
+		var id = '{$info.record_id}';
+		var str = 'design_img';
+		var strs = "'"+str+"'";
+		//多图片上传
+		upload.render({
+			elem: '#test3'
+			,url: 'originality_examine.php?act=t_imgs_update'
+			,data:{record_id:id,str:str,i:1}
+			,multiple: true
+			,before: function(obj){
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result){
+				});
+			}
+			,done: function(res){
+				//上传完毕
+				if(res){
+					if(res['code'] == 1){
+						//console.log(str);
+						var html = '<div class="img" style="margin:4px; position:relative;display:inline-block;"' +
+								' onmousemove="open_af("1", "block")"' +
+								' onmouseout="open_af("1","none")" ondblclick="delImages(this,'+strs+')">' +
+								' <img class="img" src="'+res["url"]+'" width="100px" style="cursor:pointer" /> ' +
+								'<div id="open_af_1"  style="display:none; position:absolute;left:70px;top:-2px; ' +
+								'float:left; z-index:1000; border:#E5E5E5 solid 2px">' +
+								' <img src="'+res["url"]+'" width="500px" /> </div> </div>';
+						$('#'+str).html(html);
+						key++;
+						layer.msg('添加成功！')
+					}else{
+						layer.msg('添加失败，请稍后重试！')
+					}
+				}
+
+			}
+		});
+	})
+
+		layui.use('upload', function(){
+		var $ = layui.jquery,upload = layui.upload;
+		var id = '{$info.record_id}';
+		var x = '_x';
+		var str = 'prize_img';
+		//var btn = '#'+$('#'+str).parents('.layui-upload').find('.layui-btn').attr('id');
+		var strs = "'"+str+"'";
+		//多图片上传
+		upload.render({
+			elem: '#test4'
+			,url: 'originality_examine.php?act=t_imgs_update'
+			,data:{record_id:id,str:str,i:1}
+			,multiple: true
+			,before: function(obj){
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result){
+				});
+			}
+			,done: function(res){
+				//上传完毕
+				if(res){
+					if(res['code'] == 1){
+						//console.log(btn);
+						var html = '<div class="img" style="margin:4px; position:relative;display:inline-block;"' +
+								' onmousemove="open_af("1", "block")"' +
+								' onmouseout="open_af("1","none")" ondblclick="delImages(this,'+strs+')">' +
+								' <img class="img" src="'+res["url"]+'" width="100px" style="cursor:pointer" /> ' +
+								'<div id="open_af_1"  style="display:none; position:absolute;left:70px;top:-2px; ' +
+								'float:left; z-index:1000; border:#E5E5E5 solid 2px">' +
+								' <img src="'+res["url"]+'" width="500px" /> </div> </div>';
+						$('#'+str).append(html);
+						key++;
+						layer.msg('添加成功！')
+					}else{
+						layer.msg('添加失败，请稍后重试！')
+					}
+				}
+
+			}
+		});
+	})
+
+	//双击图片删除图片
+	function delImages(thisimg,str){
+		//获取下标
+		var id = '{$info.record_id}';
+		var subscript=$("#"+str+" .img").index(thisimg);
+		var srcurl = $("#"+str+" .img").eq(subscript).find('img').attr('src');
+		//console.log(srcurl);return false;
+		$.ajax({
+			type: 'POST',
+			url:'originality_examine.php?act=t_imgs_delete' ,
+			data: {srcurl: srcurl,record_id:id,str:str},
+			dataType: 'json',
+			success: function (result) {
+				if(result['code'] == 1){
+					//删除图片
+					thisimg.remove();
+					//删除数组
+					/*images.splice(subscript, 1);
+					 //重新排序
+					 images.sort();
+					 //返回*/
+					layer.msg('移除成功')
+				}else{
+					layer.msg('移除失败，请稍后重试！')
+				}
+			}
+		})
+
+
+	}
+
+</script>
+{include file="pagefooter.htm"}

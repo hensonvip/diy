@@ -1,0 +1,28 @@
+{if $data.list}
+	{foreach $data.list as $key =>$vo}
+	<li class="clearfix">
+	    <a href="{:url('Article/news_details',array('id'=>$vo['article_id'],'device'=>'wap'))}">
+	        <div class="pic fl"><img src="{if $vo.file_url eq ''}__IMGWAP__/fe1.png{else}{$webUrl}/{$vo.file_url}{/if}"></div>
+	        <div class="fr tt1_r">
+	            <p>{$vo.title}</p>
+	            <span>{$vo.add_time}</span>
+	        </div>
+	    </a>
+	</li>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

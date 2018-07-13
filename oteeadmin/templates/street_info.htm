@@ -1,0 +1,103 @@
+{include file="pageheader.htm"}
+
+<form action="supplier_street.php" method="post" name="theForm" enctype="multipart/form-data" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--店铺类型-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">店铺类型</label>
+            <div class="layui-input-block">
+                <select name="supplier_type">
+                    <option value="0">请选择</option>
+                    {foreach from=$stype key=value item=name}
+                    <option value="{$value}" {if $sinfo.supplier_type == $value} selected {/if}>{$name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <!--店铺名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 店铺名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="supplier_name" value="{$sinfo.supplier_name}" class="layui-input">
+            </div>
+        </div>
+        <!--店铺标题-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 店铺标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="supplier_title" value="{$sinfo.supplier_title}" class="layui-input">
+                <span class="notice-span">为保证美观度,店铺标题控制在13个文字以内</span>
+            </div>
+        </div>
+        <!-- 店铺描述 -->
+        <style type="text/css">
+            #supplier_desc_box label{float: left;}
+            #supplier_desc_box .layui-input-initial{width: 60%;float: left;}
+        </style>
+        <div class="layui-form-item layui-form-text" id="supplier_desc_box">
+            <label class="layui-form-label" style="float:left;">店铺描述</label>
+            <div class="layui-input-initial">
+              <textarea class="layui-textarea" name="supplier_desc" >{$sinfo.supplier_desc|escape}</textarea>
+            </div>
+        </div>
+        <!--店铺海报-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">店铺海报</label>
+            <div class="layui-input-block">
+                <input name="logo" type="file" size="40" style="margin-left:10px;margin-top:5px;" disabled />
+                {if $sinfo.logo}
+                    <!-- <a href="?act=del&code=logo"><img src="images/no.gif" alt="Delete" border="0" /></a>  --><img src="images/yes.gif" border="0" onmouseover="showImg('logo_layer', 'show')" onmouseout="showImg('logo_layer', 'hide')" />
+                    <div id="logo_layer" style="position:absolute; width:100px; height:100px; z-index:1; visibility:hidden" border="1">
+                      <img src="{$sinfo.logo}" border="0" />
+                    </div>
+                {else}
+                    {if $sinfo.logo neq ""}
+                    <img src="images/yes.gif" alt="yes" />
+                    {else}
+                    <img src="images/no.gif" alt="no" />
+                    {/if}
+                {/if}
+                <span class="notice-span">为达到前台图标显示最佳状态，建议上传150X150px图片</span>
+            </div>
+        </div>
+        <!--是否推荐-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否推荐</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_groom"  value="1" {if $sinfo.is_groom neq 0} checked="true"{/if} title="{$lang.yes}" />
+                <input type="radio" name="is_groom"  value="0" {if $sinfo.is_groom eq 0} checked="true"{/if} title="{$lang.no}" />
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="text"  name='sort_order' {if $sinfo.sort_order}value='{$sinfo.sort_order}'{else} value="50"{/if} class="layui-input" />
+            </div>
+        </div>
+        <!--通知-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">通知</label>
+            <div class="layui-input-block">
+                <textarea cols='30' rows='3' name='supplier_notice'>{$sinfo.supplier_notice}</textarea>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="saveinfo" />
+            <input type="hidden" name="suppid" value="{$sinfo.supplier_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

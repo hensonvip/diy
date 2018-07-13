@@ -1,0 +1,47 @@
+{include file="public/header" /}
+  
+<body data-psd-width="840" >
+<header class="ss2 hg ">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">查看物流</h1>
+</header>   
+<div class="content">
+	{if $data}
+    <div class="con8">
+        <div class="bgc wu">     
+            <p>物流状态：<span>{$data.state}</span></p>
+            <p>运单号码： <span>{$data.nu}</span></p>
+            <p>物流公司： <span>{$data.com}</span></p>
+        </div>
+        <div class="wu_inf">
+            <h2>物流信息</h2>
+            <ul class="bgc">
+            	{foreach $data.data as $key => $vo}
+                <li class="clearfix {if $key eq 0}on{/if}" >
+                    <div class="wu_l fl">
+                        <em></em>
+                        <i class="icon">
+                        </i>
+                    </div>
+                    <div class="wu_r fr">
+                       <p>{$vo.context}</p>
+                       <span>{$vo.time}</span> 
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    {else}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {/if}
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>

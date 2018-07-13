@@ -1,0 +1,148 @@
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form action="takegoods.php" method="post" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--提货券类型名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.type_name}</label>
+            <div class="layui-input-block">
+                <input name="type_name" type="text" value="{$vtype_arr.type_name}" placeholder="请输入提货券类型名称" class="layui-input" />
+            </div>
+        </div>
+        <!--提货券单品金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.type_money}</label>
+            <div class="layui-input-block">
+                <input name="type_money" id="type_money" type="text" value="{$vtype_arr.type_money|default:0}" placeholder="请输入提货券单品金额" class="layui-input" onclick="type_money_on('',1,this.value)" onblur="type_money_on('',2,this.value)" oninput="type_money_on('',3,this.value)" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+            </div>
+        </div>
+        <!--可用次数-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.type_money_count}</label>
+            <div class="layui-input-block">
+                <input type="text" id="type_money_count" name="type_money_count" value="{$vtype_arr.type_money_count|default:0}" size="20" onclick="type_money_on('_count',1,this.value)" onblur="type_money_on('_count',2,this.value)" oninput="type_money_on('_count',3,this.value)" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" class="layui-input" />
+            </div>
+        </div>
+        <!--提货券总金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.type_money_all}</label>
+            <div class="layui-input-block">
+                <input type="text" id="type_money_all" name="type_money_all" value="" size="20" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <!--使用起始日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('Use_start_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.use_startdate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_start_date" type="text" id="use_start_date" size="22" value='{$vtype_arr.use_start_date}' readonly="readonly"   class="layui-input" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Use_start_a">{$lang.use_startdate_notic}</span>
+            </div>
+        </div>
+        <!--使用结束日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.use_enddate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_end_date" type="text" id="use_end_date" size="22" value='{$vtype_arr.use_end_date}' readonly="readonly" class="layui-input" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="type_id" value="{$vtype_arr.type_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script language="javascript">
+  document.getElementById("type_money_all").value = document.getElementById("type_money").value * document.getElementById("type_money_count").value;
+  function type_money_on(i,j,v)
+  {
+      switch (j)
+      {
+          case 1 :
+              if (document.getElementById("type_money"+i).value == 0)
+                  document.getElementById("type_money"+i).value = "";
+              break;
+          case 2 :
+              if (document.getElementById("type_money"+i).value == "")
+              {
+                  document.getElementById("type_money"+i).value = 0;
+                  document.getElementById("type_money_all").value = 0;
+              }
+              break;
+      }
+      document.getElementById("type_money_all").value = document.getElementById("type_money").value * document.getElementById("type_money_count").value;
+  }
+</script> 
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="javascript">
+<!--
+document.forms['theForm'].elements['type_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  validator.required("type_name",      type_name_empty);
+  validator.required("type_money",     type_money_empty);
+  validator.isNumber("type_money",     type_money_isnumber, true);
+  validator.isNumber("type_money_count",     '可用次数为整数！', true);
+  validator.isNumber("type_money_all",     "提货券总金额为整数！", true);
+  validator.required("use_start_date",      use_start_date_empty);
+  validator.required("use_end_date",      use_end_date_empty);
+  validator.islt('use_start_date', 'use_end_date', use_start_lt_end);
+  
+  return validator.passed();
+}
+onload = function()
+{
+  {/literal}
+  get_value = '{$bonus_arr.send_type}';
+  {literal}
+
+  showunit(get_value)
+  // 开始检查订单
+  startCheckOrder();
+}
+/* 红包金额按订单金额发放时才填写 */
+function gObj(obj)
+{
+  var theObj;
+  if (document.getElementById)
+  {
+    if (typeof obj=="string") {
+      return document.getElementById(obj);
+    } else {
+      return obj.style;
+    }
+  }
+  return null;
+}
+
+function showunit(get_value)
+{
+  gObj("1").style.display =  (get_value == 2) ? "" : "none";
+  document.forms['theForm'].elements['selbtn1'].disabled  = (get_value != 1 && get_value != 2);
+  document.forms['theForm'].elements['selbtn2'].disabled  = (get_value != 1 && get_value != 2);
+
+  return;
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

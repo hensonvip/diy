@@ -1,0 +1,158 @@
+{include file="pageheader.htm"}
+
+<form enctype="multipart/form-data" method="post" action="articlecat.php" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--文章分类名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.cat_name}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入文章分类名称" autocomplete="off" name="cat_name" value="{$cat.cat_name|escape}" >
+            </div>
+        </div>
+        <!--目录名称-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticePathname');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                目录名称
+            </label>
+            <div class="layui-input-block">
+                <input type='text' name='path_name' maxlength="20" value='{$cat.path_name|escape:html}' class="layui-input" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticePathname">
+                    生成的【真静态HTML文件】将保存到该目录下<br>例如：在这里输入 changshi，根目录下就会生成一个 articlecat-changshi 的二级目录用来保存纯静态HTML文件，<br>articlecat- 属于默认前缀部分，可在data/config.php里进行修改
+                </span>
+            </div>
+        </div>
+        <!--上级分类-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.parent_cat}
+            </label>
+            <div class="layui-input-block">
+                <select name="parent_id" lay-filter="sel_parent_id" {if $disabled }disabled="disabled"{/if} >
+                    <option value="0">{$lang.cat_top}</option>
+                    {$cat_select}
+                </select>
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.sort_order}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入文章分类名称" autocomplete="off" name="sort_order" {if $cat.sort_order}value='{$cat.sort_order}'{else} value="50"{/if} >
+            </div>
+        </div>
+        <!--是否显示在导航栏-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.show_in_nav}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="show_in_nav" value="1" {if $cat.show_in_nav neq 0} checked="true"{/if} title="{$lang.yes}" />
+                <input type="radio" name="show_in_nav" value="0" {if $cat.show_in_nav eq 0} checked="true"{/if} title="{$lang.no}" />
+            </div>
+        </div>
+        <!--关键字-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('notice_keywords');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.cat_keywords}
+            </label>
+            <div class="layui-input-block">
+                <input type='text' name='keywords' maxlength="20" value='{$cat.keywords|escape}' class="layui-input" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="notice_keywords">
+                    {$lang.notice_keywords}
+                </span>
+            </div>
+        </div>
+        <!--描述-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.cat_desc}</label>
+            <div class="layui-input-block">
+                <textarea  name="cat_desc" cols="60" rows="4">{$cat.cat_desc|escape}</textarea>
+            </div>
+        </div>
+        <!--上传文件-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">上传文件</label>
+            <div class="layui-input-block">
+                <input type="file" name="file" style="margin-left:10px;margin-top:5px;">
+                <span class="narrow-label">
+                    {$lang.file_url}
+                    <input name="file_url" type="text" value="{$cat.file_url|escape}" class="layui-input" />
+                    <font color="red">封面图片最佳尺寸：577px * 730px</font>
+                </span>
+                {if $cat.file_url neq ''}<br/><br/><img src="/{$cat.file_url}" style="max-height:100px;">{/if}
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$cat.cat_id}" />
+            <input type="hidden" name="old_catname" value="{$cat.cat_name}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("cat_name",  no_catname);
+    return validator.passed();
+}
+
+/**
+ * 选取上级分类时判断选定的分类是不是底层分类
+ */
+function catChanged()
+{
+  var obj = document.forms['theForm'].elements['parent_id'];
+
+  cat_type = obj.options[obj.selectedIndex].getAttribute('cat_type');
+  if (cat_type == undefined)
+  {
+    cat_type = 1;
+  }
+
+  if ((obj.selectedIndex > 0) && (cat_type == 2 || cat_type == 3 || cat_type == 5))
+  {
+    alert(sys_hold);
+    obj.selectedIndex = 0;
+    return false;
+  }
+
+  return true;
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+        //监听指定开关
+        form.on('select(sel_parent_id)', function(data){
+            catChanged();
+        });
+    });
+</script>
+{include file="pagefooter.htm"}

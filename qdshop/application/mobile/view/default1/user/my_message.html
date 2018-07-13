@@ -1,0 +1,195 @@
+{include file="public/header" /}
+<style type="text/css">
+    body{padding-bottom:0;}
+    .con4_list{padding-right:0rem }
+    .del{height: 100%;width: 2rem;background: #c30d23;display: block;position: absolute;right: -2rem;top: 0;color: #fff;border: none;font-size: .36rem;}
+    .con4_list li.on {transform: translate(-2rem);}
+    .con4_list li {position: relative;transition: transform 0.5s;border-bottom: 1px solid #eeeeee;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">我的消息</h1>
+    <!-- <a href="javascript:;" class="Onekey icon" onclick="onekey()"></a> -->
+    <a href="javascript:;" onclick="onekey()" style="position: absolute;right: 0.4rem;top: 0;line-height: 1rem;color: #fff;">一键已读</a>
+</header>   
+<div class="content">
+    <div class="con4">  
+        <ul class="con4_list bgc" id="load_box">
+            {include file="user/my_message_ajax" /}
+        </ul>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+
+<script type="text/javascript">
+    function onekey(){
+        var index = layer.open({type: 2,content: '加载中'});
+        $.ajax({
+            type: "get",
+            url: "{:url('User/my_message_read')}",
+            dataType: 'json',
+            success: function(data){
+                layer.open({
+                    content: data.message,
+                    btn: '确定',
+                    shadeClose: false,
+                    yes: function(){
+                        layer.close(index);
+                        location.reload();
+                    }
+                });
+            }  
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        var page = 2;//翻页
+        
+        // dropload
+        $('.con4').dropload({
+            scrollArea : window,
+            domUp : {
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+            },
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+                domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+            },
+            loadUpFn : function(me){
+                setTimeout(function(){
+                   window.location.reload();
+                },100); 
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('User/my_message')}",
+                    data:{is_ajax:1,page:page},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            //追加页面数据
+                            $('#load_box').append(result);
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },500);
+                    },
+                    error: function(xhr, type){
+                        // alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        // me.noData();
+
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    //删除一个
+    function delOne(l_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        layer.open({
+            content: '确定删除吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                $.ajax({
+                    type: "get",
+                    url: "{:url('User/del_my_message')}",
+                    dataType: 'json',
+                    data:{l_id:l_id},
+                    success: function(data){
+                        if(data.code ==200){
+                            layer.close(index);
+                            location.reload();
+                            return false;
+                        }
+                        layer.open({
+                            content: data.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                layer.close(index);
+                            }
+                        });
+                    }  
+                });
+                //禁止页面刷新
+                return false;
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+//左滑动效果
+function myMoveDel(opts){
+    this.wrap=opts.dom;
+    this.delwidth=opts.delwidth;
+    this.oclass=opts.taggleClassName;
+    this.ochild=opts.ochild;
+    this.binddom();
+}
+myMoveDel.prototype.binddom=function(){
+    var self = this;
+    var item = self.wrap.find(this.ochild);
+    var startH = function(ev){
+        self.startX=ev.touches[0].pageX;
+        self.startY=ev.touches[0].pageY;
+    };
+    var moveH = function(ev){
+        self.offsetX=ev.touches[0].pageX-self.startX;
+        self.offsetY=ev.touches[0].pageY-self.startY;
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            ev.preventDefault();
+        }
+    };
+    var endH = function(ev){
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            if(self.offsetX>0){
+                $(this).removeClass(self.oclass);
+            }else{
+                $(this).addClass(self.oclass);
+            }
+        }
+    };
+    for(var i = 0;i<item.length;i++){
+        item[i].addEventListener('touchstart',startH);
+        item[i].addEventListener('touchmove',moveH);
+        item[i].addEventListener('touchend',endH);
+    }
+};
+window.onload=function(){
+    new myMoveDel({
+        'dom':$('.con4_list'),
+        'taggleClassName':'on',
+        'ochild':'li'
+    });
+}
+</script>

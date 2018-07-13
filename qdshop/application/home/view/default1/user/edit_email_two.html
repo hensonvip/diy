@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">邮箱修改</div>
+		<div class="mem_rcon safe_mod_rcon">
+			<a href="{:url('User/edit_email')}" class="safe_mod_back">返回</a>
+			<div class="fg_b1 fg_b2 fg_b5">
+                <div class="item p_item new_email">
+                    <span>新的邮箱地址</span>
+                    <div class="r_box" style="width:360px">
+                        <input type="text" name="email" id="email" style="width:230px">
+                        <i class="state"></i>
+                        <div class="get_code nb_t1" onclick="sendEmail(this)">发送修改链接</div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+    $('.safe_mod_rcon form input').blur(function() {
+        $(this).parents('.r_box').removeClass('hover');
+        checkNemail();
+        checkcode();
+    });
+    $('.fg_b1_sub').click(function() {
+        checkRl();
+    });
+});
+function checkNemail(index){
+    var new_email = $('.new_email input').val();
+    if(!new_email){
+        if(index == 999){
+            $('.new_email.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.new_email.item').removeClass('right wrong');
+        }
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').removeClass('on').addClass('disabled');
+        }
+    }else if(!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(new_email))){
+        $('.new_email.item').removeClass('right').addClass('wrong');
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').removeClass('on').addClass('disabled');
+        }
+    }else{
+        $('.new_email.item').removeClass('wrong').addClass('right');
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').addClass('on').removeClass('disabled');
+        }
+    }
+}
+
+function checkRl(index){
+    // checkOemail(999);
+    checkNemail(999);
+    checkcode(999);
+    if($('.safe_mod_rcon .item.right').length == $('.safe_mod_rcon .item').length - 1){
+        $('.safe_mod_rcon form').submit();
+    }else{
+        return false;
+    }
+}
+
+// 发送邮件
+function sendEmail(obj){
+    var email = $("#email").val();
+    if($(obj).hasClass('counting')){ return false; }
+    $.ajax({
+        type: "get",
+        url: "/user/send_edit_email",
+        dataType: 'json',
+        data:{email:email},
+        beforeSend: function(){
+             layer.msg('邮件发送中，请耐心等待...');
+        },
+        success: function(result){
+            if (result.code == 200) {
+                layer.open({
+                    content: result.message,
+                    btn: '确定',
+                    shadeClose: false,
+                    yes: function(index){
+                        layer.close(index);
+                    }
+                });
+
+                $('.get_code').text("60s").addClass('counting');
+                var second = 60;
+                var timer = null;
+                timer = setInterval(function(){
+                    second -= 1;
+                    if(second > 0 ){
+                        $('.get_code').text(second+"s")
+                    }else{
+                        clearInterval(timer);
+                        $('.get_code').removeClass('counting');
+                        $('.get_code').text("发送修改链接")
+                    }
+                },1000);
+            } else {
+                layer.open({
+                    content: result.message,
+                    btn: '确定',
+                    shadeClose: false,
+                    yes: function(index){
+                        layer.close(index);
+                    }
+                });
+            }
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+</script>

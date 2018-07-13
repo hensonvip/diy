@@ -1,0 +1,21 @@
+<div class="con10_wrap">
+	<div class="con10_con" style="display: block;max-height:400px; overflow:auto">
+        {if $data}
+        {foreach $data.list as $key => $vo}
+        <a href="{:url('User/order_comment',array('rec_id'=>$vo.rec_id,'order_id'=>$vo.order_id,'goods_id'=>$vo.goods_id,'is_real'=>$vo.is_real))}">
+            <div class="clearfix tt1_inf" {if $key eq 0}style="padding-top:0rem;"{/if} >
+                <div class="pic fl"><img src="{$webUrl}/{$vo.goods_thumb}"></div>
+                <div class="fr tt1_r" style="width:3.5rem;">
+                    <p style="text-align:left;">{$vo.goods_name}</p>
+                    {if $vo.goods_attr}<p style="text-align:left;color:#999;">{$vo.goods_attr}</p>{/if}
+                    <div class="clearfix"><p class="fl">¥{$vo.goods_price}</p><em class="fr">x{$vo.goods_number}</em> </div>
+                </div>
+            </div>
+        </a>
+        {/foreach}
+        {else}
+        <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png" style="max-width:156px;"></p>
+        <p align="center" style="margin-top:0.3rem;">没有商品可评论！</p>
+        {/if}
+    </div>
+</div>

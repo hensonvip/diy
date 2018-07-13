@@ -1,0 +1,209 @@
+
+            <div class="ipro_wrap top">
+                <div class="ipro_left">
+                    <div class="ipro_main pr">
+                        <ul class="ipro_slick">
+                            <li class="ipro_zoom"><img class="o_img" src="__IMGPC__/pic11.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="__IMGPC__/pic10.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="__IMGPC__/pic8.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="__IMGPC__/pic9.jpg"></li>
+                        </ul>
+                        <a class="ipro_main_btn"></a>
+                        <div class="hover"></div>
+                    </div>
+                    <div class="ipro_piclist clearfix">
+                        <!--<div class="box"><img realsrc="__IMGPC__/pic15.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic15.jpg"></div>
+                        <div class="box"><img realsrc="__IMGPC__/pic16.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic16.jpg"></div>
+                        <div class="box"><img realsrc="__IMGPC__/pic17.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic17.jpg"></div>-->
+                    </div>
+                    <div class="ipro_zan" onclick="dianzan()">
+                        <span class="icon"></span>
+                    </div>
+                    <div class="ipro_share">
+                        <div class="icon_bg"><span class="icon"></span></div>
+                        <div class="share_box">
+                            <a href="" class="weibo"></a>
+                            <a href="" class="wechat"></a>
+                            <a href="" class="qq"></a>
+                            <a href="" class="ins"></a>
+                            <a href="" class="talk"></a>
+                            <a href="" class="facebook"></a>
+                            <a href="" class="twitter"></a>
+                        </div>
+                    </div>
+                    <div class="ipro_com">
+                        <h2>其他比赛作品推荐</h2>
+                        <div class="cylt2_wrap">
+                            <div class="cylt2_box clearfix">
+                                <ul class="cylt2_plist">
+<!--                                    <li>
+                                        <div class="pic"><img src="__IMGPC__/icon59.png"></div>
+                                        <div class="text clearfix">
+                                            <span class="tover">KULTEKULTEKULTEKULTE</span>
+                                            <font>30票</font>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="pic"><img src="__IMGPC__/icon59.png"></div>
+                                        <div class="text clearfix">
+                                            <span class="tover">KULTE</span>
+                                            <font>30票</font>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="pic"><img src="__IMGPC__/icon59.png"></div>
+                                        <div class="text clearfix">
+                                            <span class="tover">KULTE</span>
+                                            <font>30票</font>
+                                        </div>
+                                    </li>-->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ipro_com_bot">
+                            <div class="ipro_com_bot_pf">评论(88)</div>
+                            <form class="ipro_com_bot_form" id="comment" >
+                                <textarea name="" placeholder="添加评论···"></textarea>
+                                <div class="tr"><input type="button" value="发 表" class="ipro_com_bot_sub nb_t2"  ></div>
+                            </form>
+                            <ul class="ipro_com_bot_ul">
+                            {include file="Originality/comment_ajax"}
+                            </ul>
+                            <i class="base-load"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ipro_right">
+                    <div class="ipro_right_bef">
+                        <div class="ipd_rtop">
+                            <div class="ipd_user clearfix">
+                                <div class="avatar">
+                                    <a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></span></a>
+                                    <div class="avatar_box">
+                                        <div class="avatar_wrap" style="height:180px;">
+                                            <div class="ava_top clearfix">
+                                                <input id="user_id" value="{$user_id}" type="hidden" />
+                                                <a href=""><div class="ava_pic lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></div></a>
+                                                <div class="ava_txt">
+                                                    <a href=""><h2>Marco</h2></a>
+                                                    <p>设计师</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+                                            </div>
+                                            <div class="ava_bot" style="padding:20px;">
+                                                <ul class="clearfix">
+                                                    <li><span>T恤作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <!--<li><span>设计作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>-->
+                                                    <li><span>粉丝</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <!--<li><span>话题</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text">
+                                    <a href=""><h2>Marco</h2></a>
+                                    <span class="follow guanzhu nb_t2">关 注</span>
+                                </div>
+                                {if $match_cycle eq 1}
+                                <div class="price ing"><p>征集中</p></div>
+                                {else}
+                                <div class="price ps"><p class = "piaoshu">60</p><p>票数</p></div>
+                                {/if}
+                            </div>
+                            <div class="ipd8">
+                                <div class="ipd_detail">
+                                    <div class="tag_list">
+                                        <h2>作品名称</h2>
+                                        <a href="javascript:void (0)">插画</a>
+                                    </div>
+                                    <p class="des"><span class="view">23</span><span class="zan" onclick="dianzan()">23</span><span class="comment">23</span></p>
+                                    <div class="time">发布时间：2017-01-07</div>
+                                </div>
+                                <div class="ipd_info">
+                                    <div class="box">
+                                        <h2>设计描述</h2>
+                                        <p>设计理念，设计理念，设计。</p>
+                                        <!--<p>设计，设计设计。</p>-->
+                                    </div>
+                                </div>
+                                <div class="ipd_tag">
+                                    <h2>Tags</h2>
+                                    <!--<div><a href="">标签1</a><a href="">标签2</a><a href="">标签标签3</a><a href="">标签1</a><a href="">标签2</a></div>-->
+                                    <div><a href="javascript:void (0)">标签</a></div>
+                                </div>
+                                <div class="ipd_rbot_wrap">
+                                    <div class="ipd_favar nb_t5"><i></i>收 藏</div>
+                                    {if $match_cycle neq 1}
+                                    <div class="ipd_favar ipd_tp nb_t2">投 票</div>
+                                    {/if}
+                                    <div class="ipd_exp2 clearfix">
+                                        <div class="ipd_exp_txt"><span>版权声明</span>
+                                            <div class="ipd_exp_box">
+                                                <p>原创；禁止匿名转载；禁止商业使用；<br/>禁止个人使用。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ipd_rbot">
+                            <div class="share_box">
+                                <a href="" class="weibo"></a>
+                                <a href="" class="wechat"></a>
+                                <a href="" class="qq"></a>
+                                <a href="" class="ins"></a>
+                                <a href="" class="talk"></a>
+                                <a href="" class="facebook"></a>
+                                <a href="" class="twitter"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+    <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+        <span class="lightbox-spinner"></span>
+    </div>
+    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+        <div class="js-img-wrap" id="lightbox-img-wrap">
+            <div class="lightbox-extra control prev js-control js-prev hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+            </div>
+            <div class="lightbox-extra control next js-control js-next hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+            </div>
+            <div class="lightbox-extra control close js-control js-close">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                    <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                    <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                </svg>
+            </div>
+            <div class="lightbox-contents js-contents"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //originality_popup.js 相关异步url
+    var zan_reduce = "{:url('Originality/zan_reduce')}";
+    var zan_increase = "{:url('Originality/zan_increase')}";
+    var comment = "{:url('Originality/comment')}";
+    var reply = "{:url('Originality/reply')}";
+    var comment_list = "{:url('Originality')}";
+    var popup_ajax ="{:url('Originality/popup_ajax')}";
+</script>

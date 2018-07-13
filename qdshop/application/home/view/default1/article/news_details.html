@@ -1,0 +1,97 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+{if $device eq 'wap'}
+<header class="pr hg">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">文章详情</h1>
+</header>   
+{/if}
+
+<div class="content">
+    <div class="con3 bgc">
+        <h1>{$data.title}</h1>
+        <span>时间 : {$data.add_time}</span>
+        <div>{$data.content}</div>
+        <div class="zan clearfix"><i class="icon praise"></i> <em id="praise">{$data.praise_num}</em></div>
+    </div>
+
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+
+<script type="text/javascript">
+	// 文章点赞
+    // $(".praise").bind("click", function(){
+    $(".praise").click(function(){
+    	var index = layer.open({type: 2,content: '加载中'});
+
+        var article_id = {$data.article_id};
+        // document.cookie = "article"+article_id+"="+excape(1);
+        var arr;
+        var reg=new RegExp("(^| )"+"article"+article_id+"=([^;]*)(;|$)");
+        if(arr=document.cookie.match(reg)){
+        	layer.close(index);
+            layer.open({
+                content: "已点过赞了"
+                ,skin: 'msg'
+                ,time: 2 // 2秒后自动关闭
+            });
+            $(".praise").css("background-image", "url({$webUrl}/qdshop/public/static/mobile/default1/images/icon19on.png)");
+            // console.log(unescape(arr[2]));
+        }
+        else{
+            $.ajax({
+                url:"{:url('Article/do_praise')}",
+                type:"POST",
+                dataType:"JSON",
+                data:{article_id:article_id},
+                success:function(msg){
+                	layer.close(index);
+                    //console.log(msg);
+                    if(msg.code == 200){
+                        var exp = new Date();
+                        // 一天有效
+                        exp.setTime(exp.getTime() + 24*60*60*1000);
+                        document.cookie = "article"+article_id+"="+"1"+";expires=" + exp.toGMTString();
+                        var praise_num = $("#praise").text();
+                        praise_num++;
+                        // console.log(praise_num);
+                        $("#praise").text(praise_num);
+                        $(".praise").css("background-image", "url({$webUrl}/qdshop/public/static/mobile/default1/images/icon19on.png)");
+                        layer.open({
+                            content: msg.message
+                            ,skin: 'msg'
+                            ,time: 2 // 2秒后自动关闭
+                        });
+                        
+                    }else{
+                        layer.open({
+                            content: msg.message
+                            ,skin: 'msg'
+                            ,time: 2 // 2秒后自动关闭
+                            ,end:function(){
+                                if(msg.url != ''){
+                                        window.location.href = msg.url;
+                                }
+                            }
+                        });
+                        return false;
+                    }
+
+                }
+
+            })
+
+            
+        }
+    })
+</script>

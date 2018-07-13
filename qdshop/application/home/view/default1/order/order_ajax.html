@@ -1,0 +1,45 @@
+{if isset($order_data) || !empty($order_data)}
+{foreach name="$order_data" item="order"}
+<tr>
+    <td colspan="6" class="p_con1b_ti">
+        <p>
+            <span>订单号 {$order.order_sn}</span>
+            <span><?php echo date('Y-m-d',$order['add_time']) ?></span>
+        </p>
+    </td>
+</tr>
+
+
+<tr>
+    {foreach name="$order.goods_info" item ="info"}
+        <td>
+            <div class="box box1"><a href="javascript:void(0);"><img class="lazybg" data-lazyload-img="/{$info.goods_thumb}"></a></div>
+            <div class="box box2">
+                <a href="javascript:void(0);"><h2></h2></a>
+                <div class="icon_list">
+                    <div class="icon icon1" style="background-image: url(/{$info.attr_icon});"></div>
+                    <div class="icon icon2" style="background-color: #{$info.attr_color};"></div>
+                    <div class="icon icon3">{$info.attr_size}</div>
+                </div>
+            </div>
+        </td>
+
+
+        <td>￥{$info.unit_price}</td>
+        <td>{$info.total}</td>
+    {/foreach}
+
+    <td>￥{$order.price + $order.shipping_fee}<span class="db">（含运费：￥{$order.shipping_fee}）</span></td>
+    <td>
+        <p class="p_color">待付款</p>
+        <p><a href="#">订单详情</a></p>
+    </td>
+    <td>
+
+        <a href="#" class="p_yes">立即付款</a>
+        <a href="#" class="p_no">取消订单</a>
+
+    </td>
+</tr>
+{/foreach}
+{/if}

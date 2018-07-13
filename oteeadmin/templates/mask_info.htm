@@ -1,0 +1,108 @@
+{include file="pageheader.htm"}
+
+<form enctype="multipart/form-data" method="post" action="mask.php" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--蒙版名称-->
+        <div class="layui-form-item">            <label class="layui-form-label">
+                <a href="javascript:showNotice2('notice_mask_name');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} 蒙版名称
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入蒙版名称" autocomplete="off" name="mask_name" value="{$mask.mask_name|escape}" >
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="notice_mask_name">
+                    1：蒙版名称必须跟代码里面的name值对应，否则不能使用；2：蒙版名称不能出现中文和特殊字符，只能是英文字母开头。
+                </span>
+            </div>
+        </div>
+        <!--蒙版图片-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 蒙版图片</label>
+            <div class="layui-input-block">
+                <input type="file" name="mask_img" style="margin-left:10px;margin-top:5px;">
+                <span class="narrow-label">
+                    或输入图片地址
+                    <input name="mask_img" type="text" value="{$mask.mask_img|escape}" class="layui-input" />
+                    <font color="red">缩略图最佳尺寸：（170px*180px）</font>
+                </span>
+                {if $mask.mask_img neq ''}<br/><br/><img src="/{$mask.mask_img}" style="max-height:100px;">{/if}
+            </div>
+        </div>
+
+        <!--蒙版JS代码-->
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label" style="float:left;">蒙版JS代码</label>
+            <div class="layui-input-initial">
+                <textarea name="mask_code" id="mask_code" cols="100" rows="10" placeholder="请输入蒙版JS代码" class="layui-textarea" style="float:left;">{$mask.mask_code|escape}</textarea>
+            </div>
+        </div>
+
+        <!--是否显示-->
+        {if $form_action eq 'insert'}
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否显示</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" checked title="显示">
+                    <input type="radio" name="is_show" value="0" title="不显示">
+                </div>
+            </div>
+        {else}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.require_field} 是否显示</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" {if $mask.is_show eq 1}checked{/if} title="显示">
+                    <input type="radio" name="is_show" value="0" {if $mask.is_show eq 0}checked{/if} title="不显示">
+                </div>
+            </div>
+        {/if}
+
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" autocomplete="off" name="sort_order" value="{$mask.sort_order|default:100}">
+            </div>
+        </div>
+        <div class="button-div">
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$mask.mask_id}" />
+            <input type="hidden" name="old_mask_name" value="{$mask.mask_name}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+        </div>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("mask_name",  '没有输入蒙版名称');
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

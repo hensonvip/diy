@@ -1,0 +1,84 @@
+<script src="__JSWAP__/jquery.js"></script>
+<script type="text/javascript">
+    //计算倒计时 ,时间戳 id 
+function jisuandaojishi2(id , closeTime)
+{
+    var timestamp = Date.parse(new Date());//当前时间
+
+    var closeTime = closeTime - timestamp/1000;
+    var displayTime;
+    function showTime(){
+        var day = Math.floor(closeTime / (60 * 60 * 24));
+        var hour = Math.floor(closeTime / (3600)) - (day * 24);
+        var minute = Math.floor(closeTime / (60)) - (day * 24 * 60) - (hour * 60);
+        var second = Math.floor(closeTime) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        closeTime -= 1;
+        var html = '';
+        html += '<span>距活动结束还有'+day+'天</span>';
+        html += '<div class="clearfix surplus_time">';
+        html += '<em>'+hour+'</em><i>:</i>';
+        html += '<em>'+minute+'</em><i>:</i>';
+        html += '<em>'+second+'</em>';
+        html += '</div>';
+        //var html = '距离结束：'+day+'天'+hour+'小时'+minute+'分'+second+'秒';
+        jQuery('#bargain_time_'+id).html(html);
+        if(closeTime <= -1)
+        {
+            clearInterval(displayTime);
+            //document.location.href = document.location.href;
+            //location.reload();
+            jQuery('#box_'+id).hide();
+            return;
+        }
+    }
+    showTime();
+    displayTime = setInterval(function(){
+            showTime();
+    }, 1000)
+}
+</script>
+
+{if $data.list}
+	{foreach $data.list as $key => $vo}
+    <li class="clearfix" id="box_{$vo.id}">
+        <a href="{:url('Goods/details',array('bargain_id'=>$vo['id'],'goods_id'=>$vo['goods_id']))}">
+            <div class="pic"><img src="{$webUrl}/{$vo.goods_thumb}" alt=""></div>
+            <div class="tit">
+                <h2>{$vo.goods_name}</h2>
+                <div class="price" style="height:0.3rem;">
+                    <font class="fl" style="font-size:0.3rem;">{$vo.format_shop_price}</font>
+                    <h4 class="fl" style="margin-left:0.3rem;">最低价 ￥<i>{$vo.low_price}</i></h4>
+                </div>
+                <div class="clearfix end_time" id="bargain_time_{$vo.id}">
+                    <span>距活动结束</span>
+                    <div class="clearfix surplus_time">
+                        <em>01</em><i>:</i>
+                        <em>17</em><i>:</i>
+                        <em>52</em><i>:</i>
+                        <em>4</em>
+                    </div>
+                </div>
+                <span class="count">{$vo.join_num}人正在参与</span>
+            </div>
+        </a>
+    </li>
+    <script type="text/javascript">
+        jisuandaojishi2('{$vo.id}','{$vo.end_time}');
+    </script>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

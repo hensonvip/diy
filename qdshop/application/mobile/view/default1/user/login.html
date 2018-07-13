@@ -1,0 +1,41 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">登录</h1>
+</header>   
+<div class="content">
+    <div class="sign">
+        <form action="{:url('User/do_login')}" method="post">
+            <input type="hidden" name="back_url" value="{$back_url}">
+            <input type="text" name="username" placeholder="请输入手机号码">
+            <input type="password" name="pwd" placeholder="请输入密码">
+            <div class="wzm class">
+                <a class="tl fl" href="{:url('User/login_mobile')}">手机快捷登录</a>
+                <a class="tr wm fr" href="{:url('User/forget')}">忘记密码</a>
+            </div>
+            <input type="submit" class="sub_btn" value="登录" style="margin-top:0.3rem;">
+            
+            <p align="center">
+                <a class="tl wz" href="{:url('User/register')}" style="color:#999999;">还没有帐号？<font color="#c01414">立即注册</font></a>
+            </p>
+            <div class="buys tc">
+                <a href=""><img src="__IMGWAP__/wq.png"></a>
+                <a href="{:url('user/third_login',array('channel'=>'weixin'))}"><img src="__IMGWAP__/wx.png"></a>
+                <a href=""><img src="__IMGWAP__/wz.png"></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+    //单独页面上的js
+</script>

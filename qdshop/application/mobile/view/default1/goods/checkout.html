@@ -1,0 +1,227 @@
+{include file="public/header" /}
+
+<body data-psd-width="840" >
+<div class="ss2 hg">
+    <a href="{:url('Cart/index')}"><div class="pa back on "></div></a>
+    <h2>填写订单</h2>
+    <a href="/mobile.php/index/index.html"><div class="header_home"></div></a>
+</div>
+<div class="content ">
+<form action="{:url('Goods/done')}" method="POST">
+    <div class="xie" {if $data.order_info.extension_code eq 'virtual_good'}style="display:none;"{/if} >
+        <a href="{:url('Goods/consignee')}">
+            <h2>{$data.def_addr.consignee} {$data.def_addr.mobile}</h2>
+            <p><em class="icon"></em>{$data.def_addr.province_name} {$data.def_addr.city_name} {$data.def_addr.district_name} {$data.def_addr.address}</p>
+        </a>
+        <input type="hidden" id="address_id" name="address_id" value="{$data.def_addr.address_id}">
+    </div>
+    {foreach $data.supplier_list as $key => $vo}
+    <div class="pubcar">
+        <ul class="pub_list">
+            <li>
+                <div class="pub_t">
+                    <input type="hidden" name="supplier_id{$vo.supplier_id}" id="supplier_id{$vo.supplier_id}" value="{$vo.supplier_id}">
+                    <span class="pub_tl"><label class="select_li">{$vo.supplier_name}</label> </span>
+                    <a class="pub_tr" href=""></a>
+                </div>
+                <dl>
+                    {foreach $vo.goods_list as $kk => $vv}
+                    <dd class="clearfix">
+                        <label></label>
+                        <div class="pic fl">
+                            <img src="{$webUrl}/{$vv.goods_thumb}" alt="">
+                        </div>
+                        <div class="text">
+                            <h2 class="title">{if $vv.is_gift neq 0}<font color="red">[赠品]</font>{/if}{$vv.goods_name}</h2>
+                            <div class="spec">{$vv.goods_attr}</div>
+                            <div class="price">
+                                    <span class="symbol">¥</span>
+                                    <span class="number">{$vv.goods_price}</span>
+                             </div>
+                        </div>
+                       <div class="bei">x{$vv.goods_number}</div>
+                    </dd>
+                    {/foreach}
+                </dl>
+            </li>
+        </ul>
+        <div class="zong zzong">
+            <ul class="bgc" {if $data.order_info.extension_code eq 'virtual_good'}style="display:none;"{/if} >
+                <li class="clearfix">
+                    <span>配送方式</span>
+                    <div class="gr fr clearfix">
+                        {foreach $vo.shipping_list as $kk => $vv}
+                        <em {if $vv['selected'] eq 'checked'}class="on"{/if} onclick="$('#shipping_id'+{$vo.supplier_id}).val('{$vv.shipping_id}');$('#shipping_fee'+{$vo.supplier_id}).html('{$vv.shipping_fee_formated}');setCookie('shipping_list{$vo.supplier_id}',{$vv.shipping_id});$('#shipping_fee_{$vo.supplier_id}').val('{$vv.shipping_fee}');changeTotal()" ><i class="icon"></i>{$vv.shipping_name}</em>
+                        {if $vv['selected'] eq 'checked'}<input type="hidden" name="shipping_id{$vo.supplier_id}" id="shipping_id{$vo.supplier_id}" value="{$vv.shipping_id}">{/if}
+                        {if $vv.shipping_code eq 'pups'}<input id="pickup_point{$vo.supplier_id}" name="pickup_point{$vo.supplier_id}" value="0" type="hidden">{/if}
+                        {/foreach}
+                    </div>
+                </li>
+
+                {foreach $vo.shipping_list as $kk => $vv}
+                {if $vv['selected'] eq 'checked'}
+                    <li class="clearfix"><span>运费</span><em class="hc" id="shipping_fee{$vo.supplier_id}">{$vv.shipping_fee_formated}</em></li>
+                    <input type="hidden" id="shipping_fee_{$vo.supplier_id}" value="{if $data.order_info.extension_code eq 'virtual_good'}0{else}{$vv.shipping_fee}{/if}"><!--计算金额用-->
+                {/if}
+                {/foreach}
+
+                {if $vo.supplier_total.discount > 0}
+                <li class="clearfix"><span>促销优惠</span><em class="hc">-{$vo.supplier_total.discount_formated}</em></li>
+                {/if}
+
+                {if $bonus[$vo.supplier_id] gt 0}
+                    {foreach $vo.bonus_list as $kk => $vv}
+                    {if $vv.bonus_id eq $bonus[$vo.supplier_id]}
+                    <a href="{:url('Goods/bonus',array('supplier_id'=>$vo['supplier_id']))}">
+                        <li class="clearfix" style="background:url(__IMGWAP__/jr.png) right center no-repeat;background-size:.22rem .38rem;padding-right:.35rem;">
+                            <span>商家优惠券</span><em>-￥{$vv.type_money}</em>
+                        </li>
+                    </a>
+                    <input type="hidden" name="bonus{$vo.supplier_id}" id="bonus{$vo.supplier_id}" value="{$vv.bonus_id}">
+                    <input type="hidden" id="bonus_fee_{$vo.supplier_id}" value="{$vv.type_money}"><!--计算金额用-->
+                    {/if}
+                    {/foreach}
+                {else}
+                    <a href="{:url('Goods/bonus',array('supplier_id'=>$vo['supplier_id']))}">
+                        <li class="clearfix" style="background:url(__IMGWAP__/jr.png) right center no-repeat;background-size:.22rem .38rem;padding-right:.35rem;">
+                            <span>商家优惠券</span><em>{if $vo.bonus_num eq 0}无可用{else}选择优惠券{/if}</em>
+                        </li>
+                    </a>
+                    <input type="hidden" name="bonus{$vo.supplier_id}" id="bonus{$vo.supplier_id}" value="0">
+                    <input type="hidden" id="bonus_fee_{$vo.supplier_id}" value="0"><!--计算金额用-->
+                {/if}
+
+                <!-- <li class="clearfix"><span>发票</span><em >纸质（个人）</em></li> -->
+                {if $vo.open_invoice.can_invoice}
+                <a href="{:url('Goods/invoice',array('supplier_id'=>$vo['supplier_id']))}">
+                    <li class="clearfix" style="background:url(__IMGWAP__/jr.png) right center no-repeat;background-size:.22rem .38rem;padding-right:.35rem;">
+                        <span>发票</span><em>{$invoice_name[$vo.supplier_id]}</em>
+                    </li>
+                </a>
+                {/if}
+
+                <li class="clearfix">
+                    <span >留言：</span>
+                    <input class="fl" type="text" value="{$message[$vo.supplier_id]}" name="message{$vo.supplier_id}" onblur="setCookie('message{$vo.supplier_id}',$(this).val());">
+                 </li>
+                <li> <em class="hc fr" id="supplier_total_{$vo.supplier_id}">{$vo.supplier_total.amount_formated}</em><span class="fr sf">实付</span><i class="fr">共{$vo.supplier_total.goods_count}件商品</i></li>
+
+                <!--计算金额用-->
+                <p style="display:none;" class="supplier_id">{$vo.supplier_id}</p>
+                <input type="hidden" id="goods_price_{$vo.supplier_id}" value="{$vo.supplier_total.goods_price}">
+                <input type="hidden" id="discount_{$vo.supplier_id}" value="{$vo.supplier_total.discount}">
+
+            </ul>
+        </div>
+    </div>
+    {/foreach}
+
+    <div class="jfs bgc mt3">
+        <div class="jfs_t clearfix" {if $data.order_info.extension_code eq 'virtual_good'}style="display:none;"{/if}>
+            <div class="jfs1"></div>
+            <div class="jfs2 clearfix">
+                <div class=" jfs2_t">
+                    <span>使用积分</span>
+                    <input type="text" name="integral" value="">
+                    <span>抵<i>{$data.order_info.max_use_integral_price}</i>元</span>
+                </div>
+                <p>（此订单最高可使用{$data.order_info.max_use_integral}积分）</p>
+            </div>
+            <div class="jfs3">- ¥0.00</div>
+        </div>
+        <!-- <div class="zff clearfix">
+            <a href="">
+                发票
+                <span class="fr">不开发票</span>
+            </a>
+        </div> -->
+        <div class="zff clearfix">
+            <a href="{:url('Goods/payment')}">
+                支付方式
+                <span class="fr">{$payment['pay_desc']}</span>
+                <input type="hidden"  value="{$payment['pay_id']}" name="pay_id">
+            </a>
+        </div>
+    </div>
+
+</div>
+<div class="shif bgc ">
+    <span class="hefu">合计：<em class="hc" id="order_total">{$data.order_total.amount_formated}</em></span>
+    <input type="submit" class="sub_btn hg fr" value="提交订单" name="">
+</div>
+</form>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $(function(){
+        //配送方式
+        $('.gr em').click(function(){
+            $(this).addClass("on").siblings().removeClass("on");
+        })
+
+        changeTotal();//计算金额
+    })
+</script>
+
+<script type="text/javascript">
+    function setCookie(key,value){
+        //var index = layer.open({type: 2,content: '加载中'});
+        $.ajax({
+            type: "post",
+            url: "{:url('Goods/setCookie')}",
+            dataType: 'json',
+            data:{k:key,v:value,is_ajax:1},
+            success: function(result){
+                //layer.close(index);
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    //计算金额
+    function changeTotal(){
+        var topMenus = getClass('p','supplier_id');//获取所有店铺id
+        var order_total = 0;
+        for(var i=0;i < topMenus.length; i++)
+        {
+            var supplier_id = topMenus[i].innerHTML;
+            var goods_price = $('#goods_price_'+supplier_id).val();//商品金额
+            var discount = $('#discount_'+supplier_id).val();//优惠金额
+            var shipping_fee = $('#shipping_fee_'+supplier_id).val();//配送金额
+            var bonus_fee = $('#bonus_fee_'+supplier_id).val();//红包金额
+
+            var supplier_total = (parseFloat(goods_price)+parseFloat(shipping_fee)-parseFloat(bonus_fee)-parseFloat(discount)).toFixed(2);
+            $('#supplier_total_'+supplier_id).html('￥'+supplier_total);
+            order_total = parseFloat(order_total) + parseFloat(supplier_total);
+        }
+        $('#order_total').html('￥'+order_total.toFixed(2));
+    }
+
+    function getClass(tagName,className) //获得标签名为tagName,类名className的元素
+    {
+        if(document.getElementsByClassName) //支持这个函数
+        {        return document.getElementsByClassName(className);
+        }
+        else
+        {       var tags=document.getElementsByTagName(tagName);//获取标签
+            var tagArr=[];//用于返回类名为className的元素
+            for(var i=0;i < tags.length; i++)
+            {
+                if(tags[i].class == className)
+                {
+                    tagArr[tagArr.length] = tags[i];//保存满足条件的元素
+                }
+            }
+            return tagArr;
+        }
+
+    }
+</script>

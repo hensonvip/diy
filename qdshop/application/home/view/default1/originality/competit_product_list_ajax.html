@@ -1,0 +1,20 @@
+{if !empty($product_list.list)}
+{foreach name="$product_list.list" key="plkey" item="pl"}
+<li class="porduct_li" data-record="{$pl.record_id}" onclick="productClick({$plkey+$product_list.pager.page*$product_list.pager.page_size-$product_list.pager.page_size}, {$pl.record_id}, $(this).index())">
+    <div class="pic"><img src="/{$pl.img}"></div>
+    <div class="diy{$plkey+$product_list.pager.page*$product_list.pager.page_size-$product_list.pager.page_size}" style="display: none">{$pl.record_id}</div><!--当前弹窗位置-->
+    <div class="diy" style="display: none">{$pl.record_id}</div><!--当前弹窗位置-->
+    <!--<div class="user{$plkey}" style="display: none">{$pl.user_id}</div>&lt;!&ndash;当前弹窗位置&ndash;&gt;-->
+    <div class="text clearfix">
+        {if $pl.title eq '0'}
+        <span class="tover">未命名</span>
+        {else}
+        <span class="tover">{$pl.title}</span>
+        {/if}
+        <font>{$pl.vote_count}票</font>
+        <input type="hidden"  id="record_{$pl.record_id}" value="2">
+    </div>
+    <div class="name"><span style="background-image: url(/{$pl.face_photo});"></span><font>{$pl.name}</font></div>
+</li>
+{/foreach}
+{/if}

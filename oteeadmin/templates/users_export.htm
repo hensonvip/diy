@@ -1,0 +1,77 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form name="theForm" method="post" action="" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--选择会员等级-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_user_rank_www_com}</label>
+            <div class="layui-input-block">
+                <select name="user_rank" id="user_rank">
+                    <option value="0" selected>{$lang.all_users_www_com}</option>
+                    {html_options options=$user_ranks}
+                </select>
+            </div>
+        </div>
+        <!--选择注册时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.label_reg_time_www_com}</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" maxlength="60" size="20" readonly="readonly" id="start_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                ~      
+                <input type="text" name="end_time" maxlength="60" size="20" readonly="readonly" id="end_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--会员积分大于-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.user_point_gt_www_com}</label>
+            <div class="layui-input-block">
+                <input name="pay_points_gt" type="text" id="goods_num" value="" class="layui-input" />
+            </div>
+        </div>
+        <!--会员积分小于-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.user_point_lt_www_com}</label>
+            <div class="layui-input-block">
+                <input name="pay_points_lt" type="text" id="rows_num" value="" class="layui-input" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="hidden" name="act" value="act_export_excel">
+            <input type="submit" class="layui-btn" name="btn_user_export" value="{$lang.button_submit}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script type="text/javascript" src="js/validator.js"></script>
+<script language="JavaScript">
+function validate()
+{
+      var validator = new Validator('theForm');
+	  if (document.forms['theForm'].elements['pay_points_gt'].value)
+      {
+          validator.isInt('pay_points_gt', user_point_gt_not_int, false);
+      }
+	  if (document.forms['theForm'].elements['pay_points_lt'].value)
+      {
+          validator.isInt('pay_points_lt', user_point_lt_not_int, false);
+      }
+	  if ((document.forms['theForm'].elements['start_time'].value) && (document.forms['theForm'].elements['end_time'].value))
+      {
+          validator.islt('start_time', 'end_time', reg_time_not_lt);
+      }
+	  return validator.passed();
+}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,85 @@
+{include file="public/header" /}
+<style type="text/css">
+    .getCode{background: none;color: #c01414;font-size: .36rem;text-align: right;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">找回密码</h1>
+</header>   
+<div class="content">
+    <div class="sign">
+        <form action="{:url('User/forget_third')}" method="post">
+            <input type="text" name="new_password" id="new_password" placeholder="新密码" >
+            <input type="text" name="qr_password" id="qr_password" placeholder="确认新密码" >
+            <input type="button" class="sub_btn" value="确定" onclick="checkForm()">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script type="text/javascript">
+    function checkForm(){
+        var index = layer.open({type: 2,content: '加载中'});
+
+        var new_password = $('#new_password').val();
+        var qr_password = $('#qr_password').val();
+        if(new_password == ''){
+            layer.open({
+                content: '请输入新密码！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+        if(new_password != qr_password){
+            layer.open({
+                content: '操作失败，新密码与确认新密码不一样！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        $.ajax({
+            type: "post",
+            url: "{:url('User/forget_third')}",
+            dataType: 'json',
+            data:{new_password:new_password},
+            success: function(data){console.log(data);
+                layer.close(index);
+                if(data.code == 200){
+                    layer.open({
+                        content: '重置密码成功，请重新登录！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            window.location.href = "{:url('User/login')}?back_url={:url('User/index')}";
+                        }
+                    });
+                    return false;
+                }
+                layer.open({
+                    content: data.message
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+                
+            }  
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>

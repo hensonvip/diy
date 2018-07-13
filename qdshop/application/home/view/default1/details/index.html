@@ -1,0 +1,746 @@
+{include file="public/head" /}
+<body>
+<!--header start-->
+<div class="header first second fixed">
+	{include file="public/nav" /}
+	{if condition="$user_id"}
+	{include file="public/user_right" /}
+	{else/}
+	{include file="public/right" /}
+	{/if}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<!--举报-->
+{include file="public/report" /}
+
+<!--私信-->
+{include file="public/private_message" /}
+<div class="ipro_bg"></div>
+<div class="ipro_popup">
+	{if $details_data.info.state eq 2}
+	<div class="ipro_inner">
+		{else}
+		<div class="ipro_inner disabled">
+			{/if}
+			<div class="ipro_content dpro_content cylt_content">
+				<div class="ipro_wrap top" data-aid="{$details_data.info.user_id}" data-did="{$details_data.info.diy_id}" data-rid="{$record_id}">
+					<div class="ipro_left">
+						<div class="ipro_main pr">
+							<ul class="ipro_slick">
+								{foreach name="$details_data.imgs_one" item="imgs_one" }
+								<li class="ipro_zoom"><img class="o_img" src="/{$imgs_one}"></li>
+								{/foreach}
+								{foreach name="$details_data.img_one" item="img_one" }
+								<li class="ipro_zoom"><img class="o_img" src="/{$img_one}"></li>
+								{/foreach}
+							</ul>
+							<a class="ipro_main_btn"></a>
+							<div class="hover"></div>
+						</div>
+						<div class="ipro_piclist clearfix">
+							{foreach name="$details_data.img_two" item="img_two"}
+								<div class="box"><img realsrc="/{$img_two}" class="lazybg" data-lazyload-img="/{$img_two}"></div>
+							{/foreach}
+						</div>
+						{if $details_data.info.state eq 2}
+						{if $details_data.info.if_zan eq 1 }
+						<div class="ipro_zan on"><span class="icon"></span></div>
+						{else}
+						<div class="ipro_zan"><span class="icon"></span></div>
+						{/if}
+						{else}
+						<div class="ipro_zan disabled"><span class="icon"></span></div>
+						{/if}
+						{include file="public/ipro_share" /}<!--分享-->
+						<div class="ipro_com">
+							<h2>其他比赛作品推荐</h2>
+							<div class="cylt2_wrap">
+								<div class="cylt2_box clearfix">
+									<ul class="cylt2_plist">
+										{foreach name="$details_data.product_three" item="p_three"}
+										<li>
+											<div class="pic"><img src="/{$p_three.img}"></div>
+											<div class="text clearfix">
+												<span class="tover">{$p_three.title}</span>
+												<font>{$p_three.vote_count}票</font>
+											</div>
+										</li>
+										{/foreach}
+										<!--<li>
+                                            <div class="pic"><img src="__IMGPC__/icon59.png"></div>
+                                            <div class="text clearfix">
+                                                <span class="tover">KULTE</span>
+                                                <font>30票</font>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="pic"><img src="__IMGPC__/icon59.png"></div>
+                                            <div class="text clearfix">
+                                                <span class="tover">KULTE</span>
+                                                <font>30票</font>
+                                            </div>
+                                        </li>-->
+									</ul>
+								</div>
+							</div>
+							<div class="ipro_com_bot" >
+								<div class="ipro_com_bot_pf" data-num = "{$details_data.info.comment_num}">评论({$details_data.info.comment_num})</div>
+								<form class="ipro_com_bot_form" id="comment">
+									<textarea name="" placeholder="添加评论···"></textarea>
+									<div class="tr"><input type="button" value="发 表" class="ipro_com_bot_sub nb_t2 {if $details_data.info.state neq 2}disabled{/if}"></div>
+								</form>
+								<ul class="ipro_com_bot_ul" comment-rid="{$details_data.info.record_id}">
+									{include file="originality/comment_ajax"}
+								</ul>
+								<i class="base-load"></i>
+							</div>
+						</div>
+					</div>
+					<div class="ipro_right">
+						<div class="ipro_right_bef">
+							<div class="ipd_rtop">
+								<div class="ipd_user clearfix">
+									<div class="avatar">
+										<!--<a href=""><span class="lazybg" data-lazyload-bg="/{$details_data.author.headimg}"></span></a>-->
+										<a href=""><span class="lazybg" data-lazyload-bg="/{$details_data.author.headimg}" data-lazyload-suc="true" style="background-image: url(/{$details_data.author.headimg});"></span></a>
+										<div class="avatar_box">
+											<div class="avatar_wrap">
+												<div class="ava_top clearfix">
+													<input id="user_id" value="{$details_data.info.user_id}" type="hidden" />
+													<!--<a href=""><div class="ava_pic lazybg" data-lazyload-bg="/{$details_data.author.headimg}"></div></a>-->
+													<a href=""><div class="ava_pic lazybg" data-lazyload-bg="/{$details_data.author.headimg}" data-lazyload-suc="true" style="background-image: url(/{$details_data.author.headimg});"></div></a>
+													<div class="ava_txt">
+														<a href=""><h2>{$details_data.author.user_name}</h2></a>
+														<p>设计师</p>
+													</div>
+													<style>
+														.ava_talk:hover {color:#FFF;}
+													</style>
+													<a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+
+												</div>
+												<div class="ava_bot">
+													<ul class="clearfix">
+														<li><span>T恤作品</span>
+															<a href=""><font>{$details_data.author.shitr_count}</font></a>
+														</li>
+														<li><span>粉丝</span>
+															<a href=""><font>{$details_data.author.attention_count}</font></a>
+														</li>
+														<!--<li><span>设计作品</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>
+                                                        <li><span>话题</span>
+                                                            <a href=""><font>23</font></a>
+                                                        </li>-->
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="text">
+										<a href=""><h2>{$details_data.author.user_name}</h2></a>
+										{if $details_data.info.state eq 2}
+										<span class="follow guanzhu nb_t2" user_id="{$details_data.info.user_id}">关 注</span>
+										{else}
+										<span class="follow guanzhu nb_t2 disabled" user_id="{$details_data.info.user_id}">关 注</span>
+										{/if}
+									</div>
+									<!--<div class="price ing">
+                                        <p>征集中</p>
+                                    </div>-->
+									<!--{if $details_data.info.state eq 2}
+									{if $match_cycle eq 1}
+									<div class="price ing"><p>征集中</p></div>
+									{elseif $match_cycle eq 2}
+									<div class="price ps"><p class = "piaoshu">{$details_data.info.vote_num}</p><p>票数</p></div>
+									{else}
+									<div class="price"><div class="icon" style="background-image: url(__IMGPC__/micon45.png);"></div><p>一等奖</p></div>
+									{/if}
+									{elseif $details_data.info.state eq 1}
+									<div class="price ing"><p>未通过</p></div>
+									{elseif $details_data.info.state eq 0}
+									<div class="price ing"><p>待审核</p></div>
+									{/if}-->
+									{if $details_data.info.state eq 2}
+
+									{if $match_cycle eq 1}
+
+									<div class="price ing"><p>征集中</p></div>
+
+									{elseif $match_cycle eq 2}
+
+									<div class="price ps"><p class = "piaoshu">{$details_data.info.vote_num}</p><p>票数</p></div>
+
+									{else}
+									{if $details_data.info.grade neq 0}
+									<div class="price"><div class="icon" style="background-image: url(/{$details_data.info.prize_img});"></div><p>{$details_data.info.prize_name}</p></div>
+									{else}
+									<div class="price ing"><p>暂未获奖</p></div>
+									{/if}
+									{/if}
+
+									{elseif $details_data.info.state eq 1}
+
+									<div class="price ing"><p>未通过</p></div>
+
+									{elseif $details_data.info.state eq 0}
+
+									<div class="price ing"><p>待审核</p></div>
+
+									{/if}
+
+								</div>
+								<div class="ipd8">
+									<div class="ipd_detail">
+										<div class="tag_list">
+											<h2>{$details_data.info.title}</h2>
+											<a href="javascript:void(0)">{$details_data.info.category}</a>
+										</div>
+										<p class="des">
+											<span class="view">{$details_data.info.click_count}</span>
+											{if $details_data.info.if_zan eq 1 }
+											<span class="zan on" >{$details_data.info.zan_num}</span>
+											{else}
+											<span class="zan">{$details_data.info.zan_num}</span>
+											{/if}
+											<span class="comment">{$details_data.info.comment_num}</span>
+										</p>
+										<div class="time">发布时间： <?php echo date("Y-m-d",$details_data['info']['add_time']) ?></div>
+									</div>
+									<div class="ipd_info">
+										<div class="box">
+											<h2>设计描述</h2>
+											<!--<p>设计理念，设计理念，设计。</p>-->
+											<p>{$details_data.info.describe}</p>
+										</div>
+									</div>
+									<div class="ipd_tag">
+										<h2>Tags</h2>
+										<!--<div><a href="">标签1</a><a href="">标签2</a><a href="">标签标签3</a><a href="">标签1</a><a href="">标签2</a></div>-->
+										<div><a href="javascript:void(0)" >{$details_data.info.tags_str}</a></div>
+									</div>
+									<div class="ipd_rbot_wrap">
+										<!-- disabled-->
+										{if $details_data.info.state eq 2}
+										{if $details_data.collect eq 0}
+											<div class="ipd_favar nb_t5 " onclick="collect({$details_data.info.diy_id}, this,'diy_id')"><i></i>收 藏</div>
+										{else}
+											<div class="ipd_favar nb_t5 active" onclick="collect({$details_data.info.diy_id}, this,'diy_id')"><i></i>已收藏</div>
+										{/if}
+										{if $match_cycle neq 1 && $match_cycle neq 3}
+												{if $match_cycle neq 1}
+													{if $details_data.vote_code eq 0}
+														<div  class="ipd_favar ipd_tp nb_t2">投 票</div>
+													{else}
+														<div  class="ipd_favar ipd_tp nb_t2 tp_ed disabled">已投票</div>
+													{/if}
+												{/if}
+											{/if}
+										{else}
+											<div class="ipd_favar nb_t5 disabled"><i></i>收 藏</div>
+										{/if}
+										<div class="ipd_exp2 clearfix">
+											<div class="ipd_exp_txt"><span>版权声明</span>
+												<div class="ipd_exp_box">
+													<p>原创；禁止匿名转载；禁止商业使用；<br/>禁止个人使用。</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							{include file="public/ipd_rbot" /}<!--分享-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+			<div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+				<span class="lightbox-spinner"></span>
+			</div>
+			<div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+				<div class="js-img-wrap" id="lightbox-img-wrap">
+					<div class="lightbox-extra control prev js-control js-prev hidden">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+					</div>
+					<div class="lightbox-extra control next js-control js-next hidden">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+					</div>
+					<div class="lightbox-extra control close js-control js-close">
+						<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+							<circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+							<polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+						</svg>
+					</div>
+					<div class="lightbox-contents js-contents"></div>
+				</div>
+			</div>
+		</div>-->
+</div>
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+	<div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+		<span class="lightbox-spinner"></span>
+	</div>
+	<div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+		<div class="js-img-wrap" id="lightbox-img-wrap">
+			<div class="lightbox-extra control prev js-control js-prev hidden">
+				<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+			</div>
+			<div class="lightbox-extra control next js-control js-next hidden">
+				<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+			</div>
+			<div class="lightbox-extra control close js-control js-close">
+				<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+					<circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+					<polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+				</svg>
+			</div>
+			<div class="lightbox-contents js-contents"></div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src='__JSPC__/jquery.zoombie.js'></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/jquery.share.min.js"></script>
+<script src="__JSPC__/social-share.min.js"></script>
+<script>
+	var author_name="{$details_data.author.user_name}";
+
+	$(".ipro_com_detail .author_name").text(author_name+':');//回复区作者名字
+
+	var letter = "{:url('Originality/private_message')}";
+</script>
+<script>
+	$(function(){
+		$('body').addClass('one_detail');
+	});
+</script>
+<script>
+	//弹窗代码
+	$(function() {
+		loadpList(0);
+
+		/*//详情左边点赞
+		$('.ipro_zan .icon').click(function() {
+			if ($(this).parents('.ipro_zan').hasClass('on')) {
+				$(this).parents('.ipro_zan').removeClass('on');
+			} else {
+				$(this).parents('.ipro_zan').addClass('on');
+			}
+		});*/
+
+
+		var fav_this;
+		//详情左边底下评论点赞举报标记
+		$(document).on('click', '.ipro_com_icon i', function() {
+			if($(this).hasClass('favor')){
+				right_favor = false;
+				if($(this).hasClass('on')){ return false; }
+				fav_this = $(this);
+				$('.rep_bg').fadeIn();
+				$('html').addClass('enabled');
+				return false;
+			}
+			if ($(this).hasClass('on')) {
+				$(this).removeClass('on');
+				if($(this).hasClass('zan')){
+					$(this).text(parseInt($(this).text()) - 1);
+				}
+				if($(this).hasClass('comment')){
+					$(this).parents('li').find('.ipro_com_rbox').fadeOut();
+					r_top_bot(2);
+				}
+			} else {
+				$(this).addClass('on');
+				if($(this).hasClass('zan')){
+					$(this).text(parseInt($(this).text()) + 1);
+				}
+				if($(this).hasClass('comment')){
+					$(this).parents('li').find('.ipro_com_rbox').fadeIn();
+					r_top_bot(2);
+				}
+			}
+		});
+
+		//举报弹窗（确认）
+		$('.rep_form .rep_sub').click(function() {
+			var _this = $(this);
+			layer.confirm('确定要举报该评论？', {
+				title: false,
+				closeBtn: 0,
+				btn: ['取 消','确 定'] //按钮
+			}, function(){
+				layer.closeAll();
+			}, function(){
+				$('.rep_bg').fadeOut();
+				$('html').removeClass('enabled');
+				if(right_favor){
+					fav_right.addClass('on');
+				}else{
+					fav_this.addClass('on');
+				}
+			});
+		});
+
+		//举报弹窗（取消）
+		$('.rep_wrap .del').click(function() {
+			$('.rep_bg').fadeOut();
+			$('html').removeClass('enabled');
+		});
+
+		//右边举报
+		var right_favor = false;
+		var fav_right;
+		$('.ipd_detail .des span.favor').click(function() {
+			if($(this).hasClass('on')){ return false; }
+			$('.rep_bg').fadeIn();
+			$('html').addClass('enabled');
+			right_favor = true;
+			fav_right = $(this);
+		});
+
+/*		//详情右侧点赞
+		$(document).on('click', '.ipd_detail .des span.zan', function(event) {
+			var zan_num = $(this).text();
+			if($(this).hasClass('on')){
+				$(this).removeClass('on');
+				$(this).text(parseInt(zan_num) - 1);
+			}else{
+				$(this).addClass('on');
+				$(this).text(parseInt(zan_num) + 1);
+			}
+		});*/
+
+		r_top_bot();
+		$(window).scroll(function() {
+			r_top_bot();
+		});
+
+		$(window).resize(function() {
+			r_top_bot();
+		});
+
+		//详情左边图片放大
+		var pic_index = 0;
+		$('.ipro_piclist img').click(function() {
+			pic_index = $(this).attr("data-index");
+			picCheck(pic_index);
+			$('.js-lightbox-wrap').fadeIn();
+			$('.js-contents .js-slide').eq(pic_index).show().siblings().hide();
+			picLoad(pic_index);
+		});
+		$(document).on('click', '.js-slide-content', function() {
+			if($('html').hasClass('lightbox-zoomed')){
+				$('html').removeClass('lightbox-zoomed');
+			}else{
+				if($(this).parents('.js-slide').attr("zoom-in") == "true"){
+					$('html').addClass('lightbox-zoomed');
+				}
+			}
+		});
+		$('.js-lightbox-wrap').hover(function() {
+			$(this).removeClass('extras-hidden')
+		}, function() {
+			$(this).addClass('extras-hidden');
+		});
+
+		//切换
+		$('#lightbox-inner-wrap .prev').click(function() {
+			pic_index = parseInt(pic_index)-1;
+			if(pic_index <= 0){
+				pic_index = 0;
+			}
+			picCheck(pic_index);
+			$('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+			picLoad(pic_index);
+		});
+
+		$('#lightbox-inner-wrap .next').click(function() {
+			pic_index = parseInt(pic_index)+1;
+			if(pic_index >= $('.js-contents .js-slide').length){
+				pic_index = $('.js-contents .js-slide').length - 1;
+			}
+			picCheck(pic_index);
+			$('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+			picLoad(pic_index);
+		});
+
+		//详情左边图片关闭
+		$('.js-close').click(function() {
+			$('.js-lightbox-wrap').fadeOut();
+		});
+
+		//点击右边按钮滑到评论区域
+		$('.ipd_detail .des span.comment').click(function() {
+			$('html,body').stop().animate({ scrollTop: $('.ipro_com_bot').offset().top - $('.header').outerHeight() }, 300);
+		});
+
+		//滚动条
+		$('.ipro_right_bef .ipd_rtop .ipd8,.ipro_right_after .ipd_rtop').mCustomScrollbar({
+			axis: "y",
+			scrollInertia: 100,
+			scrollButtons: {
+				enable: true,
+				scrollSpeed: 20
+			},
+			theme: "3d"
+		});
+
+		//显示隐藏私信
+		$('.ava_talk,.d_showtalk').click(function() {
+			$('body > .p_y').stop(true,true).fadeIn();
+			$('html').addClass('enabled');
+		});
+		$('.p_pclo1').click(function() {
+			$('body > .p_y').stop(true,true).fadeOut();
+			$('html').removeClass('enabled');
+		});
+	});
+
+
+/*	// 收藏
+	$('body').on('mouseover','.nb_t5',function(){
+		//console.log(1);
+		if(!$(this).hasClass('active')){
+			$(this).html("<i></i>添加收藏");
+		}else{
+			$(this).html("<i></i>取消收藏");
+		}
+	});
+
+	$('body').on('mouseout','.nb_t5',function(){
+		if(!$(this).hasClass('active')){
+			$(this).html("<i></i>收 藏");
+		}else{
+			$(this).html("<i></i>已收藏");
+		}
+	});
+
+	//收藏参赛作品  与收藏商品公用一个接口
+	function collect(diy_id, obj,str){
+		// if($(obj).hasClass('disabled')){ return false; }
+		var index = layer.load(0, {
+			shade: [0.1,'#fff']
+		});
+		$.ajax({
+			type: "get",
+			url: "/Goods/collectGoods",
+			dataType: 'json',
+			data:{goods_id:diy_id,str:str},
+			success: function(data){
+				if(data.status == 200){
+					layer.close(index);
+					if($(obj).hasClass('active')){
+						$(obj).removeClass('active').html("<i></i>收藏").css({
+							color: '#fff'
+						});
+					} else {
+						$(obj).addClass('active').html("<i></i>已收藏").css({
+							color: '#fff'
+						});
+					}
+					layer.msg(data.message);
+					// location.reload();
+				}
+			}
+		});
+	}*/
+
+
+
+	function loadpList(eq){
+		var ihtml = '';
+		$('.ipro_content .ipro_wrap').eq(eq).find('.ipro_piclist img').each(function(index, el) {
+			$(this).attr("data-index",index);
+			ihtml += '<div data-slide-id="'+ index +'" class="js-slide" zoom-in="false"><div class="js-slide-content lightbox-content"><img data-src="'+ $(this).attr("realsrc") +'"></div></div>';
+		});
+		$('.js-contents').append(ihtml);
+	}
+	function picCheck(pic_index){
+		var pic_length = $('.js-contents .js-slide').length;
+		if(pic_index == 0){
+			$('.js-prev').addClass('hidden');
+		}else{
+			$('.js-prev').removeClass('hidden');
+		}
+		if(pic_index >= pic_length - 1){
+			$('.js-next').addClass('hidden');
+		}else{
+			$('.js-next').removeClass('hidden');
+		}
+	}
+	function picLoad(pic_index){
+		if($('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded") == true){
+			return false;
+		}
+		$('.js-contents .js-slide').eq(pic_index).find('img').attr("src", $('.js-contents .js-slide').eq(pic_index).find('img').attr("data-src"));
+		$('.js-contents .js-slide').eq(pic_index).find('img').bind('load',function(){
+			var nWidth = $(this).naturalWidth();
+			var nHeight = $(this).naturalHeight();
+			var w_h = nHeight * $(window).width() / nWidth;
+			if(nHeight > $(window).height() && w_h > $(window).height()){
+				$(this).parents('.js-slide').attr("zoom-in","true");
+				$(this).parents('.js-slide-content').addClass('zoomable');
+			}
+			$('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded",true);
+		});
+	}
+	function r_top_bot(k) { // k=1(otee),k=2(作品)
+		$('.ipro_right_bef .ipd_rtop .ipd8').mCustomScrollbar("update");
+		var scrollTop = $(window).scrollTop();
+		var DivHight = $(".ipro_popup").height();
+		var ScrollHight = $(window).height();
+		var t_top_h1 = $('.ipro_right_bef .ipd_rtop').outerHeight();
+		var t_bot_h1 = $('.ipro_right_bef .share_box').outerHeight();
+		var pad = 20;
+		if(scrollTop < pad){
+			$('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_top');
+			if (t_top_h1 > ScrollHight - $('.header').outerHeight() - scrollTop - t_bot_h1) {
+				$('.ipro_right_bef .ipd_rbot').css({ "top": t_top_h1 });
+			} else {
+				$('.ipro_right_bef .ipd_rbot').css({ "position": "absolute","top": ScrollHight - $('.header').outerHeight() - t_bot_h1 - pad + scrollTop });
+			}
+		}else if(scrollTop >= pad && scrollTop + ScrollHight - $('.header').height() - 2*pad < DivHight){
+			$('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_mid');
+			$('.ipro_right_bef .ipd_rtop').css({ "height": "calc(100% - " + t_bot_h1 + "px)" });
+		}else{
+			$('.ipro_wrap').removeClass('o_top o_mid o_bot').addClass('o_bot');
+			if(DivHight - scrollTop + pad - t_bot_h1 > t_top_h1){
+				var top_dis = DivHight - (DivHight - scrollTop + pad);
+			}else{
+				var top_dis = DivHight - t_bot_h1 - t_top_h1
+			}
+			$('.ipro_right_bef .ipd_rtop').css({ "top": top_dis });
+		}
+		if($('.ipro_wrap').hasClass('o_bot')){
+			var bot_dis = $(window).height() - $('.footer').outerHeight() - pad;
+			$('.float_right').css({ "bottom": "calc(3% + " + (scrollTop + ScrollHight - $('.header').height() - 2*pad - DivHight) +"px)"})
+		}else{
+			$('.float_right').css({ "bottom": "3%" })
+		}
+		$('.ipro_right_bef .ipd_rtop .ipd8').mCustomScrollbar("update");
+	}
+	(function($){
+		var
+				props = ['Width', 'Height'],
+				prop;
+
+		while (prop = props.pop()) {
+			(function (natural, prop) {
+				$.fn[natural] = (natural in new Image()) ?
+						function () {
+							return this[0][natural];
+						} :
+						function () {
+							var
+									node = this[0],
+									img,
+									value;
+
+							if (node.tagName.toLowerCase() === 'img') {
+								img = new Image();
+								img.src = node.src,
+										value = img[prop];
+							}
+							return value;
+						};
+			}('natural' + prop, prop.toLowerCase()));
+		}
+	}(jQuery));
+</script>
+<script>
+	jQuery(document).ready(function($) {
+		if (window.history && window.history.pushState) {
+			$(window).on('popstate', function() {
+				window.location.href = document.referrer;//回退刷新
+			})
+		}
+	});
+</script>
+<script>
+
+	//详情评论下拉加载
+	var comment_list = "{:url('Details/index')}";
+	var pages = 2;//翻页
+	var c_load = false;
+	//alert($('.ipro_com_bot_ul li').length);
+	$(window).scroll(function () {
+		var iHeight = $('.ipro_popup .ipro_inner').height();
+		var iscrollTop = $('.ipro_popup').scrollTop();
+		var num = $('.ipro_com_bot_pf').attr('data-num');
+		var count = parseInt(num);
+		var record = $('.ipro_wrap').attr('data-rid');
+		//alert(count+page_count );
+		// 如果滚动条到达底部就获取新数据追加到容器
+		//alert($('.ipro_com_bot_ul li').length);
+		if ($(document).scrollTop() >= $(document).height() - $(window).height() && c_load == false) {
+			$('.ipro_com_bot .base-load').addClass('show');
+			c_load = true;
+			if ($('.ipro_com_bot_ul li').length > count) {
+				setTimeout(function () {
+					c_load = false;
+					$('.ipro_com_bot .base-load').removeClass('show');
+					//layer.msg("没有更多数据了");
+				}, 2000);
+				return false;
+			}
+			$.ajax({
+				type: 'GET',
+				url: comment_list,
+				data: {is_comment_ajax: 1,pages: pages,record:record},
+				dataType: 'html',
+				success: function (result) {
+					//alert(result);
+					pages++;
+					console.log(result);
+					$('.ipro_com_bot_ul').append(result);
+					$('.lazybg').lazyload({d: 300, r: 250});
+					$('.ipro_com_bot .base-load').removeClass('show');
+					c_load = false;
+
+				}
+			});
+		}
+	});
+	//originality_popup.js 相关异步url
+	var zan_reduce = "{:url('Originality/zan_reduce')}";
+	var zan_increase = "{:url('Originality/zan_increase')}";
+	var comment = "{:url('Originality/comment')}";
+	var reply = "{:url('Originality/reply')}";
+	var vote = "{:url('Originality/vote_ajax')}";
+</script>
+<!--回复 评论 点赞 投票-->
+<script src="__DIYPC__/js/diy_details_public.js"></script>

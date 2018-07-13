@@ -1,0 +1,96 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">收货地址</h1>
+</header>   
+<div class="content">
+    <div class="wp_add">
+        <ul>
+            {foreach $data.list as $key => $vo}
+            <li>
+                <a href="{:url('Goods/setCookie',array('address_id_key'=>$key))}">
+                    <div class="clearfix name">
+                        <span class="fl">{$vo.consignee}</span>
+                        <em class="fr">{$vo.mobile}</em>
+                    </div>
+                    <p>{$vo.address_short_name}</p>
+                </a>
+                <div class="approve clearfix">
+                    <span class="dafaut1 onlyone {if $vo.def_addr eq 1}on{/if} "><i class="icon" onclick="set_default_address({$vo['address_id']})"></i>默认地址</span>
+                    <div class="app_rt clearfix">
+                        <a class="dafaut2" href="{:url('User/address_edit',array('address_id'=>$vo['address_id']))}"><i class="app_icon2 icon"></i>编辑</a>
+                        <a class="dafaut2" href="javascript:;" onclick="del_address({$vo['address_id']})"><i class="app_icon3 icon"></i>删除</a>
+                    </div>
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+        <a class="zadd" href="{:url('User/address_add')}">新增地址</a>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $('.onlyone').click(function(event) {
+        $('.onlyone ').removeClass('on');
+        $(this).addClass('on')
+    });
+
+    function set_default_address(address_id){
+        $.ajax({
+           type: "post",
+           url: "{:url('User/do_address_default')}",
+           dataType: 'json',
+           data:{address_id:address_id},
+           success: function(data){
+                layer.open({
+                    content: data.message
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+           }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function del_address(address_id){
+        layer.open({
+            content: '您确定要删除该收货地址吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                layer.close(index);
+                $.ajax({
+                   type: "post",
+                   url: "{:url('User/do_address_del')}",
+                   dataType: 'json',
+                   data:{address_id:address_id},
+                   success: function(data){
+                        layer.open({
+                            content: data.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                location.reload();
+                            }
+                        });
+                   }
+                });
+                //禁止页面刷新
+                return false;
+              
+            }
+        });
+    }
+</script>

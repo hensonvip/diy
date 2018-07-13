@@ -1,0 +1,128 @@
+{if $data.order_list}
+    {foreach $data.order_list as $key =>$vo}
+    <div class="sh_suc" style="margin-top:0px;margin-bottom: .3rem;">
+        <div class="bian bgc clearfix">
+            <span>订单号：{$vo.order_sn}</span>
+            <span style="margin-left:0.2rem;">{$vo.order_time}</span>
+            {if $vo.status eq 2}<em>待付款</em>{/if}
+            {if $vo.status eq 3}<i><!-- 待发货 -->{$vo.status_name}</i>{/if}
+            {if $vo.status eq 4}<i>待收货</i>{/if}
+            {if $vo.status eq 5}<font>已完成</font>{/if}
+            {if $vo.status eq 6}<span class="sp3">取消</span>{/if}
+            {if $vo.status eq 7}<span class="sp3">退款</span>{/if}
+        </div>
+        <a href="{:url('User/order_details',array('order_id'=>$vo.order_id))}">
+        {foreach $vo.goods_list as $kk =>$vv}
+        <div class="clearfix tt1_inf">
+            <div class="pic fl"><img src="{$webUrl}/{$vv.goods_thumb}"></div>
+            <div class="fr tt1_r">
+                <p>{$vv.goods_name}</p>
+                <span>{$vv.goods_attr}<font color="#c01414">{$vv.shouhou}</font></span>
+                <div class="clearfix"><p class="fl">{$vv.formated_subtotal}</p><em class="fr">x{$vv.goods_number}</em> </div>
+            </div>
+        </div>
+        {/foreach}
+        </a>
+
+        <div class=" bgc tt1_sty">
+            <div class="clearfix jis"><p>实付： <em class="hc">{$vo.format_total_fee}</em></p><span>共{$vo.goods_count}件商品</span></div>
+
+            <div class="clearfix">
+            {if $vo.order_handle eq 0}
+                <a class="fr a1 hg" href="{:url('User/order_details',array('order_id'=>$vo.order_id))}" style="border:none;color:#fff;">查看订单</a> 
+            {/if}
+            {if $vo.order_handle eq 1}
+                <a class="fr a1 hg" href="javascript:;" onclick="showPay('{$vo.order_id}')" style="border:none;color:#fff;">立即付款</a> 
+                <a class="fr a2" href="javascript:;" onclick="cancel_order('{$vo.order_id}')" >取消订单</a>
+            {/if}
+            {if $vo.order_handle eq 2}
+                <a class="fr bgc a1" href="{:url('User/refund',array('order_id'=>$vo.order_id))}">申请退款</a>
+            {/if}
+            {if $vo.order_handle eq 3}
+                <a class="fr bgc a1" href="{:url('User/refund',array('order_id'=>$vo.order_id))}">申请退款</a>
+                <a class="fr hg a1" href="{:url('User/arrived_order',array('order_id'=>$vo.order_id))}" style="border:none;color:#fff;">确认收货</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 4}
+                <a class="fr hg a1" href="{:url('User/arrived_order',array('order_id'=>$vo.order_id))}" style="border:none;color:#fff;">确认收货</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 5}
+                <a class="fr bgc a1" href="{:url('User/advise',array('msg_type'=>3,'order_id'=>$vo.order_id))}">申请售后</a>
+                <a class="fr bgc a1" href="javascript:;" onclick="showcomment('{$vo.order_id}')">评价晒单</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 6}
+                <a class="fr bgc a1" href="{:url('User/advise',array('msg_type'=>3,'order_id'=>$vo.order_id))}">申请售后</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 7}
+                <a class="fr bgc a1" href="javascript:;" onclick="showcomment('{$vo.order_id}')">评价晒单</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 8}
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            {/if}
+            {if $vo.order_handle eq 9}
+                <a class="fr bgc a1" href="javascript:;" onclick="delete_order('{$vo.order_id}')">删除订单</a>
+            {/if}
+            {if $vo.order_handle eq 10}
+                <a class="fr bgc a1" href="{:url('User/refund',array('order_id'=>$vo.order_id))}">申请退款</a>
+                <a class="fr hg a1" href="{:url('User/arrived_order',array('order_id'=>$vo.order_id))}" style="border:none;color:#fff;">确认收货</a>
+            {/if}
+            {if $vo.order_handle eq 11}
+                <a class="fr bgc a1" href="{:url('User/arrived_order',array('order_id'=>$vo.order_id))}">确认收货</a>
+            {/if}
+            {if $vo.order_handle eq 12}
+                <a class="fr bgc a1" href="{:url('User/advise',array('msg_type'=>3,'order_id'=>$vo.order_id))}">申请售后</a>
+                <a class="fr bgc a1" href="javascript:;" onclick="showcomment('{$vo.order_id}')">评价晒单</a>
+            {/if}
+            {if $vo.order_handle eq 13}
+                <a class="fr bgc a1" href="{:url('User/advise',array('msg_type'=>3,'order_id'=>$vo.order_id))}">申请售后</a>
+            {/if}
+            {if $vo.order_handle eq 14}
+                <a class="fr bgc a1" href="javascript:;" onclick="showcomment('{$vo.order_id}')">评价晒单</a>
+            {/if}
+            </div>
+            <!-- {if $vo.status eq 2}
+                {if $vo.can_do eq 1}
+                <div class="clearfix"> 
+                    <a class="fr a1 hg" href="javascript:;" onclick="showPay('{$vo.order_id}')" style="border:none;color:#fff;">立即付款</a> 
+                    <a class="fr a2" href="javascript:;" onclick="cancel_order('{$vo.order_id}')" >取消订单</a>
+                </div>
+                {/if}
+                {if $vo.can_do eq 7}<a class="fr bgc a1" href="javascript:;" onclick="delete_order('{$vo.order_id}')">删除订单</a>{/if}
+            {/if}
+            {if $vo.back_can eq 1}<div class="clearfix"><a class="fr bgc a1" href="{:url('User/refund',array('order_id'=>$vo.order_id))}">申请退款</a></div>{/if}
+            {if $vo.status eq 4}
+            <div class="clearfix">
+                <a class="fr bgc a1" href="{:url('User/arrived_order',array('order_id'=>$vo.order_id))}">确认收货</a>
+                <a class="fr bgc a1" href="{:url('User/kuaidi',array('typeCom'=>$vo.shipping_name,'typeNu'=>$vo.invoice_no))}">查看物流</a>
+            </div>
+            {/if}
+            {if $vo.status eq 5}
+            <div class="clearfix">
+                {if $vo.can_do eq 6}<a class="fr bgc a1" href="javascript:;" onclick="showcomment('{$vo.order_id}')">评价晒单</a>{/if}
+                <a class="fr bgc a1" href="{:url('User/advise',array('msg_type'=>3,'order_id'=>$vo.order_id))}">申请售后</a>
+            </div>
+            {/if} -->
+        </div>
+    </div>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png" style="max-width:156px;"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}
+

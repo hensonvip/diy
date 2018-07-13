@@ -1,0 +1,103 @@
+{include file="pageheader.htm"}
+
+<form action="ad_position.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--广告位名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.position_name}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入广告位名称" name="position_name" value="{$posit_arr.position_name}" >
+            </div>
+        </div>
+        <!--广告位宽度-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.ad_width}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入广告位宽度" name="ad_width" value="{$posit_arr.ad_width}" >{$lang.unit_px}
+            </div>
+        </div>
+        <!--广告位高度-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.ad_height}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入广告位高度" name="ad_height" value="{$posit_arr.ad_height}" >{$lang.unit_px}
+            </div>
+        </div>
+        <!--广告位描述-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.position_desc}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="position_desc" value="{$posit_arr.position_desc}" >
+            </div>
+        </div>
+        <!--广告位模板-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">
+                {$lang.posit_style}
+            </label>
+            <div class="layui-input-block">
+                <textarea name="position_style" cols="55" rows="6">{$posit_arr.position_style}</textarea>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="id" value="{$posit_arr.position_id}" />
+        </p>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+<script language="JavaScript">
+<!--
+{literal}
+document.forms['theForm'].elements['position_name'].focus();
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("position_name",   posit_name_empty);
+    validator.required("ad_width",        ad_width_empty);
+    validator.required("ad_height",       ad_height_empty);
+    validator.isNumber("ad_width",        ad_width_number, true);
+    validator.isNumber("ad_height",       ad_height_number, true);
+    validator.required("position_style",  empty_position_style);
+
+    if (document.forms['theForm'].elements['ad_width'].value > 1920 || document.forms['theForm'].elements['ad_width'].value == 0)
+    {
+        alert(width_value);
+        return false;
+    }
+    if (document.forms['theForm'].elements['ad_height'].value > 1920 || document.forms['theForm'].elements['ad_height'].value == 0)
+    {
+        alert(height_value);
+        return false;
+    }
+
+    return validator.passed();
+}
+//-->
+{/literal}
+</script>
+
+{include file="pagefooter.htm"}

@@ -1,0 +1,247 @@
+{include file="public/header" /}
+
+<body data-psd-width="840" style="padding-bottom: 0;">
+<div class="pr hg header2">
+    <div class="pa back " onclick="history.go(-1)"></div>
+   	<h1>砍价详情</h1>
+    <div class="fx clearfix">
+    	<em class="icon fl" onclick="do_share()"></em>
+    </div>
+</div>
+<div class="content ">
+	<div class="bargain_mes">
+		<div class="banner1">
+			<div class="swiper-container shang_ban ">
+				<div class="swiper-wrapper">
+					{foreach $data.goods_gallery as $key => $vo}
+                    <div class="swiper-slide"><img src="{$webUrl}/{$vo.img_url}"></div>
+                    {/foreach}
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+		<div class="bgc bering">
+			<h2>{$data.goods_name}</h2>	
+			<div class="time_ku clearfix">
+				<div class="clearfix end_time" id="bargain_time">
+					<span>距活动结束还有0天</span>
+					<div class="clearfix surplus_time">
+					<em>00</em><i>:</i>
+					<em>00</em><i>:</i>
+					<em>00</em><i>
+					</div>
+				</div>
+				<p class="">库存：{$data.goods_number}</p>
+			</div>
+		</div>
+
+		{if $help_user_id eq 0}
+			<!--砍价进度页面-->
+			<div class="kan_seep bgc">
+				<h2>砍价进度：原价 {$data.format_shop_price} 元，已砍至  <span>¥ <em>{$data.now_price}</em></span>元</h2>
+				<div class="my_seep"><i style="width: {$data.percentum}%;"></i></div>
+				<div class="clearfix">
+					<span class="fl">{$data.format_shop_price}</span>
+					<span class="fr">{$data.format_low_price}</span>
+				</div>
+			</div>
+		{else}
+			<!--帮助砍价页面-->
+			<div class="kaning">
+				<p><span>{$data.help_user_name}</span>正在参与<span>“{$data.goods_name}”</span>的砍价活动，特邀你给一刀，把价格砍到底价，TA就可以以特惠抢购此商品啦！</p>
+			</div>
+			<ul class="relation bgc clearfix" style="margin-top: 0;">
+				<li>
+					<h4>{$data.format_shop_price}</h4>
+					<span>原价</span>
+				</li>
+				<li>
+					<h4>{$data.format_low_price} </h4>
+					<span> 最低价</span>
+				</li> 
+				<li>
+					<h4>{$data.format_now_price}</h4>
+					<span>当前价</span>
+				</li>
+			</ul>
+			<div class="xq2 bgc">
+				<h1>商品详情</h1>
+				<div class="xq2_tit">
+					<div class="xq2_inf clearfix">
+						{$data.goods_desc}	
+					</div>
+				</div>
+			</div>
+		{/if}
+
+	</div>
+</div> 
+
+<div style="height: 1.5rem;"></div>
+<div class="kan_help">
+	<input type="hidden" name="user_id" id="user_id" value="{$user_id}">
+	{if $help_user_id eq 0}
+		<!--砍价进度页面-->
+		<a class="a1" href="javascript:;" onclick="do_share()">邀请好友帮我砍价</a>
+		<a class="a2" href="{:url('Bargain/logs',array('bargain_id'=>$data.id))}">砍价记录</a>
+		<a class="a3" href="javascript:;" onclick="addToCart({$data.goods_id},1,0,101,'{$data.attr_id}')">直接购买</a>
+	{else}
+		<!--帮助砍价页面-->
+		<a class="a4" href="javascript:;" onclick="do_bargain('{$help_user_id}','{$data.id}')">帮TA砍价</a>
+		<a class="a5" href="{:url('Goods/details',array('goods_id'=>$data.goods_id,'bargain_id'=>$data.id))}">我也参加</a>
+	{/if}
+</div>
+
+
+{if $help_user_id}
+<!--砍价-->
+<div class="kan_mask">
+    <div class="box">
+        <div class="pic" id="headimg"><img src="img/img6.png"></div>
+        <h2>砍掉  <span><em id="bargain_price">1.5</em></span> 元</h2>
+        <p id="bargain_str">手起刀落，成功帮TA砍下一刀</p>
+        <a href="{:url('Bargain/details',array('bargain_id'=>$data.id,'help_user_id'=>$help_user_id))}"><button>确定</button></a>
+    </div>
+</div>
+{/if}
+
+
+<!-- share css & js -->
+<link rel="stylesheet" href="__EXTENDWAP__/share/css/share.min.css">
+<script src="__EXTENDWAP__/share/js/social-share.min.js"></script>
+<style type="text/css">
+	.social-share .social-share-icon{width: 50px !important;height: 50px !important;line-height: 50px !important;margin-left: 0.5rem;}
+	.share_title{color:#c01414;text-align: center;font-size: 0.38rem;line-height: 1rem;}
+</style>
+<div id="share_box" style="display:none;">
+	<h1 class="share_title">分享到</h1>
+	<div class="social-share" data-initialized="true" style="text-align: center;" data-url="{$share_url}">
+	    <a href="#" class="social-share-icon icon-weibo"></a>
+	    <a href="#" class="social-share-icon icon-wechat"></a>
+	    <a href="#" class="social-share-icon icon-qq"></a>
+	    <a href="#" class="social-share-icon icon-qzone"></a>
+	</div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script>
+	//单独页面上的js
+	$(function(){   
+		var mySwiper = new Swiper('.shang_ban',{
+		    loop: true,
+		    autoplay: 3000,
+            autoHeight: true,
+			pagination : '.swiper-pagination',
+			paginationType : 'fraction',
+		})
+
+		jisuandaojishi2('bargain_time','{$data.end_time}');
+	})
+</script>
+
+<script type="text/javascript">
+//砍价活动，计算倒计时
+function jisuandaojishi2(id , closeTime)
+{
+    var timestamp = Date.parse(new Date());//当前时间
+
+    var closeTime = closeTime - timestamp/1000;
+    if(closeTime <= 0){
+    	return false;
+    }
+    var displayTime;
+    function showTime(){
+        var day = Math.floor(closeTime / (60 * 60 * 24));
+        var hour = Math.floor(closeTime / (3600)) - (day * 24);
+        var minute = Math.floor(closeTime / (60)) - (day * 24 * 60) - (hour * 60);
+        var second = Math.floor(closeTime) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        closeTime -= 1;
+        var html = '';
+
+        html += '<span>距活动结束还有'+day+'天</span>';
+		html += '<div class="clearfix surplus_time">';
+		html += '<em>'+hour+'</em><i>:</i>';
+		html += '<em>'+minute+'</em><i>:</i>';
+		html += '<em>'+second+'</em>';
+		html += '</div>';
+        jQuery('#'+id).html(html);
+        if(closeTime <= -1)
+        {
+            clearInterval(displayTime);
+            //document.location.href = document.location.href;
+            location.reload();
+            //jQuery('#box_'+id).hide();
+            return;
+        }
+    }
+    showTime();
+    displayTime = setInterval(function(){
+            showTime();
+    }, 1000)
+}
+
+function do_share(){
+	//页面层
+	  layer.open({
+	    type: 1
+	    ,content: $('#share_box').html()
+	    ,anim: 'up'
+	    ,style: 'position:fixed; bottom:0; left:0; width: 100%; padding:10px 0; border:none;'
+	  });
+}
+
+//立即砍价、帮砍
+function do_bargain(help_user_id,bargain_id){
+    var index = layer.open({type: 2,content: '加载中'});
+
+    //判断是否登录
+    var user_id = $('#user_id').val();
+    if(user_id == 0){
+    	layer.open({
+            content: '请先登录！'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                window.location.href = '/mobile.php/user/login.html';
+            }
+        });
+        layer.close(index);
+        return false;
+    }
+
+    $.ajax({
+       type: "post",
+       url: "{:url('Bargain/do_bargain')}",
+       dataType: 'json',
+       data:{help_user_id:help_user_id,bargain_id:bargain_id},
+       success: function(result){
+            layer.close(index);
+            if(result.code == 200){
+                $('#headimg').html('<img src="/'+result.data.headimg+'">');
+                $('#bargain_price').html(result.data.bargain_price);
+                $('#bargain_str').html(result.data.bargain_str);
+                $('.kan_mask').show();
+
+            }else{
+                layer.open({
+                    content: result.message
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+            }
+       }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+</script>

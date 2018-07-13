@@ -1,0 +1,129 @@
+{include file="public/header" /}
+<style type="text/css">
+    #region_box select{padding: 0.2rem;border: 1px solid #ccc;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">新增银行卡</h1>
+</header>   
+<div class="content">
+    <div class="address">
+        <form action="{:url('User/do_bank_card_add')}" method="post" id="bank_card_form">
+            <ul class="bgc">
+                <li class="clearfix" id="region_box">
+                    <span>银行名称：</span> 
+                    <div style="float:left;width:76%;background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                        <select name="bank_id" id="bank_id" style="width:100%;">
+                            <option value="0">请选择</option>
+                            {if $data.list}
+                            {foreach $data.list as $key => $vo}
+                            <option value="{$vo.id}">{$vo.bank_name}</option>
+                            {/foreach}
+                            {/if}
+                        </select>
+                    </div>
+                </li>   
+                <li class="clearfix">
+                    <span>银行卡号：</span> 
+                    <input type="text" placeholder="请填写您的银行卡号" name="card_number" id="card_number" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+                <li class="clearfix">
+                    <span>开户支行：</span> 
+                    <input type="text" placeholder="请填写开户支行" name="card_name" id="card_name" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+                <li class="clearfix">
+                    <span>姓名：</span> 
+                    <input type="text" placeholder="请填写开户人姓名" name="real_name" id="real_name" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+            </ul>
+             <input type="button" class="btn" value="确定" name="" onclick="checkForm()">
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    function checkForm(){
+        var index = layer.open({type: 2,content: '加载中'});
+
+        if($("#bank_id option:selected").val() == 0){
+            layer.open({
+                content: '新增失败，请选择银行名称！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($('#card_number').val() == ''){
+            layer.open({
+                content: '新增失败，请填写您的银行卡号！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($('#card_name').val() == ''){
+            layer.open({
+                content: '新增失败，请填写开户支行！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($('#real_name').val() == ''){
+            layer.open({
+                content: '新增失败，请填写开户人姓名！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        $.ajax({
+           type: "post",
+           url: "{:url('User/do_bank_card_add')}",
+           dataType: 'json',
+           data:$("#bank_card_form").serializeArray(),
+           success: function(data){
+                if(data.code == 200){
+                    layer.open({
+                        content: '新增成功！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            //location.href = "{:url('User/address')}";
+                            history.go(-1);
+                            layer.close(index);
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: data.message
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    layer.close(index);
+                }
+           }
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>

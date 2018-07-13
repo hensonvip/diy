@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">我的消息</div>
+		<div class="mem_rcon msg_rcon">
+			<ul class="msg_rlist">
+				<li class="on"><a href="{:url('User/my_message')}">
+					<h2>通知</h2>
+					{if $unread_count.message gt 0}<p>{$unread_count.message}</p>{/if}
+				</a></li>
+				<li><a href="{:url('User/personal_letter')}">
+					<h2>私信</h2>
+                    {if $unread_count.letter gt 0}<p>{$unread_count.letter}</p>{/if}
+				</a></li>
+				<li><a href="{:url('User/my_hudong')}">
+					<h2>互动</h2>
+					{if $unread_count.hudong gt 0}<p>{$unread_count.hudong}</p>{/if}
+				</a></li>
+			</ul>
+			<div class="not_rwrap clearfix">
+				<div class="tc">
+					<ul class="not_rlist">
+						<li class="on"><a href="{:url('User/my_message')}">全部<i></i></a></li>
+						<li {if $has_unread_message.count1 gt 0}class="new"{/if} data-type="1"><a href="{:url('User/my_message', ['msg_type' => 1])}">公告<i></i></a></li>
+						<li {if $has_unread_message.count2 gt 0}class="new"{/if} data-type="2"><a href="{:url('User/my_message', ['msg_type' => 2])}">系统消息<i></i></a></li>
+						<li {if $has_unread_message.count3 gt 0}class="new"{/if} data-type="3"><a href="{:url('User/my_message', ['msg_type' => 3])}">交易消息<i></i></a></li>
+					</ul>
+				</div>
+				<div class="not_rmain">
+					<ul class="not_rmtop">
+                        {include file="user/my_message_ajax" /}
+					</ul>
+                    <div class="not_control">
+                        <div class="not_rmbot">
+                            <label class="not_rmcheck_all"><i></i><input type="checkbox" name=""><span>全选</span></label>
+                            <a href="javascript:void(0);" class="not_rmdel nb_t3">删除</a>
+                            <a href="javascript:void(0);" class="not_rmread nb_t1 fr">全部标记已读</a>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+    var msg_type = parseInt('{$msg_type}');
+    $('.not_rlist li').eq(msg_type).addClass('on').siblings('li').removeClass('on');
+
+	$('.not_rmtop .part1').click(function(e) {
+		if(e.target.nodeName != "INPUT"){
+			e.preventDefault();
+		}
+	});
+
+	//input改变的时候换icon图片
+    $('.not_rmtop .part1 label input').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+             $(this).parents('li').addClass('select');
+        }else{
+            $(this).parents('label').removeClass('on');
+            $(this).parents('li').removeClass('select');
+        }
+        checkall();
+    });
+
+    //全选
+    $(".not_rmcheck_all input").change(function() {
+        if($('.not_rmcheck_all').hasClass('on')){
+            $('.not_rmtop .part1 label input').prop("checked",false);
+            $('.not_rmtop .part1 label,.not_rmcheck_all').removeClass('on');
+            $('.not_rmcheck_all span').text("全选");
+            $('.not_rmtop li').removeClass('select');
+        }else{
+            $('.not_rmtop .part1 label input').prop("checked",true);
+            $('.not_rmtop .part1 label,.not_rmcheck_all').addClass('on');
+            $('.not_rmcheck_all span').text("取消全选");
+            $('.not_rmtop li').addClass('select');
+        }
+    });
+
+    //删除
+    $('.not_rmdel').click(function() {
+        var l_id = [];//定义一个空数组
+        $("input[name='l_id']:checked").each(function(i, el) {
+            l_id[i] = $(this).val();
+        });
+        l_id = l_id.join(',');
+    	layer.confirm('确定删除选中的消息？', {
+			title: false,
+			closeBtn: 0,
+			btn: ['取 消','确 定'] //按钮
+		}, function(){
+			layer.closeAll();
+		}, function(){
+            $.ajax({
+                url: "{:url('User/del_my_message')}",
+                type: 'POST',
+                dataType: 'json',
+                data: {l_id: l_id},
+                success: function(res) {
+                    if (res.code == 200) {
+                        $('.not_rmtop li.select').remove();
+                    }
+                }
+            });
+		});
+    });
+
+    //全部标为已读
+    $('.not_rmread').click(function() {
+        $.ajax({
+            url: "{:url('User/my_message_read')}",
+            type: 'POST',
+            dataType: 'json',
+            data: {msg_type: msg_type},
+            success: function(res) {
+                if (res.code == 200) {
+                    $('.not_rmtop .part2 i').removeClass('on');
+                    $('.not_rlist li').each(function(index, el) {
+                        if ($(this).attr('data-type') == msg_type) {
+                            $(this).removeClass('new');
+                        }
+                    });
+                    layer.open({
+                        content: res.message,
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(index){
+                            layer.close(index);
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    //通知列表下拉刷新
+    var record_count = parseInt("{$data.pager.record_count}");
+    var page = 2;//翻页
+    $(window).scroll(function() {
+        var winH = $(window).height();
+        var pageH = $(document.body).height();
+        var scrollT = $(window).scrollTop();
+        // 如果滚动条到达底部就获取新数据追加到容器
+        if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+            if ($('.not_rmtop li').length >= record_count) { return false; }
+            $.ajax({
+                type: 'GET',
+                url: "{:url('User/my_message')}",
+                data:{is_ajax:1,page:page},
+                dataType: 'html',
+                beforeSend: function(){
+                     layer.msg('数据加载中...');
+                },
+                success: function(result){
+                    page++;
+                    $('.not_rmtop').append(result);
+                    /*setTimeout(function(){
+                        //追加页面数据
+                        $('.not_rmtop').append(result);
+                    },500);*/
+                }
+            });
+        }
+    });
+    checkFixed();
+    $(window).scroll(function() {
+        checkFixed();
+    });
+});
+  
+function checkFixed(){
+    if($(window).scrollTop() + $(window).height() < $('.not_control').offset().top){
+        $('.not_control').addClass('fixed');
+    }else{
+        $('.not_control').removeClass('fixed');
+    }
+}
+
+function checkall(){
+    for (var i = 0; i < $('.not_rmcheck').length; i++) {
+        if($('.not_rmcheck').eq(i).prop("checked") == false){
+            $('.not_rmcheck_all').removeClass('on');
+            $('.not_rmcheck_all span').text("全选");
+            return false;
+        }else{
+            $('.not_rmcheck_all').addClass('on');
+            $('.not_rmcheck_all span').text("取消全选");
+        }
+    }
+}
+</script>
+

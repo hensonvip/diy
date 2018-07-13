@@ -1,0 +1,112 @@
+{include file="pageheader.htm"}
+
+<form method="post" action="field.php" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--领域名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} 领域名称
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入领域名称" autocomplete="off" name="field_name" value="{$field.field_name|escape}">
+            </div>
+        </div>
+
+        <!--首字母-->
+        <!-- <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} 拼音首字母
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入拼音首字母" autocomplete="off" name="field_pin" value="{$field.field_pin|escape}">
+            </div>
+        </div> -->
+
+        <!--是否显示-->
+        {if $form_action eq 'insert'}
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否显示</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" checked title="显示">
+                    <input type="radio" name="is_show" value="0" title="不显示">
+                </div>
+            </div>
+        {else}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.require_field} 是否显示</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" {if $field.is_show eq 1}checked{/if} title="显示">
+                    <input type="radio" name="is_show" value="0" {if $field.is_show eq 0}checked{/if} title="不显示">
+                </div>
+            </div>
+        {/if}
+
+        <!--是否常用-->
+        {if $form_action eq 'insert'}
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否常用</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_common" value="1" checked title="是">
+                    <input type="radio" name="is_common" value="0" title="否">
+                </div>
+            </div>
+        {else}
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.require_field} 是否常用</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_common" value="1" {if $field.is_common eq 1}checked{/if} title="是">
+                    <input type="radio" name="is_common" value="0" {if $field.is_common eq 0}checked{/if} title="否">
+                </div>
+            </div>
+        {/if}
+
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" autocomplete="off" name="sort_order" value="{$field.sort_order|default:100}">
+            </div>
+        </div>
+        <div class="button-div">
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$field.field_id}" />
+            <input type="hidden" name="old_field_name" value="{$field.field_name}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+        </div>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("field_name",  '没有输入领域名称');
+    // validator.required("field_pin",  '没有输入拼音首字母');
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

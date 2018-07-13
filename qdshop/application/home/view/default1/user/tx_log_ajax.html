@@ -1,0 +1,12 @@
+{if $tx_log.list}
+    {foreach $tx_log.list as $key =>$vo}
+    <tr>
+        <td>{$vo.id}</td>
+        <td>{$vo.paid_time}</td>
+        <td>￥{$vo.amount}</td>
+        <td>￥{$vo.poundage}</td>
+        <td>￥{$vo.amount-$vo.poundage}</td>
+        <td>{$vo.pay_status_name}</td>
+    </tr>
+    {/foreach}
+{/if}

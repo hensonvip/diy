@@ -1,0 +1,272 @@
+{include file="public/header" /}
+<style type="text/css">
+    .sps3 a{width: 49.9%;}
+</style>
+
+<body data-psd-width="840" style="background: #fff;">
+<div class="ss2 hg"> 
+    <a href="{:url('User/index')}"><div class="pa back on "></div></a>
+    <h2>我的收藏</h2>
+</div>
+<div class="content ">
+    <div class="sps sps3 clearfix">
+        <a {if $is_real eq 1}class="on"{/if} href="{:url('User/collect_goods',array('is_real'=>1))}" style="width:33.3%">商品</a>
+        <a {if $is_real eq 0}class="on"{/if} href="{:url('User/collect_goods',array('is_real'=>0))}" style="width:33.3%">服务</a>
+        <a href="{:url('User/collect_shop')}" style="width:33.3%">店铺</a>
+    </div>
+    <div class="content">
+        <div class="gouwu edit">
+            <ul class="shopcar" id="load_box">
+                {include file="user/collect_goods_ajax" /}
+            </ul>
+            <div class="bottom-bar bdel" >
+                <label><input type="checkbox" class="checkbox-item" id="selectAll"><i class="icon"></i>全选</label>
+                <a class="btn btn-settle tc" href="javascript:;" onclick="delMore('delid[]')">删除</a>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="is_real" id="is_real" value="{$is_real}">
+
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+
+<script type="text/javascript">
+    $(function(){
+        var page = 2;//翻页
+        var is_real = $('#is_real').val();//翻页
+
+        // dropload
+        $('.gouwu').dropload({
+            scrollArea : window,
+            domUp : {
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+            },
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+                domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+            },
+            loadUpFn : function(me){
+                setTimeout(function(){
+                   window.location.reload();
+                },100); 
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('User/collect_goods')}",
+                    data:{is_ajax:1,page:page,is_real:is_real},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            //追加页面数据
+                            $('#load_box').append(result);
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            //重置左划效果
+                            new myMoveDel({
+                                'dom':$('.shopcar'),
+                                'taggleClassName':'on',
+                                'ochild':'li'
+                            });
+                            //重置选中效果
+                            $(".checkbox-item:checked").parents("label").addClass("selected");
+                            $(".checkbox-item").change(function(){
+                                $(this).prop("checked") ? $(this).parents("label").addClass("selected") : $(this).parents("label").removeClass("selected");
+                            })
+
+                        },500);
+                    },
+                    error: function(xhr, type){
+                        // alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        // me.noData();
+
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    //删除一个
+    function delOne(id){
+        var index = layer.open({type: 2,content: '加载中'});
+        layer.open({
+            content: '确定删除吗？'
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                $.ajax({
+                    type: "get",
+                    url: "{:url('User/collect_goods_delOne')}",
+                    dataType: 'json',
+                    data:{collection_id:id},
+                    success: function(data){
+                        layer.open({
+                            content: data.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                layer.close(index);
+                                location.reload();
+                            }
+                        });
+                    }  
+                });
+                //禁止页面刷新
+                return false;
+            }
+        });
+        layer.close(index);
+    }
+
+    //删除多个
+    function delMore(name){
+        var index = layer.open({type: 2,content: '加载中'});
+        var chk_value =[];    
+        $('input[name="'+name+'"]:checked').each(function(){    
+            chk_value.push($(this).val());   
+        });   
+        //alert(chk_value);return false;//获取的值
+        if(chk_value.length==0){
+            layer.open({
+                content: '请选择要删除的数据！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }else{
+            layer.open({
+                content: '确定删除吗？'
+                ,btn: ['确定', '取消']
+                ,yes: function(index){
+                    $.ajax({
+                        type: "get",
+                        url: "{:url('User/collect_goods_delMore')}",
+                        dataType: 'json',
+                        data:{chk_value:chk_value},
+                        success: function(data){
+                            layer.open({
+                                content: data.message,
+                                btn: '确定',
+                                shadeClose: false,
+                                yes: function(){
+                                    layer.close(index);
+                                    location.reload();
+                                }
+                            });
+                        }  
+                    });
+                    //禁止页面刷新
+                    return false;
+                }
+            });
+            layer.close(index);
+        } 
+    }
+</script>
+
+<script>
+    //单独页面上的js
+    $(function(){
+        //选中效果
+        $(".checkbox-item:checked").parents("label").addClass("selected");
+        $(".checkbox-item").change(function(){
+            $(this).prop("checked") ? $(this).parents("label").addClass("selected") : $(this).parents("label").removeClass("selected");
+        })
+        //点击全选
+        $("#selectAll").change(function() {
+            if($(this).prop("checked")){
+                $(".s-item").prop("checked",true);
+                $(".s-item").parents("label").addClass("selected");
+            }else{
+                $(".s-item").prop("checked",false);
+                $(".s-item").parents("label").removeClass("selected");
+            }
+            $("#b-number").text($(".s-item:checked").length);
+        });
+        //选中一项或取消选中一项
+        $(".s-item").change(function(){
+            if(!$(this).prop("checked")){
+                $("#selectAll").prop("checked",false);
+                $("#selectAll").parents("label").removeClass("selected");
+            }
+            //用n记录当前有多少项被选中
+            var n = 0;
+            $(".s-item").each(function(){
+                if($(this).prop("checked")){
+                    n+=1;
+                }
+            })
+            if(n==$(".s-item").length){
+                $("#selectAll").prop("checked",true);
+                $("#selectAll").parents("label").addClass("selected");
+            }
+            $("#b-number").text($(".s-item:checked").length);
+        })
+    })
+</script>
+
+<script type="text/javascript">
+//左滑动效果
+function myMoveDel(opts){
+    this.wrap=opts.dom;
+    this.delwidth=opts.delwidth;
+    this.oclass=opts.taggleClassName;
+    this.ochild=opts.ochild;
+    this.binddom();
+}
+myMoveDel.prototype.binddom=function(){
+    var self = this;
+    var item = self.wrap.find(this.ochild);
+    var startH = function(ev){
+        self.startX=ev.touches[0].pageX;
+        self.startY=ev.touches[0].pageY;
+    };
+    var moveH = function(ev){
+        self.offsetX=ev.touches[0].pageX-self.startX;
+        self.offsetY=ev.touches[0].pageY-self.startY;
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            ev.preventDefault();
+        }
+    };
+    var endH = function(ev){
+        if(Math.abs(self.offsetX)>Math.abs(self.offsetY)){
+            if(self.offsetX>0){
+                $(this).removeClass(self.oclass);
+            }else{
+                $(this).addClass(self.oclass);
+            }
+        }
+    };
+    for(var i = 0;i<item.length;i++){
+        item[i].addEventListener('touchstart',startH);
+        item[i].addEventListener('touchmove',moveH);
+        item[i].addEventListener('touchend',endH);
+    }
+};
+window.onload=function(){
+    new myMoveDel({
+        'dom':$('.shopcar'),
+        'taggleClassName':'on',
+        'ochild':'li'
+    });
+}
+</script>

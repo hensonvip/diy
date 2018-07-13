@@ -1,0 +1,129 @@
+{include file="pageheader.htm"}
+{insert_scripts files="validator.js"}
+
+<form action="user_account.php" method="post" name="theForm" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--会员名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.user_id}</label>
+            <div class="layui-input-block">
+                <input type="text" name="user_id" value="{$user_name}" size="20" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} readonly="true" {/if} class="layui-input"/>
+            </div>
+        </div>
+        <!--金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.surplus_amount}</label>
+            <div class="layui-input-block">
+                <input type="text" name="amount" value="{$user_surplus.amount}" size="20" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} readonly="true" {/if} class="layui-input"/>
+            </div>
+        </div>
+        <!--手续费-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">手续费</label>
+            <div class="layui-input-block">
+                <input type="text" name="poundage" value="{$user_surplus.poundage}" size="20" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} readonly="true" {/if} class="layui-input"/>
+            </div>
+        </div>
+        <!--支付方式-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">{$lang.pay_mothed}</label>
+            <div class="layui-input-block">
+                <select name="payment" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3}disabled="true" {/if}>
+                    <option value="">{$lang.please_select}</option>
+                    {html_options options=$payment_list selected=$user_surplus.payment}
+                </select>
+            </div>
+        </div>
+        <!--类型-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">{$lang.process_type}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="process_type" value="0" {if $user_surplus.process_type eq 0} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"}disabled="true" {/if} title="{$lang.surplus_type_0}" />
+                <input type="radio" name="process_type" value="1" {if $user_surplus.process_type eq 1} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3|| $action eq "edit"}disabled="true" {/if} title="{$lang.surplus_type_1}" />
+                {if $action eq "edit" && ($user_surplus.process_type eq 2 || $user_surplus.process_type eq 3)}
+                    <input type="radio" name="process_type" value="2" {if $user_surplus.process_type eq 2|| $action eq "edit"} checked="true"{/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true"{/if} title="{$lang.surplus_type_2}" />
+                    <input type="radio" name="process_type" value="3" {if $user_surplus.process_type eq 3|| $action eq "edit"} checked="true"{/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true"{/if} title="{$lang.surplus_type_3}" />
+                {/if}
+            </div>
+        </div>
+        <!--管理员备注-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.surplus_notic}</label>
+            <div class="layui-input-block">
+                <textarea name="admin_note" cols="55" rows="3"{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} readonly="true" {/if}>{$user_surplus.admin_note}</textarea>
+            </div>
+        </div>
+        <!--会员描述-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.surplus_desc}</label>
+            <div class="layui-input-block">
+                <textarea name="user_note" cols="55" rows="3"{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} readonly="true" {/if}>{$user_surplus.user_note}</textarea>
+            </div>
+        </div>
+        <!--到款状态-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.status}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_paid" value="0" {if $user_surplus.is_paid eq 0} checked="true"{/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if} title="{$lang.unconfirm}" />
+                <input type="radio" name="is_paid" value="1" {if $user_surplus.is_paid eq 1} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if} title="{$lang.confirm}" />
+                <input type="radio" name="is_paid" value="2" {if $user_surplus.is_paid eq 2} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if} title="{$lang.cancel}" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="hidden" name="id" value="{$user_surplus.id}" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            {if $user_surplus.process_type eq 0 || $user_surplus.process_type eq 1}
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            {/if}
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script language="JavaScript">
+<!--
+{literal}
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+
+    validator.required("user_id",   user_id_empty);
+    validator.required("amount",    deposit_amount_empty);
+    validator.isNumber("amount",    deposit_amount_error, true);
+
+    var deposit_amount = document['theForm'].elements['amount'].value;
+    if (deposit_amount.length > 0)
+    {
+        if (deposit_amount == 0 || deposit_amount < 0)
+        {
+            alert(deposit_amount_error);
+            return false;
+        }
+    }
+
+    return validator.passed();
+}
+
+//-->
+{/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

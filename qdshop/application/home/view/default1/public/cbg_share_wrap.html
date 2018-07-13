@@ -1,0 +1,37 @@
+<!--鼠标单击事件弹出分享-->
+<div class="cbg_share_wrap">
+        <i class="del"></i>
+        <div class="mem_rtit">分享</div>
+        <h1 class="share_title" style="display:none;"></h1>
+
+        <div class="social-share" data-initialized="true" style="text-align: center;"  {if isset($share_data)}  data-url="{$share_data.url}"  data-title="{$share_data.title}" {/if} >
+            <ul class="cbg_slist">
+                    <li class="icon1"><a href="#" class="icon-weibo"></a></li>
+                    <li class="icon2 "><a href="#" class="icon-wechat"></a></li>
+                    <li class="icon3"><a href="#" class="icon-qq"></a></li>
+                    <li class="icon4"><a href="#" class="icon-ins"></a></li>
+                    <li class="icon5"><a href="#" class="icon-talk"></a></li>
+                    <li class="icon6"><a href="#" class="icon-facebook"></a></li>
+                    <li class="icon7"><a href="#" class="icon-twitter"></a></li>
+            </ul>
+        </div>
+</div>
+
+
+<!--
+<div class="cbg_share_wrap">
+        <i class="del"></i>
+        <div class="mem_rtit">分享</div>
+
+        <div class="social-share" data-initialized="true" style="text-align: center;" {if isset($share_data)}  data-url="{$share_data.url}"  data-title="{$share_data.title}" {/if}  >
+        <div class="cbg_slist">
+                <a href="#" class="icon-weibo weibo"></a>
+                <a href="#" class="icon-wechat wechat"></a>
+                <a href="#" class="icon-qq qq"></a>
+                <a href="#" class="icon-ins ins"></a>
+                <a href="#" class="icon-talk talk"></a>
+                <a href="#" class="icon-facebook facebook"></a>
+                <a href="#" class="icon-twitter twitter"></a>
+        </div>
+</div>
+</div>-->

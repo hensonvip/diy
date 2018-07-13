@@ -1,0 +1,38 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+    <div class="membermenu">
+        <p class="p1 bg1"><a href="user.php">会员中心</a></p>
+        <ul class="list1">
+            <li class="l5"><a href="user.php?act=profile" class="item {if $action eq 'profile'}curs{/if}">用户信息</a>
+            <li class="l7"><a href="security.php" class="item {if $is_security eq 'true'}curs{/if}">账户安全</a>
+            <li class="l6"><a href="user.php?act=address_list" class="item {if $action eq 'address_list'}curs{/if}">收货地址</a>
+            <li class="l2"><a href="user.php?act=account_log" class="item {if $action eq 'account_log'}curs{/if}">资金管理</a>
+            <li class="l3"><a href="user.php?act=bonus" class="item {if $action eq 'bonus'}curs{/if}">我的红包</a>
+            <li class="l3"><a href="user.php?act=bank_card_list" class="item {if $action eq 'bank_card_list'}curs{/if}">银行卡</a>
+
+        </ul>
+        <p class="p1 bg2"><a href="user.php?act=order_list">交易中心</a></p>
+        <ul class="list1">
+            <li class="l1"><a href="user.php?act=order_list" class="item {if $action eq 'order_list'|| $action eq 'order_detail'}curs{/if}" >我的订单</a></li>
+            <li class="l10"><a href="user.php?act=back_list" class="item {if $action eq 'back_list' || $action eq 'back_order_detail'}curs{/if}">退款/退货及维修</a></li>
+            <li class="l11"><a href="user.php?act=my_comment" class="item {if $action eq 'my_comment'}curs{/if}">商品评价/晒单</a></li>
+            <li class="l8"><a href="user.php?act=collection_list" class="item {if $action eq 'collection_list'}curs{/if}">商品收藏</a></li>
+            <li class="l12"><a href="user.php?act=tg_login" class="item {if $action eq 'tg_login'}curs{/if}">提货券入口</a></li>
+            <li class="l13"><a href="user.php?act=tg_order" class="item {if $action eq 'tg_order'}curs{/if}">我的提货</a></li>
+        </ul>
+        <p class="p1 bg3"><a href="user.php?act=booking_list">服务中心</a></p>
+        <ul class="list1">
+            <li class="l14"><a href="user.php?act=booking_list" class="item {if $action eq 'booking_list'}curs{/if}">缺货登记</a></li>
+            <li class="l15"><a href="user.php?act=message_list" class="item {if $action eq 'message_list'}curs{/if}">我的留言</a></li>
+            <li class="l15"><a href="mem_mess.php" class="item {if $action eq 'my_message'}curs{/if}">我的消息</a></li>
+            <!-- {if $recomm eq 1} -->
+            <!-- {if $affiliate.on eq 1} -->
+            <li class="l16"><a href="user.php?act=affiliate" class="item {if $action eq 'affiliate'}curs{/if}">我的推荐</a></li>
+            <!--{/if}-->
+            <!-- {/if} -->
+            <li class="l17"><a href="apply_index.php" class="item">我要开店</a></li>
+        </ul>
+        <p class="p1 bg3"><a style="background-image:none;background:#FF7A0D;text-indent:90px;" href="user.php?act=logout">安全退出</a></p>
+    </div>
+

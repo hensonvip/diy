@@ -1,0 +1,38 @@
+{if $comment_data.comment_list}
+	{foreach $comment_data.comment_list as $key => $vo}
+    <li class="clearfix">
+        <div class="fl pic"> <img src="{$webUrl}/{$vo.headimg}" style="border-radius: 50%;"></div>
+        <div class="fr pl_t">
+            <div class="clearfix name">
+                <em >{$vo.user_name}</em>
+                <img  src="{$webUrl}__IMGWAP__/plxing{$vo.comment_rank}.png">
+                <span >{$vo.add_time_str}</span> 
+            </div>
+            <p>{$vo.content}</p>
+            <!-- <span>颜色：15531-262女款</span> -->
+            {if $vo.shaidan_imgs}
+            <dl class="clearfix">
+                {foreach $vo.shaidan_imgs as $key => $vo}
+                <dd><img src="{$webUrl}/{$vo.thumb}"></dd>
+                {/foreach}
+            </dl>
+            {/if}
+        </div>
+    </li>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center"><img src="__IMGWAP__/noresult.png" style="width:156px;"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

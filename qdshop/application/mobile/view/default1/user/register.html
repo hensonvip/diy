@@ -1,0 +1,109 @@
+{include file="public/header" /}
+<style type="text/css">
+    .getCode{background: none;color: #c01414;font-size: .36rem;text-align: right;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">注册</h1>
+</header>   
+<div class="content">
+    <div class="sign">
+        <form action="{:url('User/do_register')}" method="post" onsubmit="return checkForm()">
+            <input type="text" name="mobile_phone" id="mobile_phone" placeholder="手机号" onblur="checkMobile($(this).val())">
+            <div class="yz_box clearfix">
+                <input class="fl" type="text" placeholder="验证码" name="mobile_code" id="mobile_code">
+                <input class="fr getCode" type="button" value="获取验证码" onclick="getCode(1,$(this));">
+            </div>
+            <input type="password" name="pwd" id="pwd" placeholder="密码"> 
+            <input type="password" name="qr_pwd" id="qr_pwd" placeholder="确认密码"> 
+            <div class="danx">
+                <label class="clearfix on">
+                    <span class="fl agreement"></span>
+                    <input type="hidden" name="agreement" id="agreement" value="1">
+                    <em class="fl">我已阅读并同意<a href="">《服务条款》</a></em>
+                </label>
+            </div>
+            <input type="submit" class="sub_btn" value="提交">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script>
+    //单独页面上的js
+    $('.danx label').click(function(){
+        $(this).toggleClass('on')
+    })
+
+    $('.agreement').click(function(){
+        if($('#agreement').val() == 1){
+            $('#agreement').val(0);
+        }else{
+            $('#agreement').val(1);
+        }
+        $(this).toggleClass('on');
+    });
+</script>
+
+<script type="text/javascript">
+    function checkForm(){
+        var mobile = $('#mobile_phone').val();
+        if(!checkMobile(mobile)){
+            return false;
+        }
+
+        var mobile_code = $('#mobile_code').val();
+        if(mobile_code == ''){
+            layer.open({
+                content: '请输入手机验证码！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        var pwd = $('#pwd').val();
+        var qr_pwd = $('#qr_pwd').val();
+        if(pwd == ''){
+            layer.open({
+                content: '请输入密码！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        if(pwd != qr_pwd){
+            layer.open({
+                content: '两次输入的密码不一样！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        var agreement = $('#agreement').val();
+        if(agreement == 0){
+            layer.open({
+                content: '请阅读并同意《服务条款》！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false; 
+        }
+
+        return true;
+
+    }
+</script>

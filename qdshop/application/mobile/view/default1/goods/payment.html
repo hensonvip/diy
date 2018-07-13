@@ -1,0 +1,71 @@
+{include file="public/header" /}
+
+<body data-psd-width="840" >
+<div class="ss2 hg"> 
+    <a href="{:url('Goods/checkout')}"><div class="pa back on "></div></a>
+    <h2>填写订单</h2>
+</div>
+<div class="content">
+	<ul class="pay_list bgc">
+	{foreach $payment as $key => $vo}
+        <li {if $is_default eq $vo.pay_id} class="selected" {/if}>
+		<label>
+            <i class="icon" style="background-image: url({$webUrl}/{$vo.icon});"></i>
+            <span class="name">{$vo.pay_desc}</span>
+            <input class="red-radio" type="radio" value="{$vo.pay_id}" name="payment-type">
+            <span class="radio-box"></span>
+        </label>
+		</li>
+	{/foreach}	
+        <!-- <li><label> -->
+            <!-- <i class="icon" style="background-image: url(images/wz.png);"></i> -->
+            <!-- <span class="name">支付宝</span> -->
+            <!-- <input class="red-radio" type="radio" name="payment-type"> -->
+            <!-- <span class="radio-box"></span> -->
+        <!-- </label></li> -->
+        <!-- <li ><label> -->
+            <!-- <i class="icon" style="background-image: url(images/wy.png);"></i> -->
+            <!-- <span class="name">银联</span> -->
+           <!-- <input class="red-radio" type="radio" name="payment-type"> -->
+            <!-- <span class="radio-box " ></span> -->
+        <!-- </label></li> -->
+        <!-- <li><label> -->
+            <!-- <i class="icon" style="background-image: url(images/wb.png);"></i> -->
+            <!-- <span class="name">余额<em>192.00</em></span> -->
+           <!-- <input class="red-radio" type="radio" name="payment-type"> -->
+            <!-- <span class="radio-box" ></span> -->
+        <!-- </label></li> -->
+    </ul>
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+	//单独页面上的js
+	$(".red-radio").change(function(){		
+        $(this).parents("li").addClass("selected").siblings().removeClass("selected");
+		setCookie('payment',$(this).val());
+		
+    })
+	
+	function setCookie(key,value){
+        //var index = layer.open({type: 2,content: '加载中'});
+        $.ajax({
+            type: "post",
+            url: "{:url('Goods/setCookie')}",
+            dataType: 'json',
+            data:{k:key,v:value,is_ajax:1},
+            success: function(result){
+                window.location.href = "{:url('Goods/checkout')}";return false;
+                //layer.close(index);
+            }  
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>
+

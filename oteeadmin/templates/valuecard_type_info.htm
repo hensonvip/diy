@@ -1,0 +1,110 @@
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form action="valuecard.php" method="post" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--储值卡类型名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.type_name}</label>
+            <div class="layui-input-block">
+                <input type='text' name='type_name' value="{$vtype_arr.type_name}" class="layui-input" />
+            </div>
+        </div>
+        <!--储值卡金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.type_money}</label>
+            <div class="layui-input-block">
+                <input type='text' name='type_money' value="{$vtype_arr.type_money}" class="layui-input" />
+            </div>
+        </div>
+        <!--使用起始日期-->
+        <div class="layui-form-item" id="promote_box">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice('Use_start_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.use_startdate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_start_date" type="text" id="use_start_date" class="layui-input" value='{$vtype_arr.use_start_date}' readonly="readonly"   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Use_start_a">{$lang.use_startdate_notic}</span>
+            </div>
+        </div>
+        <!--使用结束日期-->
+        <div class="layui-form-item" id="promote_box">
+            <label class="layui-form-label">
+                {$lang.use_startdate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_end_date" type="text" id="use_end_date" class="layui-input" value='{$vtype_arr.use_end_date}' readonly="readonly"   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="type_id" value="{$vtype_arr.type_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="javascript">
+<!--
+document.forms['theForm'].elements['type_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  validator.required("type_name",      type_name_empty);
+  validator.required("type_money",     type_money_empty);
+  validator.isNumber("type_money",     type_money_isnumber, true);
+  validator.required("use_start_date",      use_start_date_empty);
+  validator.required("use_end_date",      use_end_date_empty);
+  validator.islt('use_start_date', 'use_end_date', use_start_lt_end);
+  
+  return validator.passed();
+}
+onload = function()
+{
+  {/literal}
+  get_value = '{$bonus_arr.send_type}';
+  {literal}
+
+  showunit(get_value)
+  // 开始检查订单
+  startCheckOrder();
+}
+/* 红包类型按订单金额发放时才填写 */
+function gObj(obj)
+{
+  var theObj;
+  if (document.getElementById)
+  {
+    if (typeof obj=="string") {
+      return document.getElementById(obj);
+    } else {
+      return obj.style;
+    }
+  }
+  return null;
+}
+
+function showunit(get_value)
+{
+  gObj("1").style.display =  (get_value == 2) ? "" : "none";
+  document.forms['theForm'].elements['selbtn1'].disabled  = (get_value != 1 && get_value != 2);
+  document.forms['theForm'].elements['selbtn2'].disabled  = (get_value != 1 && get_value != 2);
+
+  return;
+}
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

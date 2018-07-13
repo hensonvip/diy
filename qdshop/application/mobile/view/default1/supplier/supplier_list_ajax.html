@@ -1,0 +1,28 @@
+{if $data}
+	{foreach $data as $key => $vo}
+	<li class="clearfix"><a href="{:url('Supplier/supplier_details',array('supplier_id'=>$vo['supplier_id']))}">
+	    <div class="pic"><img src="{$webUrl}/{$vo.logo}"></div>
+	    <div class="tit">
+	        <h2>{$vo.supplier_title}</h2>
+	        <p>地址：{$vo.address}</p>
+	        <p>电话：{$vo.service_phone}</p>
+	        <p class="clearfix">星级： <img src="__IMGWAP__/gx/stars.png"><em class="fr">距离1000米</em></p>
+	    </div>
+	</a></li>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

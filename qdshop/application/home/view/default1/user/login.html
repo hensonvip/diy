@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="rl_main log_main">
+    <div class="rl_wrap clearfix">
+        <div class="rl_left fl">
+            <div class="title"><h2>短信登录</h2><span>/ <em class="change_reg">密码登录</em></span></div>
+            <form class="rl_form" action="{:url('User/do_login_mobile')}" method="post">
+                <div class="part part1">
+                    <div class="item phone">
+                        <div class="l_box">
+                            <b class="icon_1_1"></b>
+                            <input type="text" name="mobile_phone" id="mobile_phone" placeholder="手机号码">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item code clearfix">
+                        <div class="l_box fl">
+                            <b class="icon_1_4"></b>
+                            <input type="text" name="mobile_code" id="mobile_code" placeholder="请输入验证码">
+                            <i class="state"></i>
+                        </div>
+                        <div class="get_code disabled nb_t1 fr" onclick="getCode(4, this)">获取验证码</div>
+                    </div>
+                </div>
+                <div class="part part2">
+                    <div class="item name">
+                        <div class="l_box">
+                            <b class="icon_1_2"></b>
+                            <input type="text" name="username" id="username" placeholder="用户名/手机号/邮箱" disabled="disabled">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item pwd">
+                        <div class="l_box">
+                            <b class="icon_1_3"></b>
+                            <input type="password" name="password" id="password" placeholder="密码" disabled="disabled">
+                            <i class="state"></i>
+                        </div>
+                        <div class="get_pwd"></div>
+                    </div>
+                </div>
+                <div class="txt clearfix">
+                    <a href="{:url('user/register')}" class="base_btn fl nb_t1">注 册</a>
+                    <div class="base_btn rl_sub fr nb_t2">登 录</div>
+                    <p class="tr clear forget_link"><a href="{:url('User/forget')}">忘记密码</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="rl_mid fl"></div>
+        <div class="rl_right fr">
+            <a href="" class="icon_1_5"></a>
+            <a href="" class="icon_1_6"></a>
+            <a href="" class="icon_1_7"></a>
+            <a href="" class="icon_1_8"></a>
+        </div>
+    </div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+var type = 0;
+$(function(){
+    $('.footer').addClass('rl_footer');
+    $('.rl_wrap form input').focus(function() {
+        $(this).parents('.l_box').addClass('hover')
+    });
+    $('.rl_wrap form input').blur(function() {
+        var eq = $(this).parents('.item').index();
+        $(this).parents('.l_box').removeClass('hover');
+        if(type == 0){
+            checkPhone();
+            checkcode();
+        }else{
+            checkName();
+            checkpwd();
+        }
+    });
+    $('.rl_sub').click(function() {
+        checkRl(999);
+    });
+    $('.get_pwd').click(function() {
+        if($(this).parents('.pwd').hasClass('show')){
+            $(this).parents('.pwd').removeClass('show');
+            $(this).parents('.pwd').find('input').prop("type", "password");
+        }else{
+            $(this).parents('.pwd').addClass('show');
+            $(this).parents('.pwd').find('input').prop("type", "text");
+        }
+    });
+    /*$('.get_code').click(function() {
+        if($('.zc_wrap .get_code').hasClass('counting') || $('.zc_wrap .get_code').hasClass('disabled')){ return false; }
+        if($('.get_code').hasClass('on')){
+            $('.get_code').text("60s");
+            $('.get_code').removeClass('on').addClass('counting');
+            var second = 60;
+            var timer = null;
+            timer = setInterval(function(){
+                second -= 1;
+                if(second >0 ){
+                    $('.get_code').text(second+"s")
+                }else{
+                    clearInterval(timer);
+                    $('.get_code').removeClass('counting');
+                    $('.get_code').text("获取验证码")
+                    checkRl(0);
+                }
+            },1000);
+        }
+    });*/
+    var changing = 0;
+    $('.change_reg').click(function() {
+        if(changing == 1){ return false; }
+        changing = 1;
+        $('.item').removeClass('wrong hover right');
+        if(type == 0){
+            $('.forget_link').show();
+            type = 1;
+        }else if(type == 1){
+            $('.forget_link').hide();
+            type = 0;
+        }
+        var txt0 = $('.log_main .rl_wrap .rl_left h2').text();
+        var txt1 = $('.change_reg').text();
+        $('.change_reg').text(txt0);
+        $('.log_main .rl_wrap .rl_left h2').text(txt1);
+        $('.log_main .part').eq(type).fadeIn().siblings('.part').hide();
+        $('.log_main .part').eq(type).find('input[name="username"], input[name="password"], input[name="mobile_code"]').attr('disabled', false);
+        $('.log_main .part').eq(type).siblings('.part').find('input[name="username"], input[name="password"], input[name="mobile_code"]').attr('disabled', true);
+        if (type == 1) {
+            $('.rl_form').attr('action', "{:url('User/do_login')}");
+        } else {
+            $('.rl_form').attr('action', "{:url('User/do_login_mobile')}");
+        }
+        var timer = setTimeout(function(){ changing = 0; window.clearTimeout(); }, 200);
+    });
+});
+
+function checkPhone(index){
+    var phone = $('.phone input').val();
+    if(!phone){
+        if(index == 999){
+            $('.phone.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.phone.item').removeClass('right wrong');
+        }
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').removeClass('on').addClass('disabled');
+        }
+    }else if(!(/^1[34578]\d{9}$/.test(phone))){
+        $('.phone.item').removeClass('right').addClass('wrong');
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').removeClass('on').addClass('disabled');
+        }
+    }else{
+        $('.phone.item').removeClass('wrong').addClass('right');
+        if($('.get_code').hasClass('counting')){}else{
+            $('.get_code').addClass('on').removeClass('disabled');
+        }
+    }
+}
+function checkName(index){
+    var name = $('.name input').val();
+    if(!name){
+        if(index == 999){
+            $('.name.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.name.item').removeClass('right wrong');
+        }
+    }else{
+        $('.name.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkpwd(index){
+    var pwd = $('.pwd input').val();
+    if(!pwd){
+        if(index == 999){
+            $('.pwd.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.pwd.item').removeClass('right wrong');
+        }
+    }else{
+        $('.pwd.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkcode(index){
+    var code = $('.code input').val();
+    if(!code){
+        if(index == 999){
+            $('.code.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.code.item').removeClass('right wrong');
+        }
+    }else{
+        $('.code.item').removeClass('wrong').addClass('right');
+    }
+}
+
+function checkRl(index){
+    if(type == 0){
+        checkPhone(999);
+        checkcode(999);
+    }else{
+        checkName(999);
+        checkpwd(999);
+    }
+    if($('.rl_form .part').eq(type).find('.item.right').length == $('.rl_form .part').eq(type).find('.item').length && index == 999){
+        $('.rl_form').submit();
+    }else{
+        return false;
+    }
+}
+
+// 获取验证码
+function getCode(send_type, obj){
+    var mobile = $("#mobile_phone").val();
+    if($(obj).hasClass('counting')){ return false; }
+    $.ajax({
+        type: "get",
+        url: "/user/getCode",
+        dataType: 'json',
+        data:{send_type:send_type,mobile:mobile},
+        success: function(result){
+            if (result.code == 200) {
+                $('.get_code').text("60s").addClass('counting');
+                var second = 60;
+                var timer = null;
+                timer = setInterval(function(){
+                    second -= 1;
+                    if(second > 0 ){
+                        $('.get_code').text(second+"s")
+                    }else{
+                        clearInterval(timer);
+                        $('.get_code').removeClass('counting');
+                        $('.get_code').text("获取验证码")
+                    }
+                },1000);
+            } else {
+                layer.open({
+                    content: result.message,
+                    btn: '确定',
+                    shadeClose: false,
+                    yes: function(index){
+                        layer.close(index);
+                    }
+                });
+            }
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+</script>
+

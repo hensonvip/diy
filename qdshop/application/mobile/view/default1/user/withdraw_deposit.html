@@ -1,0 +1,98 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr hg ">
+    <a href="{:url('User/account')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">提现</h1>
+</header>   
+<div class="content">
+   <div class="con17 bgc">
+      <div class="set_k clearfix">
+        <a href="{:url('User/bank_card_list')}">
+            {if $data}
+            <em><img src="{$webUrl}/{$data.bank_icon}"></em>
+            <span>{$data.bank_name} ( {$data.card_number_short} )</span>
+            <input type="hidden" value="{$data.id}" id="card_id">
+            {else}
+            <span>请选择银行卡</span>
+            <input type="hidden" value="0" id="card_id">
+            {/if}
+        </a>
+      </div>
+      <div class="je clearfix">
+          <em class="fl icon"></em>
+          <input class="fl" type="text" placeholder="请输入提现金额" name="amount" id="amount" value="" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" >
+      </div>
+   </div>
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" onclick="apply_deposit();">提交申请</a>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script type="text/javascript">
+    function apply_deposit(){
+        var index = layer.open({type: 2,content: '加载中'});
+        var card_id = $('#card_id').val();
+        var amount = $('#amount').val();
+
+        if(card_id == 0){
+            layer.open({
+                content: '请选择银行卡！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if(amount == ''){
+            layer.open({
+                content: '请输入提现金额！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        $.ajax({
+           type: "post",
+           url: "{:url('User/apply_deposit')}",
+           dataType: 'json',
+           data:{card_id:card_id,amount:amount},
+           success: function(data){
+                if(data.code == 200){
+                    layer.close(index);
+                    layer.open({
+                        content: '提交成功，等待管理员处理！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            window.location.href = "{:url('User/account')}";
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: data.message
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    layer.close(index);
+                }
+           }
+        });
+        //禁止页面刷新
+        return false;
+
+    }
+</script>

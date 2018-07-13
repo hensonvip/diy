@@ -1,0 +1,74 @@
+{include file="pageheader.htm"}
+
+<form action="postman.php" method="post" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--区域-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.region_name}</label>
+            <div class="layui-input-block">
+                <select name="region_id">
+                    <option value="0">请选择</option>
+                    {foreach from=$district_list item=district}
+                    <option value="{$district.region_id}"  {if $postman.region_id eq $district.region_id}selected{/if} >{$district.region_name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <!--快递员姓名-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.postman_name}</label>
+            <div class="layui-input-block">
+                <input type='text' name='postman_name' maxlength="30" value="{$postman.postman_name}" class="layui-input" />
+            </div>
+        </div>
+        <!--联系电话-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.mobile}</label>
+            <div class="layui-input-block">
+                <input type="text" name="mobile" value="{$postman.mobile}" class="layui-input" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="postman_id" value="{$postman.postman_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="javascript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  if (document.forms['theForm'].elements['region_id'].value == 0)
+  {
+          validator.addErrorMsg('请选择区域！');
+ }
+  validator.required("postman_name",      '快递员姓名不能为空！');
+  validator.required("mobile",     '联系电话不能为空！'); 
+  
+  return validator.passed();
+}
+
+
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部 
+    });
+</script>
+{include file="pagefooter.htm"}

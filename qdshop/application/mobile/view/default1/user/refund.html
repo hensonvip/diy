@@ -1,0 +1,309 @@
+{include file="public/header" /}
+<style>
+    .minus { position: absolute; top: -0.3rem; background: url(__IMGWAP__/minus.png) no-repeat 100% 100%; z-index: 100; right: -0.3rem; width: 35px; height: 35px; }
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">退款申请</h1>
+</header>
+ 
+<div class="content">
+    <div class="con12">
+        <div class="bian bgc clearfix">
+            <span>订单编号：</span><span>{$data.order_sn}</span>
+        </div>
+        <div class="tur2">
+            <h1>商品信息</h1>
+            <ul class="tur2_list bgc">
+                {foreach $data.goods_list as $key => $vo}
+                <li class="clearfix">
+                    <div class="fl pic"><img src="{$webUrl}/{$vo.goods_thumb}"></div>
+                    <div class="fr t2_t">
+                        <p>{$vo.goods_name}</p>
+                        <span>规格：{$vo.goods_attr}</span>
+                        <div class="clearfix">
+                            <em class="fl hc">{$vo.format_goods_price}</em>
+                            <i class="fr">x{$vo.goods_number}</i>
+                        </div>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>  
+        <div class="tksq">
+             <h1>退款申请</h1>
+             <div class="tksq_list bgc">
+             <form action="{:url('USer/do_refund')}" method="post" enctype="multipart/form-data" id="refund_form">
+                <input type="hidden" name="order_id" value="{$order_id}">
+                <input type="hidden" name="goods_id" value="{$goods_id}">
+                <input type="hidden" name="product_id" value="{$product_id}">
+                <div class="item clearfix item1">
+                    <span >退款类型：</span>
+                    <div class="gr fr clearfix">
+                        {foreach $data.back_type as $key => $vo}
+                        <em class="back_type {if $vo.selected eq 'checked'}on{/if}"><i class="icon" onclick="$('#back_type').val({$vo.type_id})"></i>{$vo.type_name}</em>
+                        {/foreach}
+
+                        {foreach $data.back_type as $key => $vo}
+                        {if $vo.selected eq 'checked'}
+                        <input type="hidden" name="back_type" id="back_type" value="{$vo.type_id}">
+                        {/if}
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="item clearfix item1" {if $data.order_all eq 1}style="display:none;"{/if} >
+                    <span >退款数量：</span>
+                    <div class="gr fr ">
+                        <div class="mqp clearfix">
+                            <a class="jian on">-</a>
+                            <input class="b-quantity" type="text" value="1" name="tui_goods_number">
+                            <a class="jia">+</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item clearfix item1">
+                    <span >退款金额：</span>
+                    <div class="gr fr ">
+                        <p class="hc">{$data.format_tui_goods_subtotal}</p>
+                        <input type="hidden" name="tui_goods_price" value="{$data.tui_goods_subtotal}">
+                    </div>
+                </div>
+                <div class="item clearfix item2" style="display:none;">
+                    <span >货物状态：</span>
+                    <div class="gr fr clearfix">
+                        <select>
+                            <option>未收到货</option>
+                            <option>未收到货</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="item clearfix item2">
+                    <span >退款原因：</span>
+                    <div class="gr fr clearfix">
+                        <select name="reason_id">
+                            {foreach $data.reason_list as $key => $vo}
+                            <option value="{$vo.reason_id}" {if $vo.selected eq 'checked'}selected{/if} >{$vo.reason_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span >备注：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="" name="back_postscript">
+                    </div>
+                </div>
+                <div style="padding:0.3rem 0;">
+                    <span >图片信息：</span>
+                    <div class="gr clearfix">
+                        <div class="uploadimg clearfix">
+                            <div class="obm fl">
+                                <input type="file" id="uploadimgbut" name="back_imgs[]" class="img_file" />
+                                <input type="button" class="button" style="background: url('__IMGWAP__/comment_icon.png') center no-repeat;background-size:100%;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+             </div>
+        </div>
+    </div>
+</div>
+
+<div class="sqing">
+    <a class="hg" href="javascript:;" onclick="$('#refund_form').submit();">申请退款</a>
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $('.back_type').click(function(){
+        $(this).addClass("on").siblings().removeClass("on");
+    })
+</script>
+
+<script>
+    // 删除选中图片
+    function delImg(obj){
+        console.log($(obj).parents('.li'))
+        $(obj).parents('.li').remove()
+        if($('.uploadimg .li').length < 6){ //限制6个
+            $("#uploadimgbut").show()
+            $('.button').show()
+        }
+    }
+
+    //单独页面上的js
+    $(function(){
+          FastClick.attach(document.body);
+          var img_num = 0;
+        // passwordchange('.ad2 .adchange');
+        // 显示缩略图
+        // $('#uploadimgbut').bind('change',function(){
+        $(document).on('change', '#uploadimgbut', function(){
+        // $('.pics').on('change', ".img_file",function(){
+            var typeRes = checkType('uploadimgbut', 1);
+            if(!typeRes){
+                return false;
+            }
+            var self = $(this);
+            var files = this.files, file;
+            if (files && files.length > 0) {
+                // 获取目前上传的文件
+                file = files[0];
+                //读取图片信息
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(e){
+                    $('.uploadimg .obm').before('<div class="li fl" style="margin-bottom: 0.4rem;"><img src="'+ this.result +'"/><em class="guan"> </em><div class="minus" onclick="delImg(this)"></div></div>');
+                    // $("#uploadimgbut").clone(true).attr('id', 'img_'+img_num).css("display", "none").prependTo('.uploadimg .li:last');
+                    $("#uploadimgbut").attr('id', 'img_'+img_num).css("display", "none").prependTo('.uploadimg .li:last');
+                    $('.obm').append('<input type="file" id="uploadimgbut" name="back_imgs[]" class="img_file" />');
+                    // $("#uploadimgbut").val("");
+                }
+            }
+            if($('.uploadimg .li').length ==5){ //限制6个
+                self.hide()
+                $('.button').hide()
+            }
+            // if($('.uploadimg .li').length ==0){ 
+            //  $('span').hide()
+            // }
+            $('.uploadimg .li .guan').live('click',function(){
+                $(this).parents('.li').remove();
+                self.show();
+                $('.button').show();
+            });
+
+            $('.uploadimg .li').live('click',function(){
+                $('.fd').show();
+                var src2=$(this).children('img').attr('src');
+                console.log(src2);
+                $('.fd .pic').children('img').attr('src',src2);
+            })
+            
+        });
+
+        // 判断文件大小
+        var maxsize = 2*1024*1024;//2M
+        var errMsg = "上传的附件文件不能超过2M！！！";
+        var tipMsg = "您的浏览器暂不支持计算上传文件的大小，确保上传文件不要超过2M，建议使用IE、FireFox、Chrome浏览器。";
+        var browserCfg = {};
+        var ua = window.navigator.userAgent;
+        if (ua.indexOf("MSIE")>=1){
+            browserCfg.ie = true;
+        }else if(ua.indexOf("Firefox")>=1){
+            browserCfg.firefox = true;
+        }else if(ua.indexOf("Chrome")>=1){
+            browserCfg.chrome = true;
+        }
+        // 判断文件大小
+        function checkFileSize(){
+            try{
+                var obj_file = document.getElementById("fileuploade");
+                if(obj_file.value==""){
+                    alert("请先选择上传文件");
+                    return;
+                }
+                var filesize = 0;
+                if(browserCfg.firefox || browserCfg.chrome ){
+                    filesize = obj_file.files[0].size;
+                }else if(browserCfg.ie){
+                    var obj_img = document.getElementById('tempimg');
+                    obj_img.dynsrc=obj_file.value;
+                    filesize = obj_img.fileSize;
+                }else{
+                    alert(tipMsg);
+                    return;
+                }
+                if(filesize==-1){
+                    alert(tipMsg);
+                    return;
+                }else if(filesize>maxsize){
+                    alert(errMsg);
+                    return;
+                }else{
+                    alert("文件大小符合要求");
+                    return;
+                }
+            }catch(e){
+                alert(e);
+            }
+        }
+
+        // 判断文件类型是否符合
+        function checkType(id_name, type){
+            //得到上传文件的值
+            var fileName=document.getElementById(id_name).value;
+            //返回String对象中子字符串最后出现的位置.
+            var seat=fileName.lastIndexOf(".");
+            //返回位于String对象中指定位置的子字符串并转换为小写
+            var extension=fileName.substring(seat).toLowerCase();
+            //判断允许上传的文件格式
+            if(type == 1){
+                var allowed=[".jpg",".gif",".png",".jpeg"];
+            }else{
+                var allowed=[".avi",".rmvb",".mp4",".mpeg4"];
+            }
+            // var allowed=[".jpg",".gif",".png",".jpeg"];
+            for(var i=0;i<allowed.length;i++){
+                if(!(allowed[i]!=extension)){
+                    return true;
+                }
+            }
+            alert("不支持"+extension+"格式");
+            return false;
+        }
+
+        // 提交
+        $('#refund_form').submit(function(){
+            //var content = $('#content').val();
+            //if(content == ''){layer.open({content: '请填写评价内容',skin: 'msg',time: 2});return false; }
+
+            var index = layer.open({type: 2,content: '提交加载中'});
+
+            var formData = new FormData($( "#refund_form" )[0]);
+            $.ajax({
+                url:"{:url('User/do_refund')}",
+                type:"POST",
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType:'JSON',
+                data:formData,
+                success:function(msg){
+                    if(msg.code == 200){
+                        layer.open({
+                            content: msg.message,
+                            btn: '确定',
+                            shadeClose: false,
+                            yes: function(){
+                                window.location.href = "{:url('User/refund_list')}";
+                                layer.close(index);
+                            }
+                        });
+                    }else{
+                        layer.close(index);
+                        layer.open({
+                            content: msg.message
+                            ,skin: 'msg'
+                            ,time: 2
+                        });
+                    }
+                    return false;
+                }
+            })
+            return false;
+        })
+   })
+</script>

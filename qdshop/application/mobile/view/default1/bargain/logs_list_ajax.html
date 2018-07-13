@@ -1,0 +1,26 @@
+{if $data.list}
+	{foreach $data.list as $key =>$vo}
+	<li class="clearfix">
+		<div class="pic"><img src="{$webUrl}/{$vo.headimg}"></div>
+		<div class="tit">
+			<h2><span>{$vo.user_name}</span>帮你砍掉了<span>{$vo.bargain_price}</span>元，砍价后为 <span>{$vo.now_price}</span>元</h2>
+			<em>{$vo.format_add_time}</em>
+		</div>
+	</li>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

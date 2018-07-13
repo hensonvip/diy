@@ -1,0 +1,119 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<div class="form-div">
+  <form action="javascript:searchActivity()" name="searchForm" class="layui-form">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+    商品名称 <input type="text" name="keyword" size="30" />
+    <input type="submit" value="{$lang.button_search}" class="layui-btn" />
+  </form>
+</div>
+
+<form method="post" action="bargain.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);" class="layui-form">
+<!-- start bargain list -->
+<div class="list-div" id="listDiv">
+{/if}
+
+  <table cellpadding="3" cellspacing="1" class="layui-table">
+    <tr>
+      <th>
+        <input type="checkbox" lay-filter="sel_all_checkboxes" />
+        <a href="javascript:listTable.sort('id'); ">{$lang.record_id}</a>{$sort_id}</th>
+      <th width="25%"><a href="javascript:listTable.sort('goods_name'); ">商品名称</a>{$sort_goods_name}</th>
+      <th><a href="javascript:listTable.sort('start_time'); ">开始时间</a>{$sort_start_time}</th>
+      <th><a href="javascript:listTable.sort('end_time'); ">结束时间</a>{$sort_end_time}</th>
+      <th>商品原价</th>
+      <th>商品最低价</th>
+      <th>砍价幅度最小值</th>
+      <th>砍价幅度最大值</th>
+      <th>关注人数</th>
+      <th>参与人数</th>
+      <th>砍价人数</th>
+      <th style="width:7%;">{$lang.handler}</th>
+    </tr>
+
+    {foreach from=$bargain_list item=vo}
+    <tr>
+      <td><input value="{$vo.id}" name="checkboxes[]" type="checkbox">{$vo.id}</td>
+      <td>{$vo.goods_name|escape:html}</td>
+      <td align="center">{$vo.start_time}</td>
+      <td align="center">{$vo.end_time}</td>
+      <td align="right">{$vo.shop_price}</td>
+      <td align="right">{$vo.low_price}</td>
+      <td align="right">{$vo.min_price}</td>
+      <td align="right">{$vo.max_price}</td>
+      <td align="right">{$vo.guanzhu_num}</td>
+      <td align="right">{$vo.join_num}</td>
+      <td align="right">{$vo.bargain_num}</td>
+      <td align="center">
+        <a href="bargain.php?act=view_log&id={$vo.id}"><img src="images/icon_view.gif" title="砍价记录" border="0" height="16" width="16" /></a>
+        <a href="bargain.php?act=edit&amp;id={$vo.id}" title="{$lang.edit}"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
+        <a href="javascript:;" onclick="listTable.remove({$vo.id},'{$lang.drop_confirm}')" title="{$lang.remove}"><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>      </td>
+    </tr>
+    {foreachelse}
+    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+    {/foreach}
+  </table>
+
+  <table cellpadding="4" cellspacing="0">
+    <tr>
+      <td><input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="layui-btn" />
+      <input type="hidden" name="act" value="batch" /></td>
+      <td align="right">{include file="page.htm"}</td>
+    </tr>
+  </table>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('checkbox(sel_all_checkboxes)', function(data){
+            listTable.selectAll(this, "checkboxes");
+            form.render(); //更新全部
+        });  
+
+    });
+</script>
+
+{if $full_page}
+</div>
+<!-- end auction list -->
+</form>
+
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    document.forms['searchForm'].elements['keyword'].focus();
+
+    startCheckOrder();
+  }
+
+  /**
+   * 搜索团购活动
+   */
+  function searchActivity()
+  {
+
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['keyword'] = keyword;
+
+    listTable.filter['page'] = 1;
+    listTable.loadList("bargain_list");
+  }
+  {/literal}
+//-->
+</script>
+
+{include file="pagefooter.htm"}
+{/if}

@@ -1,0 +1,146 @@
+<!-- $Id: goods_batch_add.htm 16544 2009-08-13 07:55:57Z liuhui $ -->
+{include file="pageheader.htm"}
+<link href="styles/zTree/zTreeStyle.css" rel="stylesheet" type="text/css" />
+{insert_scripts files='jquery-1.6.2.min.js,jquery.ztree.all-3.5.min.js,category_selecter.js'}
+
+<form action="goods_batch.php?act=upload" method="post" enctype="multipart/form-data" name="theForm" onsubmit="return formValidate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--数据格式-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.export_format}</label>
+            <div class="layui-input-block">
+                <select name="data_cat" id="data_cat">
+                    {html_options options=$data_format }
+                </select>
+            </div>
+        </div>
+        <!--所属分类-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.goods_cat}</label>
+            <div class="layui-input-block">
+                <input type="text" id="cat_name" name="cat_name" nowvalue="{$goods_cat_name}" value="{$goods_cat_name}" class="layui-input" >
+                <input type="hidden" id="cat_id" name="cat_id" value="{$goods_cat_id}">
+            </div>
+        </div>
+        <!--文件编码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.file_charset}</label>
+            <div class="layui-input-block">
+                <select name="charset" id="charset">
+                    {html_options options=$lang_list}
+                </select>
+            </div>
+        </div>
+        <!--上传批量csv文件-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticeFile');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.csv_file}
+            </label>
+            <div class="layui-input-block">
+                <input name="file" type="file" size="40" style="margin-top:5px;margin-left:10px;">
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeFile">{$lang.notice_file}</span><br/><br/>
+                <!-- {foreach from=$download_list item=download key=charset}
+                    <br/><a href="goods_batch.php?act=download&charset={$charset}">{$download}</a>
+                {/foreach} -->
+            </div>
+        </div>
+        <p style="margin-left:160px;"><input name="submit" type="submit" id="submit" value="{$lang.button_submit}" class="layui-btn" /></p>
+
+    </div>
+</div>
+</form>
+
+<div class="main-div">
+<form action="goods_batch.php?act=upload" method="post" enctype="multipart/form-data" name="theForm" onsubmit="return formValidate()">
+<table cellspacing="1" cellpadding="3" width="100%">
+  {foreach from=$download_list item=download key=charset}
+  <tr>
+    <td>&nbsp;</td>
+    <td><a href="goods_batch.php?act=download&charset={$charset}">{$download}</a></td>
+  </tr>
+  {/foreach}
+</table>
+</form>
+
+<script type="text/javascript">
+  $().ready(function(){
+    // $("#cat_name")为获取分类名称的jQuery对象，可根据实际情况修改
+    // $("#cat_id")为获取分类ID的jQuery对象，可根据实际情况修改
+    // "{$goods_cat_id}"为被选中的商品分类编号，无则设置为null或者不写此参数或者为空字符串
+    $.ajaxCategorySelecter($("#cat_name"), $("#cat_id"), "{$goods_cat_id}");
+  });
+</script>
+
+<table width="100%">
+  <tr>
+    <td>&nbsp;</td>
+    <td width="80%">{$lang.use_help}</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+    var elements;
+    onload = function()
+    {
+        // 文档元素对象
+        elements = document.forms['theForm'].elements;
+
+        // 开始检查订单
+        startCheckOrder();
+    }
+
+    /**
+     * 检查是否底级分类
+     */
+    function checkIsLeaf(selObj)
+    {
+        if (selObj.options[selObj.options.selectedIndex].className != 'leafCat')
+        {
+            alert(goods_cat_not_leaf);
+            selObj.options.selectedIndex = 0;
+        }
+    }
+
+    /**
+     * 检查输入是否完整
+     */
+    function formValidate()
+    {
+    	
+        if ($("#cat_id").val().length <= 0)
+        {
+        	alert(please_select_cat);
+        	$("#cat_name").focus();
+            return false;
+        }
+        if ($("[name='file']").val() == '')
+    	{
+        	alert(please_upload_file);
+        	return false;
+    	}
+       
+        return true;
+    }
+	
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+        //监听指定开关
+        form.on('select(sel_cat_id)', function(data){
+            onChangeGoodsType(data.value);
+        });     
+
+    });
+</script>
+{include file="pagefooter.htm"}

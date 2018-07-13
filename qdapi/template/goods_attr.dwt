@@ -1,0 +1,23 @@
+<ul class="detail-list">
+    <li>商品名称：{$data.goods_name}</li>
+    <li>商品编号：{$data.goods_sn}</li>
+    <li>品牌：{$data.goods_brand}</li>
+    <li>上架时间：{$data.format_add_time}</li>
+    <li>商品毛重：{$data.goods_weight}</li>
+    <!-- {if $cfg.show_goodsnumber} -->
+    <li>库存：
+        <!-- {if $data.goods_number eq 0} -->
+        无库存
+        <!-- {else} -->
+        {$data.goods_number} {$data.measure_unit}
+        <!-- {/if} -->
+    </li>
+    <!-- {/if} -->
+    <!-- {if $data['properties']} -->
+    <!-- {foreach from=$data['properties'] item=property_group key=key} -->
+    <!-- {foreach from=$property_group item=property} -->
+    <li >{$property.name|escape:html}：{$property.value}</li>
+    <!-- {/foreach}-->
+    <!-- {/foreach}-->
+    <!-- {/if} -->
+</ul>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/share.min.css" type="text/css" rel="stylesheet" />
+    <title>{$site_title}</title>
+    <meta name="keywords" content="{$site_keywords}">
+    <meta name="description" content="{$site_description}">
+</head>
+<body>
+    <!--header start-->
+    <div class="header">
+        {include file="public/nav" /}
+        {if condition="$user_id"}
+            {include file="public/user_right" /}
+        {else/}
+            {include file="public/right" /}
+        {/if}
+    </div>
+    <div class="float_right"></div>
+    <!--header end-->
+    <!--main start-->
+    <div class="banner">
+        <div class="banner-wrap tc">
+            {volist name="head.banner" id="vo" }
+            <a href="{$vo.url}" class="banner-bg" style="background-image:url({$webUrl}{$vo.ad_code});"></a>
+            {/volist}
+        </div>
+        {if condition="!$user_id"}
+        <a href="{:url('User/login')}" class="login_btn nb_t2">登 录</a>
+        {/if}
+    </div>
+    <div class="i_bar" id="miao">
+        <div class="i_bar_wrap">
+            <ul>
+                <li>
+                    <a href="javascript:void(0);">类型</a>
+                    <div class="i_bar_nav">
+                        <dl>
+                            {volist name="category_list" id="vo"}
+                            <dd><a href="{:url('Index/index',array('cat_id'=>$vo.id))}#miao">{$vo.name}</a></dd>
+                            {/volist}
+                        </dl>
+                    </div>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">价格</a>
+                    <div class="i_bar_nav">
+                        <dl>
+                            {foreach $price_list as $key =>$price}
+                            <dd><a href="{:url('Index/index',array('shop_price'=>$price))}#miao">￥ {$price}</a></dd>
+                            {/foreach}
+                        </dl>
+                    </div>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">款式</a>
+                    <div class="i_bar_nav">
+                        <dl>
+                            <dd><a href="{:url('Index/index',array('sex'=>'男'))}#miao">男</a></dd>
+                            <dd><a href="{:url('Index/index',array('sex'=>'女'))}#miao">女</a></dd>
+                        </dl>
+                    </div>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">排序</a>
+                    <div class="i_bar_nav">
+                        <dl>
+                            <dd><a href="{:url('Index/index',array('sort'=>'salenum'))}#miao">销量</a></dd>
+                            <dd><a href="{:url('Index/index',array('sort'=>'zan'))}#miao">人气</a></dd>
+                            <dd><a href="{:url('Index/index',array('sort'=>'add_time', 'order'=>'desc'))}#miao">最新</a></dd>
+                            <dd><a href="{:url('Index/index',array('sort'=>'add_time', 'order'=>'asc'))}#miao">最早</a></dd>
+                        </dl>
+                    </div>
+                </li>
+                <li>
+                    {if $filter eq 'is_best'}
+                    <a href="/">OTEE</a>
+                    {else}
+                    <a href="{:url('Index/index',array('filter'=>'is_best'))}#list">精选</a>
+                    {/if}
+                </li>
+            </ul>
+            <div class="i_type">
+                <i class="count3 on"></i>
+                <i class="count5"></i>
+            </div>
+        </div>
+    </div>
+    <div class="i_pwrap">
+        <ul class="i_plist clearfix">
+            {include file="goods/goods_list_ajax" /}
+        </ul>
+        <i class="base-load"></i>
+    </div>
+    <!-- 举报 -->
+    {include file="public/goods_report" /}
+    <div class="p_y">
+        <div class="p_ycon2">
+            <h4>发送私信</h4>
+            <div class="p_ycon2b fix">
+                <div class="p_img fl">
+                    <img src="" alt="" style="border-radius: 50%; width:72px; height:72px;">
+                    <p>昵称</p>
+                </div>
+                <div class="p_txt fl">
+                    <textarea placeholder="私信内容" name="msg_content"></textarea>
+                </div>
+            </div>
+            <a href="javascript:void(0);" class="p_fs nb_t2">发 送</a>
+            <div class="p_pclo1"></div>
+        </div>
+    </div>
+    <div class="ipro_bg"></div>
+    <i class="ipro_close"></i>
+    <a href="javascript:void(0);" class="ipro_prev" data-id=""></a>
+    <a href="javascript:void(0);" class="ipro_next" data-id=""></a>
+    <div class="ipro_popup">
+        <div class="ipro_inner">
+            <div class="ipro_content">
+                
+            </div>
+        </div>
+    </div>
+    <div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+        <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+            <span class="lightbox-spinner"></span>
+        </div>
+        <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+            <div class="js-img-wrap" id="lightbox-img-wrap">
+                <div class="lightbox-extra control prev js-control js-prev hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                    </svg>
+                </div>
+                <div class="lightbox-extra control next js-control js-next hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                        <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                        <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                    </svg>
+                </div>
+                <div class="lightbox-extra control close js-control js-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                        <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                        <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                    </svg>
+                </div>
+                <div class="lightbox-contents js-contents"></div>
+            </div>
+        </div>
+    </div>
+    <div id="fancybox-loading"></div>
+    <!--main end-->
+    <!--footer start-->
+    {include file="public/footer" /}
+    <!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script src="__JSPC__/jquery.share.min.js"></script>
+<script src="__JSPC__/social-share.min.js"></script>
+<script>
+    $(function(){
+        check_move();
+
+        $('.banner-wrap').slick({ //banner图切换
+            dots: true, //指示点
+            arrows: true,
+            autoplay: true, //自动播放
+            infinite: true,
+            autoplaySpeed: 3000,
+            pauseOnHover: false,
+            useTransform: true,
+            useCSS: true,
+            speed: 800
+        });
+
+        //3&5栏切换
+        $('.i_type i').click(function() {
+            if ($(this).hasClass('on')) { return false; }
+            $(this).addClass('on').siblings().removeClass('on');
+            if ($(this).index() == 1) {
+                $('.i_pwrap').addClass('change5');
+            } else {
+                $('.i_pwrap').removeClass('change5');
+            }
+            $('.i_plist li').removeClass('in-view');
+            setTimeout(function(){
+                check_move();
+            },100);
+            $('.dot').dotdotdot({
+                wrap: 'letter',
+                watch: 'window'
+            });
+        });
+
+        //商品列表下拉刷新
+        var record_count = parseInt("{$data.pager.record_count}");
+        var page = 2;//翻页
+        var sort = '{$sort}';
+        var order = '{$order}';
+        var cat_id = '{$cat_id}';
+        var brand = '{$brand}';
+        var filter = '{$filter}';
+        var keywords = '{$keywords}';
+        var is_real = '{$is_real}';
+        var sex = '{$sex}';
+        var shop_price = '{$shop_price}';
+        $(window).scroll(function() {
+            var winH = $(window).height();
+            var pageH = $(document.body).height();
+            var scrollT = $(window).scrollTop();
+            // 如果滚动条到达底部就获取新数据追加到容器
+            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                if ($('.i_pwrap .i_plist li').length >= record_count) { return false; }
+                $('.base-load').addClass('show');
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('Index/index')}",
+                    data:{is_ajax:1,page:page,sort:sort,order:order,cat_id:cat_id,brand:brand,filter:filter,keywords:keywords,is_real:is_real,sex:sex,shop_price:shop_price},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            $('.base-load').removeClass('show');
+                            $('.i_pwrap .i_plist').append(result);
+                            check_move();
+                            $('.lazybg').lazyload({d:300,r:250});
+                        },2000);
+                    }
+                });
+            }
+        });
+
+        $(window).scroll(function() { //商品列表动态出现
+            check_move();
+        });
+
+        var c_load = false;
+        $('.ipro_popup').scroll(function() {
+            var iHeight = $('.ipro_popup .ipro_inner').height();
+            var iscrollTop = $('.ipro_popup').scrollTop();
+            // 如果滚动条到达底部就获取新数据追加到容器
+            // console.log(iscrollTop);
+            // console.log(iHeight);
+            // console.log(iHeight - $(window).height());
+            if (iscrollTop >= iHeight - $(window).height() * 1.2) {
+                if ($('.ipro_com_bot_ul li').length > 8 || c_load == true) { return false; }
+                $('.ipro_com_bot .base-load').addClass('show');
+                c_load = true;
+                var html = '<li class="clearfix"><div class="ipro_com_icon"><i class="zan">23</i><i class="favor"></i></div><a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar2.jpg"></div></a><div class="ipro_com_txt"><h3><a href=""><b>Adam</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3><p>设计很时尚！</p></div></li><li class="clearfix"><div class="ipro_com_icon"><i class="zan">23</i><i class="favor"></i></div><a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar3.jpg"></div></a><div class="ipro_com_txt"><h3><a href=""><b>Brian</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3><p>Nice work！</p></div></li>';
+                setTimeout(function(){
+                    $('.ipro_com_bot_ul').append(html);
+                    $('.lazybg').lazyload({d:300,r:250});
+                    $('.ipro_com_bot .base-load').removeClass('show');
+                    c_load = false;
+                },2000);
+            }
+        });
+    });
+    function check_move() {
+        var scrollTop = $(window).scrollTop();
+        $('.i_plist li').each(function(index, el) {
+            if (scrollTop > $(this).offset().top - $(window).height()) {
+                $(this).addClass('in-view');
+            }
+        });
+    }
+</script>
+<script>
+    //弹窗代码
+    $(function() {
+        var cur_url = location.href;
+        var index_url = location.host;
+        index_url = index_url.substr(0,7).toLowerCase() == "http://" ? index_url : "http://" + index_url;
+        // alert(index_url);
+        //展开详情
+        var open = false;
+        $(document).on('click', '.i_plist li.i_pli', function() {
+            if (history.pushState) {
+                type = 0;
+                $('#fancybox-loading').fadeIn();
+                $('.ipro_bg').show();
+                $('html').addClass('enabled');
+                $('.ipro_tx').show().siblings().hide();
+                $('.ipro_content').removeClass('dpro_content');
+                checkfloat_r();
+
+                var goods_id = $(this).data('id');
+                if($(this).prev().length > 0){
+                    $('.ipro_prev').attr('data-id', $(this).prev().data('id'));
+                }else{
+                    $('.ipro_prev').attr('data-id', 0);
+                }
+                if($(this).next().length > 0){
+                    $('.ipro_next').attr('data-id', $(this).next().data('id'));
+                }else{
+                    $('.ipro_next').attr('data-id', 0);
+                }
+                if($('.ipro_content .ipro_wrap_'+goods_id).length > 0){
+                    $('.banner-wrap').slick("slickPause");
+                    $('.ipro_popup').fadeIn();
+                    $('.ipro_slick.slick-slider').slick("unslick");
+                    $('.ipro_slick').slick({
+                        autoplay: false,
+                        draggable: false,
+                        fade: true
+                    });
+                    $('#fancybox-loading').hide();
+                    loadpList(0);
+                    r_top_bot(1);
+                    open = true;
+                    $('.ipro_content .ipro_wrap_'+goods_id).show();
+                }else{
+                    ajaxCall('{:url("Goods/details_ajax")}', {goods_id: goods_id}, respondDetailsAjax);
+                }
+
+                /*setTimeout(function() {
+                    $('.banner-wrap').slick("slickPause");
+                    $('.ipro_popup').fadeIn();
+                    $('.ipro_slick.slick-slider').slick("unslick");
+                    $('.ipro_slick').slick({
+                        autoplay: false,
+                        draggable: false,
+                        fade: true
+                    });
+                    $('#fancybox-loading').hide();
+                    loadpList(0);
+                    r_top_bot(1);
+                    open = true;
+                }, 2000);*/
+
+                // history处理
+                var new_url = index_url+'/goods/details/goods_id/'+$(this).attr('data-id');
+                history.pushState(null, null, new_url);
+            }
+        });
+
+        function respondDetailsAjax(data)
+        {
+            $('#fancybox-loading').hide();
+            if($('.ipro_content .ipro_wrap_'+data.goods_id).length > 0){
+                $('.ipro_content .ipro_wrap_'+data.goods_id).show();
+            }else{
+                $('.ipro_content').empty().append(data.html);
+                $('.banner-wrap').slick("slickPause");
+                $('.ipro_popup').fadeIn();
+                $('.ipro_slick.slick-slider').slick("unslick");
+                $('.ipro_slick').slick({
+                    autoplay: false,
+                    draggable: false,
+                    fade: true
+                });
+                loadpList(0);
+                r_top_bot(1);
+                open = true;
+            }
+        }
+
+        // 切换上一个商品
+        $('body').on('click', '.ipro_prev', function(event) {
+            var goods_id = $(this).attr('data-id');
+            if(goods_id != 0){
+                if($('.i_pli_'+goods_id).prev().length > 0){
+                    $('.ipro_prev').attr('data-id', $('.i_pli_'+goods_id).prev().data('id'));
+                }else{
+                    $('.ipro_prev').attr('data-id', 0);
+                }
+                if($('.i_pli_'+goods_id).next().length > 0){
+                    $('.ipro_next').attr('data-id', $('.i_pli_'+goods_id).next().data('id'));
+                }else{
+                    $('.ipro_next').attr('data-id', 0);
+                }
+                if (history.pushState) {
+                    var prev_goods = index_url+'/goods/details/goods_id/'+goods_id;
+                    history.pushState(null, null, prev_goods);
+                }
+
+                $('.ipro_content .ipro_wrap').hide();
+                if($('.ipro_content .ipro_wrap_'+goods_id).length > 0){
+                    $('.ipro_content .ipro_wrap_'+goods_id).show();
+                }else{
+                    $('#fancybox-loading').fadeIn();
+                    ajaxCall('{:url("Goods/details_ajax")}', {goods_id: goods_id}, respondDetailsAjax);
+                }
+            }else{
+                alert('已经是第一个商品了');
+            }
+        });
+        // 切换下一个商品
+        $('body').on('click', '.ipro_next', function(event) {
+            var goods_id = $(this).attr('data-id');
+            if(goods_id != 0){
+                if($('.i_pli_'+goods_id).prev().length > 0){
+                    $('.ipro_prev').attr('data-id', $('.i_pli_'+goods_id).prev().data('id'));
+                }else{
+                    $('.ipro_prev').attr('data-id', 0);
+                }
+                if($('.i_pli_'+goods_id).next().length > 0){
+                    $('.ipro_next').attr('data-id', $('.i_pli_'+goods_id).next().data('id'));
+                }else{
+                    $('.ipro_next').attr('data-id', 0);
+                }
+                if (history.pushState) {
+                    var next_goods = index_url+'/goods/details/goods_id/'+goods_id;
+                    history.pushState(null, null, next_goods);
+                }
+
+                $('.ipro_content .ipro_wrap').hide();
+                if($('.ipro_content .ipro_wrap_'+goods_id).length > 0){
+                    $('.ipro_content .ipro_wrap_'+goods_id).show();
+                }else{
+                    $('#fancybox-loading').fadeIn();
+                    ajaxCall('{:url("Goods/details_ajax")}', {goods_id: goods_id}, respondDetailsAjax);
+                }
+            }else{
+                alert('已经是最后一个商品了');
+            }
+        });
+
+        //关闭详情
+        $(document).on('click', '.ipro_close', function(event) {
+            if(open == false){ return false;}
+            $('.banner-wrap').slick("slickPlay");
+            $('.ipro_popup').animate({ scrollTop: 0 }, 0);
+            $('.ipro_popup,#fancybox-loading').hide();
+            $('.ipro_bg').hide();
+            $('html').removeClass('enabled bottom');
+            setTimeout(function() {
+                checkfloat_r();
+            },200);
+            if (history.pushState) {
+                history.pushState(null, null, cur_url);
+            }
+        });
+
+        //详情左边点赞
+        $('body').on('click', '.ipro_left .ipro_zan .icon', function() {
+            if($(this).parents('.ipro_zan').hasClass('disabled')){ return false; }
+            var goods_id = $("input[name='goods_id']").val();
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var _this = $(this);
+            if (_this.parents('.ipro_zan').hasClass('on')) {
+                // 取消点赞
+                $.ajax({
+                    url: "{:url('Goods/unlike')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: goods_id},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.parents('.ipro_zan').removeClass('on');
+                            $('.ipd_detail .des span.zan').removeClass('on');
+                            $('.ipd_detail .des span.zan').text(parseInt(zan_num) - 1);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            } else {
+                // 点赞
+                $.ajax({
+                    url: "{:url('Goods/like')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: goods_id},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.parents('.ipro_zan').addClass('on');
+                            $('.ipd_detail .des span.zan').addClass('on');
+                            $('.ipd_detail .des span.zan').text(parseInt(zan_num) + 1);
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        var fav_this;
+        //详情左边底下评论点赞举报标记
+        $(document).on('click', '.ipro_com_icon i', function() {
+            if($(this).hasClass('favor')){
+                right_favor = false;
+                if($(this).hasClass('on')){ return false; }
+                fav_this = $(this);
+                $('.rep_bg').fadeIn();
+                $('html').addClass('report');
+                return false;
+            }
+            if ($(this).hasClass('on')) {
+                $(this).removeClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) - 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeOut();
+                    r_top_bot(1);
+                }
+            } else {
+                $(this).addClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) + 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeIn();
+                    r_top_bot(1);
+                }
+            }
+        });
+
+        //举报弹窗（确认）
+        $(document).on('click', '.rep_form .rep_sub', function(event) {
+            var goods_id = $("input[name='goods_id']").val();
+            var reason = $('#reason').val();
+            var _this = $(this);
+            layer.confirm('确定要举报该评论？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                var index = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                $.ajax({
+                   type: "post",
+                   url: "{:url('Goods/do_goods_report')}",
+                   dataType: 'json',
+                   data:{goods_id:goods_id, reason:reason},
+                   success: function(data){
+                        layer.close(index);
+                        layer.msg(data.message);
+                        if (data.code == 200) {
+                            $('.rep_bg').fadeOut();
+                            $('html').removeClass('report');
+                            if(right_favor){
+                                fav_right.addClass('on');
+                            }else{
+                                fav_this.addClass('on');
+                            }
+                        }
+                   }
+                });
+            });
+        });
+
+        //举报弹窗（取消）
+        $(document).on('click', '.rep_wrap .del', function(event) {
+            $('.rep_bg').fadeOut();
+            $('html').removeClass('report');
+        });
+
+        //右边举报
+        var right_favor = false;
+        var fav_right;
+        $(document).on('click', '.ipd_detail .des span.favor', function(event) {
+            if($(this).hasClass('on')){ return false; }
+            var report_obj = $('#goods_name').text();
+            $('.rep_name').text(report_obj);
+            $('.rep_bg').fadeIn();
+            $('html').addClass('report');
+            right_favor = true;
+            fav_right = $(this);
+        });
+
+        //详情右边删除购物袋对应商品
+        $(document).on('click', '.ipro_right_after .ipd_cadel', function(event) {
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        /*$('.dc_firm .dc_yes').click(function(event) {
+            $(this).parents('li').remove();
+        });*/
+
+        //详情右侧点赞
+        $(document).on('click', '.ipd_detail .des span.zan', function(event) {
+            var _this = $(this);
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var zan_num = _this.text();
+            if(_this.hasClass('on')){
+                // 取消点赞
+                $.ajax({
+                    url: "{:url('Goods/unlike')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.removeClass('on');
+                            _this.text(parseInt(zan_num) - 1);
+                            $('.ipro_left .ipro_zan .icon').parents('.ipro_zan').removeClass('on');
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }else{
+                // 点赞
+                $.ajax({
+                    url: "{:url('Goods/like')}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {goods_id: $("input[name='goods_id']").val()},
+                    success: function(result) {
+                        layer.close(index);
+                        if (result.code == 200) {
+                            _this.addClass('on');
+                            _this.text(parseInt(zan_num) + 1);
+                            $('.ipro_left .ipro_zan .icon').parents('.ipro_zan').addClass('on');
+                        } else {
+                            layer.msg(result.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        //显示隐藏私信
+        $(document).on('click', '.d_ava_talk,.d_showtalk', function(event) {
+            var user_id = $("[name='user_id']").val();
+            if (user_id > 0) {
+                $('.p_img img').attr('src', $('.avatar span').attr('data-lazyload-bg'));
+                $('.p_img img').attr('alt', $('.ava_txt h2').text());
+                $('.p_img p').text($('.ava_txt h2').text());
+                $('body > .p_y').stop(true,true).fadeIn();
+                $('html').addClass('report');
+            } else {
+                layer.open({
+                    content: '请先登录',
+                    btn: ['确定', '取消'],
+                    shadeClose: false,
+                    yes: function(index){
+                        window.location.href = '/index.php/user/login.html';
+                    }
+                });
+            }
+        });
+
+        //发送私信
+        $(document).on('click','.p_ycon2 .p_fs',function(){
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var msg_content = $("[name='msg_content']").val();
+            var receive_user_id = $("[name='diy_user_id']").val();//设计师ID
+            $.ajax({
+                url: "{:url('User/send_letter_ajax')}",
+                type: 'POST',
+                dataType: 'json',
+                data: {msg_content: msg_content, receive_user_id: receive_user_id},
+                success: function (result) {
+                    layer.close(index);
+                    layer.msg(result.message);
+                    if (result.code == 200) {
+                        $('.p_pclo1').click();
+                    }
+                }
+            });
+        });
+
+        $(window).scroll(function() {
+            var scrollTop = $(window).scrollTop();
+            if (scrollTop > $('.i_bar').offset().top - $('.header').outerHeight()) {
+                $('.i_bar').addClass('fixed');
+            } else {
+                $('.i_bar').removeClass('fixed');
+            }
+        });
+    });
+</script>
+

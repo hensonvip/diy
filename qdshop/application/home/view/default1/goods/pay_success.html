@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="pay_main bg_f5f5f5 clearfix">
+	<div class="fg_top tc">
+        <img src="__IMGPC__/fg1.png" class="fg_logo">
+        <h2>订单支付</h2>
+    </div>
+    <div class="pay_box pay_box1 pay_box2 tc">
+        <img src="__IMGPC__/fg5.png" class="pay_icon d_ib vm">
+        <div class="text d_ib vm tl">
+            <h2>支付成功</h2>
+            <p><a href="">查看订单详情</a></p>
+            <p><a href="">查看已购买的商品</a></p>
+        </div>
+    </div>
+    {if $goods_list}
+    <div class="pay_con tc">
+        <h2 class="pay_con_h2 tl">立即出售</h2>
+        <ul class="pay_con_list">
+            {foreach name="$goods_list" item="goods"}
+            <li>
+                <div class="pic"><img class="lazybg" data-lazyload-img="{$webUrl}{$goods.goods_thumb}" style="width:96px; height: 97px;"></div>
+                <h3>{$goods.goods_name}</h3>
+                <a class="nb_t1" href="javascript:void(0);" data-id="{$goods.goods_id}">我要出售</a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    {/if}
+</div>
+<div class="proto_bg">
+    <div class="proto_wrap">
+        <h2>OTEE用户协议</h2>
+        <div class="content">
+            <div class="pb15">
+                <p>1. 特别提示</p>
+                <p>1.1为使用本手机应用软件及服务，您应当阅读并遵守《用户使用协议》（以下简称“本协议”）。请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款，以及同意或使用某项服务的单独协议，并选择接受或不接受。</p>
+                <p>1.2 除非您已阅读并接受本协议所有条款，否则您无权下载、安装或使用本软件及相关服务。您的下载、安装、使用、获取账号、登录等行为即视为您已阅读并同意上述协议的约束。</p>
+                <p>1.3东大正保公司（以下称“本公司”）同意按照</p>
+                <p>本协议的规定及其不时发布的操作规则提供基于互联网的相关服务（以下称"本服务"）。为获得本服务，服务使用人（以下称"用户"）应当同意本协议的全部条款并按照页面</p>
+                <p>上的提示完成全部的申请程序。</p>
+                <br/>
+                <p>2. 协议的范围</p>
+                <p>2.1 协议适用主体范围</p>
+                <p>本协议是您与东大正保公司之间关于您下载、安装、使用、复制本软件，以及使用本公司相关服务所订立的协议。</p>
+                <p>2.2 协议关系和冲突条款</p>
+                <p>本公司在网站上公布的服务条款及用户所参加课程的招生方案和班次协议等是本协议的补充。本协议与上述内容存在冲突的，以本协议为准。 本协议内容同时包括东大正保公司可能不断发布的关于本服务的相关协议、业务规则等内容。上述内容一经正式发布，即为本协议不可分割的组成部分，您同样应当遵守。</p>
+                <br/>
+                <p>3.服务内容与授权使用范围</p>
+                <p>3.1本软件根据用户实际需求提供服务，例如听课、做题等。本公司保留随时变更、中断或终止部分或全部本服务的权利。</p>
+                <p>3.2本软件手机应用的授权使用范围：</p>
+                <p>1) 用户可以在手机上安装、使用、显示、运行本软件。</p>
+                <p>2) 保留权利：未明示授权的其他一切权利均由本公司所有。</p>
+                <br/>
+                <p>4. 使用规则</p>
+                <p>4.1账号使用规则</p>
+                <p>4.1.1用户在使用本软件前需要注册一个账号。用户注册时需要提供准确的个人资料，如个人资料有任何变动，需要及时更新。如因注册信息不准确而引起的问题由用户本人承担，本公司不负任何责任并有权暂停或终止用户的账号。</p>
+                <p>4.1.2本软件账号的所有权归本公司所有，用户完成申请注册手续后，仅获得账号的使用权，且该使用权仅属于初始申请注册人。同时，初始申请注册人不得赠与、借用、租用、转让或售卖账号或者以其他方式许可非初始申请注册人使用账号。</p>
+                <p>4.1.3如若有任何第三方向本公司发出指示，在确认其提供账户、密码信息准确无误的情况下，用户同意且本公司有权视该行为获得了用户的充分授权，该行为所产生结果直接归属于用户本身。</p>
+                <p>4.1.4用户承担账号与密码的保管责任，用户对以其账号发生的或通过其账号发生的一切活动和事件（包括但不限于用户发表的任何内容以及由此产生的任何结果）负全部法律责任。用户须重视账号与密码的保护，若因为用户自身原因，而导致账号与密码遭他人非法使用时，本公司将不承担任何责任。用户自身原因包括但不限于：任意向第三者透露账号和密码及所有注册资料；多人共享同一个账号；安装非法或来路不明的程序等。</p>
+                <p>4.2用户使用规则</p>
+                <p>4.2.1用户在使用本软件时，必须遵循以下原则：</p>
+                <p>1) 遵守中国有关的法律和法规；</p>
+                <p>2) 不得为任何非法目的而使用本服务系统；</p>
+                <p>3) 遵守所有与本服务有关的网络协议、规定和程序；</p>
+                <p>4) 不得利用本软件系统进行任何可能对互联网的正常运转造成不利影响的行为；</p>
+                <p>5) 不得利用本软件服务系统进行任何不利于其他用户的行为；</p>
+                <p>6) 如发现任何非法使用用户账号或账号出现安全漏洞的情况，应立即通告东大正保官方；</p>
+                <p>7) 不使用外挂或者其他作弊手段、不正当或不公平手段参加本软件提供的本服务。</p>
+                <p>4.2.2东大正保致力于为用户提供文明健康、规范有序的服务，用户应遵守中华人民共和国相关法律法规(如果用户是中华人民共和国境外的使用者，还应遵守所属国家或地区的法律法规)，用户将自行承担用户所发布的信息内容的责任。特别地，用户不得发布下列内容：</p>
+                <p>1) 反对中华人民共和国宪法所确定的基本原则的；</p>
+                <p>2) 危害国家统一、主权和领土完整的；</p>
+                <p>3) 泄露国家秘密，危害国家安全或者损害国家荣誉和利益的；</p>
+                <p>4) 煽动民族仇恨、民族歧视，破坏民族团结或者侵害民族风俗、习惯的；</p>
+                <p>5) 破坏国家宗教政策，宣扬邪教、迷信的；</p>
+                <p>6) 散布谣言，扰乱社会秩序，破坏社会稳定的；</p>
+                <p>7) 散布淫秽、赌博、暴力或者教唆犯罪的；</p>
+                <p>8) 侮辱或者诽谤他人，侵害他人合法权益的；</p>
+                <p>9) 危害社会公德或者民族优秀文化传统的；</p>
+                <p>10) 宣扬外挂,私服以及木马的相关内容；</p>
+                <p>11) 刊登任何经本公司合理判断为不妥当或者本公司未认可的软件、文件等在内的主页地址或者链接的行为；</p>
+                <p>12) 含有中华人民共和国法律、行政法规禁止的其他内容的。</p>
+            </div>
+        </div>
+        <div class="btn_box clearfix tc">
+            <div class="btn sure_btn d_ib nb_t2">确 认</div>
+        </div>
+    </div>
+</div>
+<style>
+    #global-loading { display: none;position: fixed;top: 0;left: 0;z-index: 1010;width: 100%;height: 100%;background: #000;opacity: .5; }
+    #global-loading .loadcont { position: absolute;cursor: pointer;height: 42px;left: 50%;top: 50%;margin-top: -21px; }
+    #global-loading .loadpic { background: url(__IMGPC__/loading.gif);height: 42px;width: 42px;float: left; }
+    #global-loading .loadtit { float: left;line-height: 42px;color: #ccc; }
+</style>
+<div id="global-loading"><div class="loadcont clearfix"><div class="loadpic"></div><div class="loadtit"></div></div></div>
+<div id="fancybox-loading"></div>
+<div class="ipro_bg"></div>
+<i class="ipro_close"></i>
+<div class="ipro_popup mem_popup">
+    
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+	if($('.pay_con_list li').length > 3){
+        $('.pay_con_list').slick({
+            infinite: true,
+            slidesToShow: 3,
+            slidesToScroll: 3
+        })
+    }
+
+    //协议弹窗
+    $('body').on('click', '.show_xy', function() {
+        $('.proto_bg').fadeIn();
+        $('.ipro_close').hide();
+    });
+
+    $('.proto_wrap .content .pb15').mCustomScrollbar({
+        axis:"y",
+        scrollInertia: 100,
+        scrollButtons:{
+            enable: true,
+            scrollSpeed: 20
+        },
+        theme:"3d"
+    });
+
+    $('body').on('click', '.proto_bg .sure_btn', function() {
+        $('.proto_bg').fadeOut();
+        $('.ipro_close').show();
+    });
+
+    $('body').on('click', '.proto_wrap .sure_btn', function() {
+        $('.mep_tsub label').addClass('on');
+        $('.mep_tsub label input').prop("checked",true);
+        $('.mep_sbtn').removeClass('disabled');
+    });
+});
+</script>
+<script>
+$(function(){
+    //打开我要出售弹窗
+    $('.pay_con_list a').click(function() {
+        /*var goods_id = parseInt($(this).attr('data-id'));
+        $.ajax({
+            url: "{:url('Goods/sale_apply')}",//控制器未写
+            type: 'GET',
+            dataType: 'html',
+            data: {goods_id: goods_id},
+            success: function() {
+
+            }
+        });*/
+        id = $(this).data('id');
+        if($('.ipro_inner_'+id).length <= 0){
+            ajaxCall('{:url("Goods/sale_apply")}', {goods_id: id}, respondSale);
+            $('#fancybox-loading').fadeIn();
+        }else{
+            $('.ipro_inner_'+id).show();
+        }
+
+        $('html').addClass('enabled close_top selling');
+        $('.ipro_bg').show();
+        $('.ipro_popup').fadeIn();
+    });
+
+    // 请求出售页面
+    function respondSale(data)
+    {
+        $('#fancybox-loading').hide();
+        $('.ipro_popup').html(data.html);
+    }
+
+    //关闭浏览
+    $('body').on('click', '.ipro_close', function() {
+        $('.ipro_popup').animate({ scrollTop: 0 }, 0);
+        $('.ipro_bg').hide();
+        $('.ipro_popup').hide();
+        $('.ipro_popup .ipro_inner').hide();
+        $('html').removeClass('enabled selling');
+        setTimeout(function() {
+            checkfloat_r();
+        },200);
+    });
+
+    $('body').on('keyup', '.get_tag', function(event){
+        var val_length = $('.get_tag').val().length;
+        var max_length = 16;
+        var left_length = max_length - val_length;
+        if(max_length <= val_length){
+            $('.get_tag').val($('.get_tag').val().slice(0,16));
+            left_length == 0;
+            $('.left_length').text("0");
+        }else{
+            $('.left_length').text(left_length);
+        }
+    });
+
+    //回车或者空格添加标签
+    $('body').on('keydown', '.get_tag', function(event){
+        var get_tag_val = $('.get_tag').val();
+
+        var val = $.trim(get_tag_val);
+        if(val){
+            if(event.keyCode==13 || event.keyCode==32){
+                if($('.n_tag_list dd').length >= 5){
+                    layer.msg("最多只能添加五个标签！");
+                    return false;
+                }else{
+                    $('.n_tag_list').append('<dd>' + val + '<input type="hidden" name="goods_tags[]" value="' + val + '"><i class="type_del"></i></dd>');
+                }
+                $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+                $('.mep_tright .tag_input input').val("");
+                if($('.n_tag_list dd').length != 0){
+                    $('.tag_box').addClass('active');
+                }else{
+                    $('.tag_box').removeClass('active');
+                }
+            }
+        }
+    });
+
+    //删除标签
+    $(document).on('click', '.n_tag_list dd i', function(event) {
+        var _this = $(this);
+        layer.confirm('确定删除该标签？', {
+            title: false,
+            closeBtn: 0,
+            btn: ['取 消','确 定'] //按钮
+        }, function(){
+            layer.closeAll();
+        }, function(){
+            _this.parents('dd').remove();
+            $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+            if($('.n_tag_list dd').length != 0){
+                $('.tag_box').addClass('active');
+            }else{
+                $('.tag_box').removeClass('active');
+            }
+        });
+    });
+
+    //热门标签
+    $('body').on('click', '.mep_tright .tag_hot dd', function() {
+        var text = $(this).text();
+        if($('.n_tag_list dd').length >= 5){
+            layer.msg("最多只能添加五个标签！");
+            return false;
+        }else{
+            $('.n_tag_list').append('<dd>' + text + '<input type="hidden" name="goods_tags[]" value="' + text + '"><i class="type_del"></i></dd>');
+        }
+        $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+        if($('.n_tag_list dd').length != 0){
+            $('.tag_box').addClass('active');
+        }else{
+            $('.tag_box').removeClass('active');
+        }
+    });
+
+    //改变款式
+    $('body').on('change', '.mep_tright .sex_box input', function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+        }else{
+            $(this).parents('label').removeClass('on');
+        }
+        var max_length = $(this).parents('.r_box').find('label').length;
+        var now_length = $(this).parents('.r_box').find('label.on').length;
+        if(max_length == now_length){
+            $(this).parents('.r_box').find(".select_all").text("取消全选").addClass('on');
+
+        }else{
+            $(this).parents('.r_box').find(".select_all").text("全选").removeClass('on');
+        }
+    });
+    //改变颜色
+    $('body').on('change', '.mep_tright .color_box input', function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+        }else{
+            $(this).parents('label').removeClass('on');
+        }
+        var max_length = $(this).parents('.r_box').find('label').length;
+        var now_length = $(this).parents('.r_box').find('label.on').length;
+        if(max_length == now_length){
+            $(this).parents('.r_box').find(".select_all").text("取消全选").addClass('on');
+        }else{
+            $(this).parents('.r_box').find(".select_all").text("全选").removeClass('on');
+        }
+    });
+
+    //全选
+    $('body').on('click', '.mep_tright .select_all', function() {
+        if($(this).hasClass('on')){
+            $(this).parents('.r_box').find('input[type="checkbox"]').prop("checked",false);
+            $(this).parents('.r_box').find('label').removeClass('on');
+            $(this).text("全选");
+            $(this).removeClass('on');
+        }else{
+            $(this).parents('.r_box').find('input[type="checkbox"]').prop("checked",true);
+            $(this).parents('.r_box').find('label').addClass('on');
+            $(this).text("取消全选");
+            $(this).addClass('on');
+        }
+    });
+
+    //上传图片
+    $('body').on('click', '.mep_tright .upload_img', function() {
+        if($('.upload_box li.uploading').length != 0){
+            layer.msg("还有图片在上传中，请稍等！")
+            return false;
+        }
+    });
+    $('body').on('change', '.mep_tright .upload_img', function() {
+        if($(this).val()){
+            loadImageFile();//实时预览
+
+            //5张后隐藏上传按钮
+            if($('.uploaded').length >= 4){
+                $(this).parent().css('display', 'none');
+            }
+
+            //异步上传图片,传完返回图片链接src
+            // $('.upload_box li.uploading b').css({'background-image':'url('+ src +')'});
+            //模拟2秒上传完
+            setTimeout(function(){
+                $('.upload_box li.uploading b').css({'background-image':'url('+ $('.upload_box li.uploading').css("background-image") +')'});
+                $('.upload_box li.uploading').removeClass('uploading').addClass('uploaded');
+            }, 2000);
+        }
+    });
+
+    //删除上传图片
+    $(document).on('click', '.upload_box li.uploaded em', function(event) {
+        event.preventDefault();
+        var _this = $(this);
+        layer.confirm('确定删除该图片？', {
+            title: false,
+            closeBtn: 0,
+            btn: ['取 消','确 定'] //按钮
+        }, function(){
+            layer.closeAll();
+        }, function(){
+            _this.parents('li').remove();
+            //异步删图片
+            
+            if($('.mep_tright .upload_img').parent().css('display') == 'none'){
+                $('.mep_tright .upload_img').parent().css('display', 'block');
+            }
+        });
+    });
+
+    //阅读协议
+    $('body').on('change', '.mep_tsub label input', function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+            $('.mep_sbtn').removeClass('disabled');
+        }else{
+            $(this).parents('label').removeClass('on');
+            $('.mep_sbtn').addClass('disabled');
+        }
+    });
+
+    //确认出售
+    $('body').on('click', '.mep_sbtn', function() {
+        if($(this).hasClass('disabled')){ return false; }
+        gloablLoadIn('正在提交，请稍等');
+
+        id = $(this).data('id');
+        data = $('.form_'+id).serializeArray();
+        ajaxCall('{:url("Goods/sale_post")}', data, respondSalePost);
+    });
+
+    function respondSalePost(data)
+    {
+        gloablLoadOut();
+        if(data.code == '200'){
+            layer.confirm('你的T恤作品会在3个工作日内进行审核<br/>通过后正式出售', {
+                title: false,
+                closeBtn: 0,
+                skin: 'demo-class1',
+                area: ['440px', '190px'],
+                btn: ['确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            });
+        }else{
+            layer.confirm(data.message, {
+                title: false,
+                closeBtn: 0,
+                skin: 'demo-class1',
+                area: ['440px', '190px'],
+                btn: ['确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            });
+        }
+    }
+
+    // 加载全局loading
+    function gloablLoadIn(title)
+    {
+        $('#global-loading .loadtit').html(title);
+        $('#global-loading').fadeIn();
+        w = $('#global-loading .loadcont').width();
+        $('#global-loading .loadcont').css('margin-left', '-' + (w / 2) + 'px');
+    }
+
+    // 隐藏全局loading
+    function gloablLoadOut()
+    {
+        $('#global-loading .loadtit').html('');
+        $('#global-loading').hide();
+    }
+});
+</script>
+<script>
+    oFReader = new FileReader(),
+    rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+
+    oFReader.onload = function (oFREvent) {
+      // console.log(oFREvent.target.result);
+      $('.upload_box ul').prepend('<li class="uploading" style="background-image: url('+ oFREvent.target.result +')"><input type="text" name="goods_desc[]" value="'+ oFREvent.target.result +'" style="display: none;"><i></i><em></em><b></b></li>')
+    };
+
+    function loadImageFile() {
+        if (document.getElementById("upload_img").files && document.getElementById("upload_img").files.length) {
+            var oFile = document.getElementById("upload_img").files[0];
+            if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }
+            oFReader.readAsDataURL(oFile);
+        }else{
+            $('.upload_box ul').prepend('<li class="uploading"><i></i><em></em><b></b></li>')
+            return;
+        }
+    }
+</script>

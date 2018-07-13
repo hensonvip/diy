@@ -1,0 +1,89 @@
+{include file="pageheader.htm"}
+<link href="../js/jquery.bigcolorpicker.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/jquery.bigcolorpicker.js"></script>
+<script type="text/javascript">
+        $(function(){
+            $("#demo1Text").bigColorpicker();
+
+        })
+</script>
+
+
+<form action="bank.php" method="post" name="theForm" enctype="multipart/form-data" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--银行名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.bank_name}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入银行全称" name="bank_name" value="{$bank.bank_name}" >
+            </div>
+        </div>
+        <!--银行简称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.bank_short_name}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入银行简称" name="bank_short_name" value="{$bank.bank_short_name}" >
+                <span class="notice-span">如：广发、工商、建行、农业、邮政等等简称</span>
+            </div>
+        </div>
+        <!--定义颜色-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 定义背景颜色</label>
+            <div class="layui-input-block">
+                <input name="bank_color" type="text" value="{$bank.bank_color}" id="demo1Text" class="layui-input" />
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} {$lang.sort_order}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="sort_order" value="{$bank.sort_order}" >
+            </div>
+        </div>
+        <!--上传银行图片-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('bank_iconImg');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.bank_icon}
+            </label>
+            <div class="layui-input-block">
+                <input type='file' name='bank_icon' size='35' style="margin-left:10px;margin-top:5px;" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="bank_iconImg">{$lang.bank_icon_notice}</span>
+                {if $bank.bank_icon neq ''}<br/><br/><a href="../data/bankImg/{$bank.bank_icon}" target="_blank"><img src="../data/bankImg/{$bank.bank_icon}" style="max-height:100px;margin-left:10px;" /></a>{/if}
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="id" value="{$bank.id}" />
+        </p>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+<script language="JavaScript">
+<!--
+{literal}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+//-->
+{/literal}
+</script>
+
+{include file="pagefooter.htm"}

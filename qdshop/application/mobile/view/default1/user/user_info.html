@@ -1,0 +1,36 @@
+{include file="public/header" /}
+
+<body data-psd-width="840" >
+<header class="pr hg ">
+    <a href="{:url('User/index')}"><div class="pa back on"></div></a>
+    <h1 class="tc col" style="color: #fff;">我的信息</h1>
+</header>   
+<div class="content ">
+    <div class="my">
+        <dl class="bgc">
+            <dt><a class="clearfix" href="{:url('User/headIcon')}"> 头像  <div class="pic fr" style="height:1.2rem"><img src="{if $data.headimg}{$webUrl}/{$data.headimg}{else}{$webUrl}/__IMGWAP__/fen4.png{/if}" style="border-radius:50%;"></div></a></dt>
+            <dd><a class="clearfix" href="{:url('User/nickname')}"> 昵称 <em>{$data.user_name}</em></a></dd>
+            <dd><a class="clearfix" href="{:url('User/sex')}">性别<em>{if $data.sex eq 0}保密{/if}{if $data.sex eq 1}男{/if}{if $data.sex eq 2}女{/if}</em></a></dd>
+        </dl>
+        <ul class="bgc">
+            <li><a class="clearfix" href="{:url('User/tel')}">手机<em>{$data.mobile_phone}</em></a></li>
+            <li><a class="clearfix" href="{:url('User/address')}">收货地址<em></em></a></li>
+            <li><a class="clearfix" href="{:url('User/pwd')}">修改密码</a></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+    //单独页面上的js
+    $(function() {
+        
+
+    });
+</script>

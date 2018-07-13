@@ -1,0 +1,148 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<!-- <div class="form-div" style="height: 48px;">
+  <form action="javascript:searchGraph()" name="searchForm" class="layui-form">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" style="float:left;margin-top:10px;" />
+    <select name="type_id" >
+      <option value="0">全部分类</option>
+      {foreach from=$type_select item=type}
+      <option value="{$type.type_id}">{$type.type_name}</option>
+      {/foreach}
+    </select>
+    <input type="submit" value="搜索" class="layui-btn" style="margin-top: 5px;" />
+  </form>
+</div> -->
+<form method="POST" action="finds.php" name="listForm" class="layui-form">
+<!-- start type list -->
+<div class="list-div" id="listDiv">
+{/if}
+<table cellspacing='1' cellpadding='3' id='list-table' class="layui-table">
+  <tr>
+    <th>
+      <input type="checkbox" lay-filter="sel_all_checkboxes">
+      <a href="javascript:listTable.sort('type_id'); ">编号</a>{$type_id}
+    </th>
+    <th><a href="javascript:listTable.sort('name'); ">名称</a>{$name}</th>
+    <th><a href="javascript:listTable.sort('en_name'); ">首字母排序</a>{$en_name}</th>
+    <th><a href="javascript:listTable.sort('is_common'); ">是否常用</a>{$is_common}</th>
+    <th>操作</th>
+  </tr>
+  {foreach from=$graph_list item=list}
+  <tr>
+    <td><span><input name="checkboxes[]" type="checkbox" value="{$list.type_id}" {if $list.type_id <= 0 }disabled="true"{/if}/>{$list.type_id}</span></td>
+    <td align="center">{$list.name}</td>
+    <td align="left"><span>{$list.en_name}</span></td>
+    <td align="center">{if $list.type_id > 0}<span>
+    <img src="images/{if $list.is_common eq 1}yes{else}no{/if}.gif" /></span>{else}<img src="images/yes.gif" alt="yes" />{/if}</td>
+    <td align="center" nowrap="true">
+      <span>
+        <a href="finds.php?act=edit&id={$list.type_id}" title="编辑"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>&nbsp;
+        <a href="javascript:;" onclick="listTable.remove({$list.type_id}, '您确认要删除吗？')" title="移除"><img src="images/icon_drop.gif" border="0" height="16" width="16"></a>
+       </span>
+    </td>
+   </tr>
+   {foreachelse}
+    <tr><td class="no-records" colspan="10">您现在还没有任何项目</td></tr>
+  {/foreach}
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="8">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<div>
+  <input type="hidden" name="act" value="batch" />
+  <select name="type" id="selAction" lay-filter="selAction">
+    <option value="">请选择...</option>
+    <option value="button_remove">批量删除</option>
+    <option value="button_hide">批量常用</option>
+    <option value="button_show">批量不常用</option>
+  </select>
+
+  <input type="submit" value="确定" id="btnSubmit" name="btnSubmit" class="layui-btn"  style="margin-left:10px;"/>
+</div>
+</form>
+
+<!-- end type list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+
+  /**
+   * @param: bool ext 其他条件：用于转移分类
+   */
+  function confirmSubmit(frm, ext)
+  {
+      if (frm.elements['type'].value == 'button_remove')
+      {
+          return confirm('您确定要删除吗?');
+      }
+      else if (frm.elements['type'].value == 'button_hide')
+      {
+          return confirm('您确定要取消常用吗?');
+      }
+      else if (frm.elements['type'].value == '')
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+  function changeAction()
+  {
+
+      var frm = document.forms['listForm'];
+
+      if (!document.getElementById('btnSubmit').disabled &&
+          confirmSubmit(frm, false))
+      {
+          frm.submit();
+      }
+
+      var form = layui.form();
+      form.render(); //更新全部
+  }
+
+ /* 搜索图形 */
+ function searchGraph()
+ {
+    listTable.filter.type_id = parseInt(document.forms['searchForm'].elements['type_id'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+
+ {/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('checkbox(sel_all_checkboxes)', function(data){
+            listTable.selectAll(this, "checkboxes");
+            form.render(); //更新全部
+        });
+
+        form.on('select(selAction)', function(data){
+            changeAction();
+        });
+    });
+</script>
+{include file="pagefooter.htm"}
+{/if}

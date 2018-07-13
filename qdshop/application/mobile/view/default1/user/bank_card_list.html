@@ -1,0 +1,111 @@
+{include file="public/header" /}
+<style type="text/css">
+    body{padding-bottom:0;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <a href="{:url('User/index')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">我的银行卡</h1>
+    <a class="tj icon on" href="{:url('User/bank_card_add')}"></a>
+</header>   
+<div class="content">
+    <div class="con16">
+        <ul class="bank" id="load_box">
+            {include file="user/bank_card_list_ajax" /}
+            
+        </ul>     
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var page = 2;//翻页
+
+        // dropload
+        $('.content').dropload({
+            scrollArea : window,
+            domUp : {
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+            },
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+                domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+            },
+            loadUpFn : function(me){
+                setTimeout(function(){
+                   window.location.reload();
+                },100); 
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('User/bank_card_list')}",
+                    data:{is_ajax:1,page:page},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            //追加页面数据
+                            $('#load_box').append(result);
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },500);
+                    },
+                    error: function(xhr, type){
+                        // alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        // me.noData();
+
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function bank_card_default(card_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        $.ajax({
+           type: "post",
+           url: "{:url('User/bank_card_default')}",
+           dataType: 'json',
+           data:{card_id:card_id},
+           success: function(data){
+                if(data.code == 200){
+                    layer.close(index);
+                    window.location.href = "{:url('User/withdraw_deposit')}";
+                    //location.reload();
+                }else{
+                    layer.open({
+                        content: data.message
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    layer.close(index);
+                }
+           }
+        });
+        //禁止页面刷新
+        return false;
+
+    }
+</script>

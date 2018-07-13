@@ -1,0 +1,53 @@
+{if $data.supplier_list}
+{volist name="data.supplier_list" id="vo"}
+<div class="ipro_right_after">
+    <div class="ipd_rtop">
+        <i class="ipd_rtop_back"></i>
+        <div class="ipd_rtop_cart ipd8">
+            <ul class="ipd_rtop_clist">
+                {volist name="vo.goods_list" id="vv"}
+                {if $vv.invalid eq 0 && $vv.is_design eq 0}
+                <li class="selected">
+                    <div class="dc_pr">
+                        <a class="ipd_cadel"></a>
+                        <div class="dc_firm">
+                            <span class="dc_no">取 消</span>
+                            <span class="dc_yes" onclick="delOne({$vv.rec_id}, this)">确 定</span>
+                        </div>
+                    </div>
+                    <div class="ipd_catop">
+                        <img class="lazybg" data-lazyload-img="{$webUrl}{$vv.goods_thumb}">
+                    </div>
+                    <div class="ipd_camid clearfix">
+                        <span>{$vv.goods_name}</span>
+                        <font>限量 {$vv.goods_stock}/{$vv.goods_total} <em>￥<i class="one_price">{$vv.goods_price}</i></em></font>
+                    </div>
+                    <div class="ipd_cabot clearfix">
+                        <div class="icon1" style="background-image: url({$webUrl}{$vv.attr_icon});"></div>
+                        <div class="icon2" style="background-color: #{$vv.attr_color};border: 1px solid #eee;"></div>
+                        <div class="icon3">{$vv.attr_size}</div>
+                        <div class="num_box fr" data-max="{$vv.goods_stock}">
+                            <input type="button" value="-" class="btn_mm" onclick="minus_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                            <input type="text" name="goods_number[{$vv.rec_id}]" value="{$vv.goods_number}" class="btn_input" onblur="change_price({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                            <input type="button" value="+" class="btn_aa" onclick="add_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                        </div>
+                    </div>
+                    <input type="checkbox" name="rec_id" value="{$vv.rec_id}" class="check" checked="checked" style="display:none;">
+                </li>
+                {/if}
+                {/volist}
+            </ul>
+        </div>
+    </div>
+    <div class="ipd_rbot">
+        <div class="ipd_rbot_wrap tr">
+            <p>
+                <span>合计</span>
+                <font>￥<em>0</em>（不含运费）</font>
+            </p>
+            <div class="ipd_cart nb_t2" onclick="checkout()">结 算</div>
+        </div>
+    </div>
+</div>
+{/volist}
+{/if}

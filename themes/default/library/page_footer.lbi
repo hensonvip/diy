@@ -1,0 +1,45 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="foot">
+    <div class="foottop layout1">
+        <img src="themes/default/images/imgjpg9.jpg" />
+    </div>
+
+    <div class="footmid layout1">
+        <!-- {foreach from=$helps item=help_cat name=no} -->
+        <dl class="webmsg fl">
+            <dt>{$help_cat.cat_name}</dt>
+            <!-- {foreach from=$help_cat.article item=item} -->
+            <dd><a rel="nofollow" href="help.php?id={$item.article_id}" target="_blank">{$item.short_title}</a></dd>
+            <!-- {/foreach} -->
+        </dl>
+        <!-- {/foreach} -->
+        <dl class="webmsg fl">
+            <dt><a href="#">官方微信</a></dt>
+            <dd><img src="themes/default/images/imgjpg8.jpg" /></dd>
+        </dl>
+    </div>
+    <div class="footbot">
+        <p class="weblinks">
+            <!-- {if $navigator_list.bottom} -->
+            <!-- {foreach name=nav_bottom_list from=$navigator_list.bottom item=nav} -->
+            <a href="{$nav.url}"  {if $nav.opennew eq 1}target="_blank"{/if}>{$nav.name}</a>
+            <!-- {/foreach} -->
+            <!-- {/if} -->
+        </p>
+        <p class="copyright">Copyright © 2003-2017 互诺科技, All Rights Reserved  粤ICP备09019378号<br />广东省通管局 增值电信业务经营许可证B2-02130209</p>
+        <p class="rz">
+            <img src="themes/default/images/imgjpg3.jpg" />
+            <img src="themes/default/images/imgjpg4.jpg" />
+            <img src="themes/default/images/imgjpg5.jpg" />
+        </p>
+    </div>
+
+</div>
+<img src="api/cron.php?t=<?php gmtime(); ?>" alt="" style="width:0px;height:0px;display:none;" />
+<!-- footer end  -->
+<script type="text/javascript">
+Ajax.call('api/okgoods.php', '', '', 'GET', 'JSON');
+//预售
+Ajax.call('pre_sale.php?act=check_order', '', '', 'GET', 'JSON');
+</script>
+<script type="text/javascript" src="themes/default/js/base.js" ></script>

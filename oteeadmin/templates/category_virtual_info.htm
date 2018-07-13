@@ -1,0 +1,180 @@
+{include file="pageheader.htm"} 
+
+<form action="category.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--分类名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('nameNotice');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.cat_name}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入分类名" autocomplete="off" name="cat_name" value="{$cat_info.cat_name|escape:html}" style="width:60%;">
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="nameNotice">
+                    {$lang.notice_cat_name}
+                </span>
+            </div>
+        </div>
+        <!--目录名称-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticePathname');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                目录名称
+            </label>
+            <div class="layui-input-block">
+                <input type='text' name='path_name' maxlength="20" value='{$cat_info.path_name|escape:html}' class="layui-input" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticePathname">
+                    生成的【真静态HTML文件】将保存到该目录下<br>例如：在这里输入 jiaju，根目录下就会生成一个 category-jiaju 的二级目录用来保存纯静态HTML文件
+                </span>
+            </div>
+        </div>
+        <!--上级分类-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.parent_id}</label>
+            <div class="layui-input-block">
+                <select name="parent_id">
+                    <option value="0">{$lang.cat_top}</option>
+                    {$cat_select}
+                </select>
+            </div>
+        </div>
+        <!--数量单位-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.measure_unit}</label>
+            <div class="layui-input-block">
+                <input type="text" name='measure_unit' value='{$cat_info.measure_unit}' class="layui-input" />
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.sort_order}</label>
+            <div class="layui-input-block">
+                <input type="text" name='sort_order' {if $cat_info.sort_order}value='{$cat_info.sort_order}'{else} value="50"{/if} class="layui-input" />
+            </div>
+        </div>
+        <!--是否显示-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.is_show}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_show" value="1" {if $cat_info.is_show neq 0} checked="true"{/if} title="{$lang.yes}" />
+                <input type="radio" name="is_show" value="0" {if $cat_info.is_show eq 0} checked="true"{/if} title="{$lang.no}" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+            <input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+            <input type="hidden" name="is_virtual" value="{$is_virtual}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal} 
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['cat_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    if(document.forms['theForm'].elements['cat_name'].value==''){
+        alert('分类名称不能为空');
+    return false;
+    }
+  validator = new Validator("theForm");
+  validator.required("cat_name",      catname_empty);
+  if (parseInt(document.forms['theForm'].elements['grade'].value) >10 || parseInt(document.forms['theForm'].elements['grade'].value) < 0)
+  {
+    validator.addErrorMsg('{$lang.grade_error}');
+  }
+  return validator.passed();
+}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新增一个筛选属性
+ */
+function addFilterAttr(obj)
+{
+  var src = obj.parentNode.parentNode;
+  var tbl = document.getElementById('tbody-attr');
+
+  var validator  = new Validator('theForm');
+  var filterAttr = document.getElementsByName("filter_attr[]");
+
+  if (filterAttr[filterAttr.length-1].selectedIndex == 0)
+  {
+    validator.addErrorMsg(filter_attr_not_selected);
+  }
+  
+  for (i = 0; i < filterAttr.length; i++)
+  {
+    for (j = i + 1; j <filterAttr.length; j++)
+    {
+      if (filterAttr.item(i).value == filterAttr.item(j).value)
+      {
+        validator.addErrorMsg(filter_attr_not_repeated);
+      } 
+    } 
+  }
+
+  if (!validator.passed())
+  {
+    return false;
+  }
+
+  var row  = tbl.insertRow(tbl.rows.length);
+  var cell = row.insertCell(-1);
+  cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addFilterAttr)(.*)(\[)(\+)/i, "$1removeFilterAttr$3$4-");
+  filterAttr[filterAttr.length-1].selectedIndex = 0;
+}
+
+/**
+ * 删除一个筛选属性
+ */
+function removeFilterAttr(obj)
+{
+  var row = rowindex(obj.parentNode.parentNode);
+  var tbl = document.getElementById('tbody-attr');
+
+  tbl.deleteRow(row);
+}
+
+function _index_dwt(id, type)
+{
+	document.getElementById(id).style.display = (type == 1 ? "" : "none");
+}
+
+function change_dwt()
+{
+	document.getElementById("index_dwt_0").checked = true;
+	document.getElementById("index_dwt_1").checked = false;
+}
+
+//-->
+</script> 
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+    });
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,69 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<!-- start mask list -->
+<div class="list-div" id="listDiv">
+{/if}
+<table cellspacing='1' cellpadding='3' id='list-table' class="layui-table">
+  <tr>
+    <th>
+      <a href="javascript:listTable.sort('mask_id'); ">编号</a>{$sort_mask_id}
+    </th>
+    <th><a href="javascript:listTable.sort('mask_name'); ">蒙版名称</a>{$sort_mask_name}</th>
+    <th><a href="javascript:listTable.sort('mask_img'); ">蒙版图片</a>{$sort_mask_img}</th>
+    <th><a href="javascript:listTable.sort('is_show'); ">是否显示</a>{$sort_is_show}</th>
+    <th>操作</th>
+  </tr>
+  {foreach from=$mask_list item=list}
+  <tr>
+    <td>{$list.mask_id}</td>
+    <td class="first-cell">{$list.mask_name|escape:html}</td>
+    <td align="center">{if $list.mask_img}<a target="_blank" href="../{$list.mask_img}"><img src="../{$list.mask_img}" alt="{$list.mask_name|escape:html}" style="max-width:325px; max-height:96px;"></a>{/if}</td>
+    <td align="center"><span>
+    <img src="images/{if $list.is_show eq 1}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_show', {$list.mask_id})" /></span></td>
+    <td align="center" nowrap="true">
+      <span>
+        <a href="mask.php?act=edit&id={$list.mask_id}" title="编辑"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>&nbsp;
+        <a href="javascript:;" onclick="listTable.remove({$list.mask_id}, '您确认要删除这个蒙版吗？')" title="移除"><img src="images/icon_drop.gif" border="0" height="16" width="16"></a>
+       </span>
+    </td>
+   </tr>
+   {foreachelse}
+    <tr><td class="no-records" colspan="10">您现在还没有任何项目</td></tr>
+  {/foreach}
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="8">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<!-- end type list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+
+ {/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+    });
+</script>
+{include file="pagefooter.htm"}
+{/if}

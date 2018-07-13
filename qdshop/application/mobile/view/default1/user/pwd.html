@@ -1,0 +1,72 @@
+{include file="public/header" /}
+  
+<body data-psd-width="840" >
+<header class="ss2 hg ">
+    <a href="{:url('User/user_info')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">修改密码</h1>
+</header>   
+<div class="content ">
+	<div class="sign">
+		<form action="{:url('User/do_pwd')}" method="post">
+			<input type="password" name="old_password" id="old_password"  placeholder="原密码">
+			<input type="password" name="new_password" id="new_password" placeholder="新密码">
+			<input type="password" name="qr_password" id="qr_password" placeholder="确认新密码">
+			<input type="button" class="sub_btn" value="确定" onclick="checkForm()">
+		</form>
+	</div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+	//提交表单验证
+    function checkForm(){
+    	var index = layer.open({type: 2,content: '加载中'});
+
+    	var old_password = $('#old_password').val();
+    	var new_password = $('#new_password').val();
+    	var qr_password = $('#qr_password').val();
+    	if(new_password != qr_password){
+    		layer.open({
+			    content: '修改失败，确认新密码不一样！'
+			    ,skin: 'msg'
+			    ,time: 2 //2秒后自动关闭
+			});
+			layer.close(index);
+            return false;
+    	}
+    	$.ajax({
+	        type: "post",
+	        url: "{:url('User/do_pwd')}",
+	        dataType: 'json',
+	        data:{old_password:old_password,new_password:new_password},
+	        success: function(data){
+	            layer.close(index);
+	        	if(data.code == 200){
+	        		layer.open({
+                        content: '修改密码成功，请重新登录！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            window.location.href = "{:url('User/login')}?back_url={:url('User/index')}";
+                        }
+                    });
+                    return false;
+	        	}
+	            layer.open({
+				    content: data.message
+				    ,skin: 'msg'
+				    ,time: 2 //2秒后自动关闭
+				});
+	        }  
+	    });
+	    //禁止页面刷新
+	    return false;
+    }
+</script>

@@ -1,0 +1,71 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1" class="layui-table">
+  <tr>
+    <th>{$lang.bank_id}</th>
+    <th>{$lang.bank_name}</th>
+    <th>{$lang.bank_short_name}</th>
+    <th>{$lang.bank_icon}</th>
+    <th>{$lang.bank_color}</th>
+    <th>{$lang.sort_order}</th>
+    <th>{$lang.handler}</th>
+  </tr>
+  {foreach from=$bank_list item=list}
+  <tr>
+    <td align="center" class="first-cell">{$list.id}</td>
+    <td align="center">{$list.bank_name}</td>
+    <td align="center">{$list.bank_short_name}</td>
+    <td align="center">{if $list.bank_icon neq ''}<img src="../data/bankImg/{$list.bank_icon}" height="60">{/if}</td>
+    <td align="center"><div style="width:30px;height:30px;background-color:{$list.bank_color}"></div></td>
+    <td align="center">{$list.sort_order}</td>
+    <td align="center">
+      <a href="bank.php?act=edit&id={$list.id}" title="{$lang.edit}">
+      <img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>
+      <a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}')" title="{$lang.remove}"><img src="images/icon_drop.gif" border="0" height="16" width="16" /></a>
+    </td>
+  </tr>
+  {foreachelse}
+    <tr><td class="no-records" colspan="7">{$lang.no_position}</td></tr>
+  {/foreach}
+  <tr>
+    <td align="right" nowrap="true" colspan="7">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+    });
+</script>
+
+{if $full_page}
+</div>
+
+</form>
+
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    // &#64138;&#53036;&#10870;鵥
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

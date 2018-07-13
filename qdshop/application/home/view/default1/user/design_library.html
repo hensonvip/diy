@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+	{include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">待审核</div>
+		<div class="mem_rcon myot_part51">
+			<ul class="myot_p51_list clearfix">
+                {empty name="goods_list"}
+                    <li style="width: 100%;position: unset;height: auto;float: none;margin-right: 0;border: none;margin-bottom: 0;">暂无待审核设计</li>
+                {else /}
+                    {volist name="goods_list" id="vo"}
+                        <li>
+                            <i class="del"></i>
+                            <div class="pic">
+                                {if $vo.is_best eq 1 && $vo.best_img}
+                                    <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.best_img}">
+                                {else}
+                                    <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.goods_thumb}">
+                                {/if}
+                            </div>
+                            <h2>{$vo.goods_name}</h2>
+                            <a href="javascript:void(0);" class="btn nb_t3">取消出售</a>
+                        </li>
+                    {/volist}
+                {/empty}
+            </ul>
+		</div>
+	</div>
+</div>
+<div class="rep_bg">
+    <div class="rep_wrap">
+        <i class="del"></i>
+        <div class="mem_rtit">我要举报</div>
+        <form class="rep_form tc">
+            <div class="item">
+                <span>举报对象:</span>
+                <div class="r_box">
+                    <font class="rep_name">张 三</font>
+                </div>
+            </div>
+            <div class="item">
+                <span>原 因:</span>
+                <div class="r_box">
+                    <select name="" class="select">
+                        <option value="">XXXXXXXXXXX</option>
+                        <option value="">XXXXXXXXXXXXXXXXXXXXXX</option>
+                        <option value="">XXXXXXXXXXX</option>
+                    </select>
+                </div>
+            </div>
+            <div class="item w100">
+                <input type="button" value="提 交" class="rep_sub nb_t2">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ipro_bg"></div>
+<i class="ipro_close"></i>
+<a href="" class="ipro_prev"></a>
+<a href="" class="ipro_next"></a>
+<div class="ipro_popup mem_popup">
+    <div class="ipro_inner">
+        <div class="ipro_content">
+            <div class="ipro_wrap top">
+                <div class="ipro_size">
+                    <i class="ipro_back"></i>
+                    <div class="ipro_size_box">
+                        <img class="lazybg" data-lazyload-img="images/pic12.jpg">
+                    </div>
+                </div>
+                <div class="ipro_left">
+                    <div class="ipro_main pr">
+                        <ul class="ipro_slick">
+                            <li class="ipro_zoom"><img class="o_img" src="images/pic11.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="images/pic10.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="images/pic8.jpg"></li>
+                            <li class="ipro_zoom"><img class="o_img" src="images/pic9.jpg"></li>
+                        </ul>
+                        <a class="ipro_main_btn"></a>
+                        <div class="hover"></div>
+                    </div>
+                    <div class="ipro_piclist clearfix">
+                        <div class="box"><img realsrc="images/pic16.jpg" class="lazybg" data-lazyload-img="images/pic16.jpg"></div>
+                        <div class="box"><img realsrc="images/pic17.jpg" class="lazybg" data-lazyload-img="images/pic17.jpg"></div>
+                    </div>
+                    <div class="ipro_zan">
+                        <span class="icon"></span>
+                    </div>
+                </div>
+                <div class="ipro_right">
+                    <div class="ipro_right_bef">
+                        <div class="ipd_rtop">
+                            <div class="ipd_user clearfix">
+                                <div class="avatar">
+                                    <a href=""><span class="lazybg" data-lazyload-bg="images/avatar4.jpg"></span></a>
+                                    <div class="avatar_box">
+                                        <div class="avatar_wrap">
+                                            <div class="ava_top clearfix">
+                                                <a href=""><div class="ava_pic lazybg" data-lazyload-bg="images/avatar4.jpg"></div></a>
+                                                <div class="ava_txt">
+                                                    <a href=""><h2>Marco</h2></a>
+                                                    <p>设计师</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+                                            </div>
+                                            <div class="ava_bot">
+                                                <ul class="clearfix">
+                                                    <li><span>T恤作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>设计作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>粉丝</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>话题</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text">
+                                    <a href=""><h2>Marco</h2></a>
+                                    <span class="follow nb_t2">关 注</span>
+                                </div>
+                            </div>
+                            <div class="ipd8">
+                                <div class="ipd_detail">
+                                    <h2>彩虹T恤</h2>
+                                    <div class="price">￥<em>300</em></div>
+                                    <div class="bar"><i style="width: 70%;"></i></div>
+                                    <p>限量 99/99 </p>
+                                    <p class="des"><span class="view">0</span><span class="zan">0</span><span class="comment">0</span></p>
+                                </div>
+                                <div class="ipd_info">
+                                    <div class="box">
+                                        <h2>类型</h2>
+                                        <p>插画</p>
+                                    </div>
+                                    <div class="box">
+                                        <h2>设计描述</h2>
+                                        <p>设计理念，设计理念，设计。</p>
+                                        <p>设计，设计设计。</p>
+                                    </div>
+                                </div>
+                                <div class="ipd_type">
+                                    <div class="item clearfix">
+                                        <span>款式</span>
+                                        <div class="r_box sex_box">
+                                            <label style="background-image: url(images/icon47.png);">
+                                                <input type="radio" name="sex" value="">
+                                            </label>
+                                            <label style="background-image: url(images/icon48.png);">
+                                                <input type="radio" name="sex" value="">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="item clearfix">
+                                        <span>颜色</span>
+                                        <div class="r_box color_box">
+                                            <label class="white" style="background-color: #fff;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #999;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #030000;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #7d0000;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #ec6941;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #fff45c;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #89c997;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #7ecef4;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #8f82bc;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                            <label style="background-color: #1d2088;">
+                                                <input type="radio" name="color" value="">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="item clearfix">
+                                        <span>尺码</span>
+                                        <div class="r_box size_box">
+                                            <p>
+                                                <font class="show_size">参数/尺码表</font>
+                                            </p>
+                                            <div>
+                                                <label>
+                                                    <input type="radio" name="size" value="">XS</label>
+                                                <label>
+                                                    <input type="radio" name="size" value="">S</label>
+                                                <label>
+                                                    <input type="radio" name="size" value="">M</label>
+                                                <label>
+                                                    <input type="radio" name="size" value="">L</label>
+                                                <label>
+                                                    <input type="radio" name="size" value="">XL</label>
+                                                <label>
+                                                    <input type="radio" name="size" value="">XXL</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item clearfix">
+                                        <span>数量</span>
+                                        <div class="r_box">
+                                            <div class="num_box" data-max="5">
+                                                <input type="button" value="-" class="btn_m">
+                                                <input type="text" value="1" class="btn_input">
+                                                <input type="button" value="+" class="btn_a">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ipd_rbot">
+                            <div class="ipd_rbot_wrap">
+                                <div class="ipd_favar nb_t1"><i></i>收 藏</div>
+                                <div class="ipd_cart nb_t2"><i></i>加入购物袋</div>
+                                <div class="ipd_exp clearfix">
+                                    <div class="ipd_exp_txt fl"><span>退货说明</span>
+                                        <div class="ipd_exp_box">
+                                            <p>因商品为限量定制产品，如非发错货或质量问题，不支持退换货。</p>
+                                        </div>
+                                    </div>
+                                    <a href="" class="icon fr"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ipro_right_after">
+                        <div class="ipd_rtop">
+                            <i class="ipd_rtop_back"></i>
+                            <div class="ipd_rtop_cart ipd8">
+                                <ul class="ipd_rtop_clist">
+                                    <li>
+                                        <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                        <div class="ipd_catop">
+                                            <img class="lazybg" data-lazyload-img="images/pic13.jpg">
+                                        </div>
+                                        <div class="ipd_camid clearfix">
+                                            <span>彩虹T恤</span>
+                                            <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                        </div>
+                                        <div class="ipd_cabot clearfix">
+                                            <div class="icon1" style="background-image: url(images/icon32.png);"></div>
+                                            <div class="icon2"></div>
+                                            <div class="icon3">M</div>
+                                            <div class="num_box fr" data-max="10">
+                                                <input type="button" value="-" class="btn_m">
+                                                <input type="text" value="1" class="btn_input">
+                                                <input type="button" value="+" class="btn_a">
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                        <div class="ipd_catop">
+                                            <img class="lazybg" data-lazyload-img="images/pic13.jpg">
+                                        </div>
+                                        <div class="ipd_camid clearfix">
+                                            <span>彩虹T恤</span>
+                                            <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                        </div>
+                                        <div class="ipd_cabot clearfix">
+                                            <div class="icon1" style="background-image: url(images/icon33.png);"></div>
+                                            <div class="icon2"></div>
+                                            <div class="icon3">M</div>
+                                            <div class="num_box fr" data-max="5">
+                                                <input type="button" value="-" class="btn_m">
+                                                <input type="text" value="1" class="btn_input">
+                                                <input type="button" value="+" class="btn_a">
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="dc_pr">
+                                                <a class="ipd_cadel"></a>
+                                                <div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes">确 定</span></div>
+                                            </div>
+                                        <div class="ipd_catop">
+                                            <img class="lazybg" data-lazyload-img="images/pic13.jpg">
+                                        </div>
+                                        <div class="ipd_camid clearfix">
+                                            <span>彩虹T恤</span>
+                                            <font>限量 79/99 <em>￥<i>300</i></em></font>
+                                        </div>
+                                        <div class="ipd_cabot clearfix">
+                                            <div class="icon1" style="background-image: url(images/icon32.png);"></div>
+                                            <div class="icon2"></div>
+                                            <div class="icon3">M</div>
+                                            <div class="num_box fr" data-max="20">
+                                                <input type="button" value="-" class="btn_m">
+                                                <input type="text" value="1" class="btn_input">
+                                                <input type="button" value="+" class="btn_a">
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ipd_rbot">
+                            <div class="ipd_rbot_wrap tr">
+                                <p><span>合计</span>
+                                    <font>￥<em>600（不含运费）</em></font>
+                                </p>
+                                <div class="ipd_cart nb_t2">结 算</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+    <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+        <span class="lightbox-spinner"></span>
+    </div>
+    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+        <div class="js-img-wrap" id="lightbox-img-wrap">
+            <div class="lightbox-extra control prev js-control js-prev hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control next js-control js-next hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control close js-control js-close">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                    <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                    <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                </svg>
+            </div>
+            <div class="lightbox-contents js-contents"></div>
+        </div>
+    </div>
+</div>
+<div id="fancybox-loading"></div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script>
+$(function(){
+	$('.btn').click(function() {
+        var _this = $(this);
+        layer.confirm('确定要取消出售该T恤吗？', {
+            title: false,
+            closeBtn: 0,
+            btn: ['取 消','确 定'] //按钮
+        }, function(){
+            layer.closeAll();
+        }, function(){
+            _this.parents('li').remove();
+        });
+    });
+    $('.del').click(function() {
+        var _this = $(this);
+        layer.confirm('确定要删除该T恤吗？', {
+            title: false,
+            closeBtn: 0,
+            btn: ['取 消','确 定'] //按钮
+        }, function(){
+            layer.closeAll();
+        }, function(){
+            _this.parents('li').remove();
+        });
+    });
+});
+</script>
+<script>
+    //弹窗代码
+    $(function() {
+        //展开详情
+        var open = false;
+        $('.myot_p51_list li .pic').click(function() {
+            type = 0;
+            $('#fancybox-loading').fadeIn();
+            $('.ipro_bg').show();
+            $('html').addClass('enabled');
+            $('.ipro_tx').show().siblings().hide();
+            $('.ipro_content').removeClass('dpro_content');
+            checkfloat_r();
+            setTimeout(function() {
+                $('.banner-wrap').slick("slickPause");
+                $('.ipro_popup').fadeIn();
+                $('.ipro_slick.slick-slider').slick("unslick");
+                $('.ipro_slick').slick({
+                    autoplay: false,
+                    draggable: false,
+                    fade: true
+                });
+                $('#fancybox-loading').hide();
+                loadpList(0);
+                r_top_bot(1);
+                open = true;
+            }, 2000);
+        });
+
+        //关闭详情
+        $('.ipro_close').click(function() {
+            if(open == false){ return false;}
+            $('.banner-wrap').slick("slickPlay");
+            $('.ipro_popup').animate({ scrollTop: 0 }, 0);
+            $('.ipro_popup,#fancybox-loading').hide();
+            $('.ipro_bg').hide();
+            $('html').removeClass('enabled bottom');
+            setTimeout(function() {
+                checkfloat_r();
+            },200);
+        });
+
+        //详情左边点赞
+        $('.ipro_left .ipro_zan .icon').click(function() {if($(this).parents('.ipro_zan').hasClass('disabled')){ return false; }
+            if ($(this).parents('.ipro_zan').hasClass('on')) {
+                $(this).parents('.ipro_zan').removeClass('on');
+            } else {
+                $(this).parents('.ipro_zan').addClass('on');
+            }
+        });
+
+        var fav_this;
+        //详情左边底下评论点赞举报标记
+        $(document).on('click', '.ipro_com_icon i', function() {
+            if($(this).hasClass('favor')){
+                right_favor = false;
+                if($(this).hasClass('on')){ return false; }
+                fav_this = $(this);
+                $('.rep_bg').fadeIn();
+                $('html').addClass('report');
+                return false;
+            }
+            if ($(this).hasClass('on')) {
+                $(this).removeClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) - 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeOut();
+                    r_top_bot(1);
+                }
+            } else {
+                $(this).addClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) + 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeIn();
+                    r_top_bot(1);
+                }
+            }
+        });
+
+        //举报弹窗（确认）
+        $('.rep_form .rep_sub').click(function() {
+            var _this = $(this);
+            layer.confirm('确定要举报该评论？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                $('.rep_bg').fadeOut();
+                $('html').removeClass('report');
+                if(right_favor){
+                    fav_right.addClass('on');
+                }else{
+                    fav_this.addClass('on');
+                }
+            });
+        });
+
+        //举报弹窗（取消）
+        $('.rep_wrap .del').click(function() {
+            $('.rep_bg').fadeOut();
+            $('html').removeClass('report');
+        });
+
+        //右边举报
+        var right_favor = false;
+        var fav_right;
+        $('.ipd_detail .des span.favor').click(function() {
+            if($(this).hasClass('on')){ return false; }
+            $('.rep_bg').fadeIn();
+            $('html').addClass('report');
+            right_favor = true;
+            fav_right = $(this);
+        });
+
+        //详情右边删除购物袋对应商品
+        $('.ipro_right_after .ipd_cadel').click(function() {
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        $('.dc_firm .dc_yes').click(function(event) {
+            $(this).parents('li').remove();
+        });
+
+        //详情右侧点赞
+        $(document).on('click', '.ipd_detail .des span.zan', function(event) {
+            var zan_num = $(this).text();
+            if($(this).hasClass('on')){
+                $(this).removeClass('on');
+                $(this).text(parseInt(zan_num) - 1);
+            }else{
+                $(this).addClass('on');
+                $(this).text(parseInt(zan_num) + 1);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,65 @@
+<div class="mem_left">
+	<div class="head_box tc bg_white">
+		<div class="grade_box">
+            <i class="grade_i"></i>
+            <div class="p_level">
+                {foreach $user.rank_list as $key =>$value}
+                <a href="javascript:void(0);" {if $user.rank_name eq $value.rank_name}class="on"{/if}>{$value.rank_name}</a>
+                {/foreach}
+            </div>
+        </div>
+        <div class="avatar d_ib">
+            <img class="lazybg" data-lazyload-img="{if $user.headimg}/{$user.headimg}{else /}__IMGPC__/avatar6.jpg{/if}">
+            <h2>{if $user.nickname}{$user.nickname}{else /}{$user.user_name}{/if}</h2>
+        </div>
+        <dl>
+        	<dd><a href=""><span>关注</span><font>88</font></a></dd>
+        	<dd><a href=""><span>粉丝</span><font>888</font></a></dd>
+        </dl>
+    </div>
+    <div class="l_menu bg_white">
+        <ul class="d_ib tl">
+            <li><h2><i><img src="__IMGPC__/micon1.png"></i><span>账户信息</span></h2>
+                <dl>
+                    <dd><a href="{:url('user/my_message')}">我的消息</a></dd>
+                    <dd><a href="{:url('user/user_info')}">个人资料</a></dd>
+                    <dd><a href="{:url('user/account_security')}">账户安全</a></dd>
+                    <dd><a href="{:url('user/address')}">收货地址</a></dd>
+                </dl>
+            </li>
+            <li><h2><i><img src="__IMGPC__/micon2.png"></i><span>我的OTEE</span></h2>
+                <dl>
+                    <dd><a href="">我的设计库</a></dd>
+                    <dd><a href="">出售我的OTEE</a></dd>
+                    <dd><a href="">出售中</a></dd>
+                    <dd><a href="{:url('user/check_pending')}">待审核</a></dd>
+                    <dd><a href="">未通过</a></dd>
+                    <dd><a href="">已售罄</a></dd>
+                    <dd><a href="{:url('user/commission')}">我的佣金</a></dd>
+                    <dd><a href="">我的等级</a></dd>
+                </dl>
+            </li>
+            <li><h2><i><img src="__IMGPC__/micon3.png"></i><span>交易中心</span></h2>
+                <dl>
+                    <dd><a href="">我的订单</a></dd>
+                    <dd><a href="">我的优惠券</a></dd>
+                    <dd><a href="">我的评价</a></dd>
+                </dl>
+            </li>
+            <li><h2><i><img src="__IMGPC__/micon4.png"></i><span>我的作品集</span></h2>
+                <dl>
+                    <dd><a href="{:URL('user/finds')}">我的作品</a></dd>
+                    <dd><a href="">待审核</a></dd>
+                    <dd><a href="">未通过</a></dd>
+                </dl>
+            </li>
+            <li><h2><i><img src="__IMGPC__/micon5.png"></i><span>我的收藏</span></h2>
+                <dl>
+                    <dd><a href="">T恤收藏</a></dd>
+                    <dd><a href="">作品收藏</a></dd>
+                </dl>
+            </li>
+            <li><h2><a href="{:url('user/logout')}"><i><img src="__IMGPC__/micon6.png"></i><span>安全退出</span></a></h2></li>
+        </ul>
+    </div>
+</div>

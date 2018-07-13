@@ -1,0 +1,12 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="membermsg">
+  <div class="img1">
+    <a href="user.php">
+      <img id="headImagePath" src="{if $smarty.session.headimg}{$smarty.session.headimg}{else}themes/default/images/imgjpg41.jpg{/if}" height="121" width="121">
+    </a>
+  </div>
+  <p class="p1"><span>{$smarty.session.user_name}</span>&nbsp;&nbsp;&nbsp;<em><i class="icon1 ib"></i>{$rank_name}</em></p>
+</div>
+
+

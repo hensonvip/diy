@@ -1,0 +1,102 @@
+{include file="public/header" /}
+<style type="text/css">
+    body{padding-bottom:0;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr bgc hg ">
+    <a href="{:url('User/index')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">我的积分</h1>
+</header>   
+<div class="content">
+    <div class="con15">
+        <div class="c1 hg">
+            <h1>{$data.integral}</h1>
+            <div class="lp tc"><a class="hc bgc" href="">兑换礼品</a> </div>
+        </div>
+        <ul class="con15_list clearfix bgc">
+            <li {if $log_type eq 0}class="on"{/if} >
+                <a  href="{:url('User/integral',array('log_type'=>0))}">全部</a>
+            </li>
+            <li {if $log_type eq 1}class="on"{/if} >
+                <a  href="{:url('User/integral',array('log_type'=>1))}">收入</a>
+            </li>
+            <li {if $log_type eq 2}class="on"{/if} >
+                <a  href="{:url('User/integral',array('log_type'=>2))}">支出</a>
+            </li>
+        </ul>
+        <div class="con15_wrap">
+            <div class="con15_con" style="display: block;">
+               <ul class="c2 bgc" id="load_box"> 
+                    {include file="user/integral_list_ajax" /}
+               </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" name="log_type" id="log_type" value="{$log_type}">
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var page = 2;//翻页
+        var log_type = $('#log_type').val();
+
+        // dropload
+        $('.con15_wrap').dropload({
+            scrollArea : window,
+            domUp : {
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+            },
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+                domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+            },
+            loadUpFn : function(me){
+                setTimeout(function(){
+                   window.location.reload();
+                },100); 
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('User/integral')}",
+                    data:{is_ajax:1,page:page,log_type:log_type},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            //追加页面数据
+                            $('#load_box').append(result);
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },500);
+                    },
+                    error: function(xhr, type){
+                        // alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        // me.noData();
+
+                    }
+                });
+            }
+
+        });
+    });
+</script>

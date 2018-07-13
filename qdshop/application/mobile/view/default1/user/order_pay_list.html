@@ -1,0 +1,19 @@
+<div class="content">
+    <ul class="pay_list bgc">
+    {if $data}
+    {foreach $data as $key => $vo}
+        <a href="{:url('User/order_pay',array('order_id'=>$order_id,'pay_id'=>$vo.pay_id))}">
+        <li>
+        <label>
+            <i class="icon" style="background-image: url({$webUrl}/{$vo.icon});"></i>
+            <span class="name">{$vo.pay_desc}</span>
+        </label>
+        </li>
+        </a>
+    {/foreach}  
+    </ul>
+    {else}
+        <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png" style="max-width:156px;"></p>
+        <p align="center" style="margin-top:0.3rem;">没有可选的支付方式！</p>
+    {/if}
+</div>

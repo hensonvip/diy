@@ -1,0 +1,37 @@
+{if $data.list}
+    {foreach $data.list as $key => $vo}
+    <li class="i_pli i_pli_{$vo.goods_id}" data-show="on-scroll" data-id="{$vo.goods_id}">
+        {if $vo.is_best eq 1 && $filter neq 'is_best'}<i class="special"></i>{/if}
+        <div class="before">
+            <div class="clo">
+                <a href="">
+                    {if $vo.is_best eq 1 && $vo.best_img}
+                    <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.best_img}">
+                    {else}
+                    <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.goods_thumb}">
+                    {/if}
+                </a>
+            </div>
+            <div class="line"></div>
+            <div class="info">
+                <span class="view">{$vo.click_count}</span>
+                <span class="zan">{$vo.zan}</span>
+            </div>
+        </div>
+        <div class="after">
+            <div class="af_top tc">
+                <div class="af_avatar lazybg" data-lazyload-bg="{$webUrl}{$vo.headimg}"></div>
+                <h3 class="tover">{if $vo.nickname}{$vo.nickname}{else}{$vo.user_name}{/if}</h3>
+                <h2 class="dot">{$vo.goods_name}</h2>
+            </div>
+            <div class="af_bot tc">
+                <div class="af_bar"><i style="width: {$vo.number_per}%;"></i></div>
+                <div class="info">
+                    <h2>￥<em>{$vo.shop_price}</em></h2>
+                    <p>限量 {$vo.goods_number}/{$vo.goods_total}</p>
+                </div>
+            </div>
+        </div>
+    </li>
+    {/foreach}
+{/if}

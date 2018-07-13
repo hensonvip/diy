@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/cropper.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="ava_bg">
+    <div class="ava_wrap">
+        <i class="close"></i>
+        <h2>上传头像</h2>
+        <div class="ava_main clearfix">
+            <div class="img-container fl">
+                <img src="__IMGPC__/micon58.png" alt="Picture">
+            </div>
+            <div class="prev_container fr">
+                <div class="img-preview preview-md"></div>
+                <p>头像浏览</p>
+            </div>
+        </div>
+        <div class="control_btn">
+            <em class="icon1"></em>
+            <em class="icon2"></em>
+            <em class="icon3"></em>
+        </div>
+        <div class="ava_btn">
+            <div class="upload_btn"><span>上 传</span><input class="upload_pic" id="inputImage" name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png*"></div>
+            <input type="button" value="保 存" class="save_btn">
+        </div>
+    </div>
+</div>
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+    <div class="mem_right">
+        <div class="mem_rtit">个人资料</div>
+        <div class="mem_rcon info_rcon">
+            <form action="{:url('User/save_user_info')}" id="info_form" method="post" enctype="multipart/form-data">
+                <div class="info_avatar">
+                    {if $user_info.headimg}
+                    <img src="{$webUrl}{$user_info.headimg}">
+                    {else /}
+                    <img src="__IMGPC__/avatar11.jpg">
+                    {/if}
+                </div>
+                <div class="item">
+                    <span>昵称</span>
+                    <div class="r_box">
+                        <input type="text" name="nickname" id="nickname" value="{if $user_info.nickname}{$user_info.nickname}{else /}{$user_info.user_name}{/if}">
+                    </div>
+                </div>
+                <div class="item">
+                    <span>性别</span>
+                    <div class="r_box radio_box">
+                        <label {if $user_info.sex eq 1}class="on"{/if}><i></i><input type="radio" name="sex" value="1" {if $user_info.sex eq 1}checked{/if}><font>男</font></label>
+                        <label {if $user_info.sex eq 2}class="on"{/if}><i></i><input type="radio" name="sex" value="2" {if $user_info.sex eq 2}checked{/if}><font>女</font></label>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>生日</span>
+                    <div class="r_box select_box">
+                        {$birthday_form}
+                    </div>
+                </div>
+                <div class="item">
+                    <span>居住</span>
+                    <div class="r_box select_box pos_box">
+                        <input type="hidden" id="pkey" value="0">
+                        <select name="province" id="province" onChange="getRegionC()" class="select">
+                            <option value="0">省</option>
+                            {foreach $regionP as $key => $vo}
+                            <option value="{$vo.region_id}" key="{$vo.pkey}" {if $vo.region_id eq $user_info.province}selected{/if}>{$vo.region_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="city" id="city" onChange="getRegionD()" class="select">
+                            <option value="0">市</option>
+                            {foreach $regionC as $key => $vo}
+                            <option value="{$vo.region_id}" key="{$vo.ckey}" {if $vo.region_id eq $user_info.city}selected{/if}>{$vo.region_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="district" id="district" class="select">
+                            <option value="0">区</option>
+                            {foreach $regionD as $key => $vo}
+                            <option value="{$vo.region_id}" {if $vo.region_id eq $user_info.district}selected{/if}>{$vo.region_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>领域</span>
+                    <div class="r_box">
+                        <dl class="type_list">
+                            {foreach name="$user_info.fields_arr" item="item"}
+                            <dd>{$item}<i class="type_del"></i></dd>
+                            {/foreach}
+                        </dl>
+                        <div class="type_box pr">
+                            <input type="button" value="选择领域（0/4）" class="type_btn">
+                            <div class="i_bar_nav">
+                                <h2>常用</h2>
+                                <dl>
+                                    <dd class="show_all" style="color:#999; cursor:pointer;">所有创意领域</dd>
+                                    <dd id="all" style="display:none;">
+                                        <div class="i_bar_more">
+                                            <h2>按字母顺序</h2>
+                                            <h3 class="show_all" style="color:#999; cursor:pointer;">常用</h3>
+                                            {if $fields}
+                                            {foreach name="$fields" item="item"}
+                                            <div class="i_bar_box">
+                                                <h3>{$item.field_pin}</h3>
+                                                {foreach name="$item.fields" item="item"}
+                                                <p><a href="javascript:void(0);">{$item.field_name}</a></p>
+                                                {/foreach}
+                                            </div>
+                                            {/foreach}
+                                            {/if}
+                                        </div>
+                                    </dd>
+                                    {foreach name="$common_fields" item="item"}
+                                    <dd><a href="javascript:void(0);">{$item.field_name}</a></dd>
+                                    {/foreach}
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="fields" id="fields" value="{$user_info.fields}">
+                </div>
+                <div class="item mid_item">
+                    <span>在读/毕业学校</span>
+                    <div class="r_box select_box pos_box sch_box">
+                        <select name="sh_province" id="sh_province" onChange="getSchoolC()" class="select">
+                            <option value="">省</option>
+                            {foreach $schoolP as $key => $vo}
+                            <option value="{$vo.pr_id}" {if $vo.pr_id eq $user_info.sh_province}selected{/if}>{$vo.pr_province}</option>
+                            {/foreach}
+                        </select>
+                        <select name="sh_city" id="sh_city" onChange="getSchoolS()" class="select">
+                            <option value="">市</option>
+                            {foreach $schoolC as $key => $vo}
+                            <option value="{$vo.ci_id}" {if $vo.ci_id eq $user_info.sh_city}selected{/if}>{$vo.ci_city}</option>
+                            {/foreach}
+                        </select>
+                        <select name="sh_school" id="sh_school" class="select">
+                            <option value="">请选择学校</option>
+                            {foreach $schoolS as $key => $vo}
+                            <option value="{$vo.sh_id}" {if $vo.sh_id eq $user_info.sh_school}selected{/if}>{$vo.sh_school}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="item mid_item">
+                    <span>微信</span>
+                    <div class="r_box">
+                        <input type="text" name="weixin" id="weixin" value="{$user_info.weixin}">
+                        <div class="public">
+                            <label {if $user_info.wx_open eq 1}class="on"{/if}>
+                                <i></i><input type="checkbox" name="wx_open" value="1" id="wx_open" {if $user_info.wx_open eq 1}checked{/if}><font>是否公开</font>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="item mid_item">
+                    <span>QQ</span>
+                    <div class="r_box">
+                        <input type="text" name="qq" id="qq" value="{$user_info.qq}">
+                        <div class="public">
+                            <label {if $user_info.qq_open eq 1}class="on"{/if}>
+                                <i></i><input type="checkbox" name="qq_open" value="1" id="qq_open" {if $user_info.qq_open eq 1}checked{/if}><font>是否公开</font>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>个性签名</span>
+                    <div class="r_box">
+                        <textarea name="profile" id="profile">{$user_info.profile}</textarea>
+                    </div>
+                </div>
+                <div class="link_tit">个人链接</div>
+                <div class="item">
+                    <span>微博</span>
+                    <div class="r_box">
+                        <input type="text" name="weibo" id="weibo" value="{$user_info.weibo}">
+                    </div>
+                </div>
+                <div class="item">
+                    <span>Facebook</span>
+                    <div class="r_box">
+                        <input type="text" name="facebook" id="facebook" value="{$user_info.facebook}">
+                    </div>
+                </div>
+                <div class="item">
+                    <span>Instagram</span>
+                    <div class="r_box">
+                        <input type="text" name="instagram" id="instagram" value="{$user_info.instagram}">
+                    </div>
+                </div>
+                <div class="item">
+                    <span>个人网站</span>
+                    <div class="r_box">
+                        <input type="text" name="website" value="{$user_info.website}">
+                    </div>
+                </div>
+                <div class="item">
+                    <span></span>
+                    <div class="r_box">
+                        <input type="submit" value="保 存" class="info_sub nb_t2">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/cropper.js"></script>
+<script>
+function getRegionC(){
+    var options=$("#province option:selected"); //获取选中的项
+    var pkey = options.attr('key');
+    $('#pkey').val(pkey);
+    var province_id = options.val();
+    if(province_id == 0){
+        $('#city').html('<option value="0">市</option>');
+        $('#district').html('<option value="0">区</option>');
+        return false;
+    }
+    $.ajax({
+        type: "post",
+        url: "{:url('User/jsonRegionC')}",
+        dataType: 'json',
+        data:{pkey:pkey},
+        success: function(data){
+            var l = '<option value="0">市</option>';
+            var u = '<li class="selected active" title="市" data-value="0">市</li>';
+            for(var i=0;i<data.length;i++){
+                l += '<option value="'+data[i].region_id+'" key="'+data[i].ckey+'">'+data[i].region_name+'</option>';
+                u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+            }
+            $('#city').html(l);
+            $('#city').siblings('.sod_list').find('.mCSB_container').children('ul').html(u);
+            return false;
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+function getRegionD(){
+    var options=$("#city option:selected"); //获取选中的项
+    var ckey = options.attr('key');
+    var pkey = $('#pkey').val();
+    var city_id = options.val();
+    if(city_id == 0){
+        $('#district').html('<option value="0">区</option>');
+        return false;
+    }
+    $.ajax({
+        type: "post",
+        url: "{:url('User/jsonRegionD')}",
+        dataType: 'json',
+        data:{pkey:pkey,ckey:ckey},
+        success: function(data){
+            var l = '<option value="0">区</option>';
+            var u = '<li class="selected active" title="区" data-value="0">区</li>';
+            for(var i=0;i<data.length;i++){
+                l += '<option value="'+data[i].region_id+'" >'+data[i].region_name+'</option>';
+                u += '<li class="" title="'+data[i].region_name+'" data-value="'+data[i].region_id+'">'+data[i].region_name+'</li>';
+             }
+             $('#district').html(l);
+             $('#district').siblings('.sod_list').find('.mCSB_container').children('ul').html(u);
+             return false;
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+function getSchoolC(){
+    var options=$("#sh_province option:selected"); //获取选中的项
+    var sh_province = options.val();
+    if(sh_province == 0){
+        $('#sh_city').html('<option value="0">市</option>');
+        $('#sh_school').html('<option value="0">请选择学校</option>');
+        return false;
+    }
+    $.ajax({
+        type: "post",
+        url: "{:url('User/jsonSchoolC')}",
+        dataType: 'json',
+        data:{sh_province:sh_province},
+        success: function(data){
+            var l = '<option value="0">市</option>';
+            var u = '<li class="selected active" title="市" data-value="0">市</li>';
+            for(var i=0;i<data.length;i++){
+                l += '<option value="'+data[i].ci_id+'">'+data[i].ci_city+'</option>';
+                u += '<li class="" title="'+data[i].ci_city+'" data-value="'+data[i].ci_id+'">'+data[i].ci_city+'</li>';
+            }
+            $('#sh_city').html(l);
+            $('#sh_city').siblings('.sod_list').find('.mCSB_container').children('ul').html(u);
+            return false;
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+function getSchoolS(){
+    var options=$("#sh_city option:selected"); //获取选中的项
+    var sh_city = options.val();
+    if(sh_city == 0){
+        $('#sh_school').html('<option value="0">请选择学校</option>');
+        return false;
+    }
+    $.ajax({
+        type: "post",
+        url: "{:url('User/jsonSchoolS')}",
+        dataType: 'json',
+        data:{sh_city:sh_city},
+        success: function(data){
+            var l = '<option value="0">请选择学校</option>';
+            var u = '<li class="selected active" title="请选择学校" data-value="0">请选择学校</li>';
+            for(var i=0;i<data.length;i++){
+                l += '<option value="'+data[i].sh_id+'" >'+data[i].sh_school+'</option>';
+                u += '<li class="" title="'+data[i].sh_school+'" data-value="'+data[i].sh_id+'">'+data[i].sh_school+'</li>';
+             }
+             $('#sh_school').html(l);
+             $('#sh_school').siblings('.sod_list').find('.mCSB_container').children('ul').html(u);
+             return false;
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+
+$(function(){
+    // 加载页面自动选择
+    $('#province').change();
+    $('.type_btn').val("选择领域（"+ $('.type_list dd').length +"/4）");
+    if($('.type_list dd').length == 4){
+        $('.type_box').hide();
+    }
+
+    //性别
+    $('.info_rcon .radio_box input').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on').siblings().removeClass('on');
+        }else{
+            $(this).parents('label').removeClass('on');
+        }
+    });
+
+    //是否公开
+    $('.info_rcon .mid_item input').change(function() {
+        if($(this).prop("checked") == true){
+            $(this).parents('label').addClass('on');
+        }else{
+            $(this).parents('label').removeClass('on');
+        }
+    });
+
+    //滚动条
+    $('.i_bar_more').mCustomScrollbar({
+        axis: "y",
+        scrollInertia: 100,
+        scrollButtons: {
+            enable: true,
+            scrollSpeed: 20
+        },
+        theme: "3d"
+    });
+
+    //显示领域
+    $('.type_box').click(function() {
+        $(this).find('.i_bar_nav').show();
+    });
+    //选中领域
+    $('.info_rcon .type_box .i_bar_nav a').click(function() {
+        var text = $(this).text();
+
+        // 组织领域字段
+        var fields = $('#fields').val();
+        var arr = fields.split(',');
+        if ($.inArray(text, arr) == -1) {
+            $('.type_list').append('<dd>'+ text +'<i class="type_del"></i></dd>');
+            $('#fields').val(fields+text+',');
+            if($('.type_list dd').length == 4){
+                $('.type_box').hide();
+            }else{
+                $('.type_box').show();
+            }
+            $('.type_btn').val("选择领域（"+ $('.type_list dd').length +"/4）");
+        } else {
+            layer.msg('选择的领域已存在');
+        }
+    });
+    //删除选中领域
+    $(document).on('click', '.info_rcon .type_list dd i', function(event) {
+        var _this = $(this);
+        layer.confirm('确定删除该领域？', {
+            title: false,
+            closeBtn: 0,
+            btn: ['取 消','确 定'] //按钮
+        }, function(){
+            layer.closeAll();
+        }, function(){
+            _this.parents('dd').remove();
+
+            // 组织领域字段
+            var field = _this.parents('dd').text()+',';
+            var fields = $('#fields').val();
+            fields = fields.replace(field,'');
+            $('#fields').val(fields);
+
+            if($('.type_list dd').length == 4){
+                $('.type_box').hide();
+            }else{
+                $('.type_box').show();
+            }
+            $('.type_btn').val("选择领域（"+ $('.type_list dd').length +"/4）");
+        });
+    });
+    //点其他隐藏领域
+    $(document).on("click",function(e){
+        if($(e.target).closest(".i_bar_nav").length == 0 && $(e.target).parents(".type_box").length == 0){
+            $(".i_bar_nav").hide();
+        }
+    });
+});
+</script>
+<script>
+$(function() {
+    var $image = $('.img-container > img'),
+        $dataX = $('#dataX'),
+        $dataY = $('#dataY'),
+        $dataHeight = $('#dataHeight'),
+        $dataWidth = $('#dataWidth'),
+        $dataRotate = $('#dataRotate'),
+        options = {
+            aspectRatio: 1 / 1,
+            preview: '.img-preview',
+            crop: function (data) {
+                // console.log(Math.round(data.x));
+                // console.log(Math.round(data.y));
+                // console.log(Math.round(data.height));
+                // console.log(Math.round(data.width));
+                // console.log(Math.round(data.rotate));
+            }
+        };
+
+    $image.on({
+      'build.cropper': function (e) {
+        // console.log(e.type);
+      },
+      'built.cropper': function (e) {
+        // console.log(e.type);
+      },
+      'dragstart.cropper': function (e) {
+        // console.log(e.type, e.dragType);
+      },
+      'dragmove.cropper': function (e) {
+        // console.log(e.type, e.dragType);
+      },
+      'dragend.cropper': function (e) {
+        // console.log(e.type, e.dragType);
+      },
+      'zoomin.cropper': function (e) {
+        // console.log(e.type);
+      },
+      'zoomout.cropper': function (e) {
+        // console.log(e.type);
+      }
+    }).cropper(options);
+
+    //编辑头像
+    $('.img-container').click(function() {
+        if($('.ava_wrap').hasClass('active')){ return false; }
+        $('#inputImage').click();
+    });
+
+    //确定上传头像
+    $('.save_btn').click(function() {
+        var result = $image.cropper('getCroppedCanvas');
+        $('.info_avatar').append(result);
+        $('.ava_wrap').removeClass('active');
+        $('.ava_bg').fadeOut();
+        $image.cropper("destroy").cropper(options);
+        $('.upload_btn span').text("上 传");
+        $('.inputImage').val("");
+
+        var imgBase = result.toDataURL('image/jpeg');
+        var data={imgBase:imgBase};
+        $.ajax({
+            url: "{:url('User/save_headimg')}",
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            beforeSend: function(){
+                 layer.msg('头像上传中，请耐心等待...');
+            },
+            success: function(ret) {
+                if(ret.code == '200'){
+                    layer.open({
+                        content: ret.message,
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(index){
+                            layer.close(index);
+                            // location.reload();
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: ret.message,
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(index){
+                            layer.close(index);
+                            // location.reload();
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    //上传图片
+    var $inputImage = $('#inputImage'),
+        URL = window.URL || window.webkitURL,
+        blobURL;
+
+    // if (URL) {
+      $inputImage.change(function () {
+        var files = this.files,
+            file;
+        if (files && files.length) {
+          file = files[0];
+          if (/^image\/\w+$/.test(file.type)) {
+            if(file.size>5*1024*1024){
+                layer.msg('上传的图片的大于5M,请重新选择');
+                $inputImage.val('');
+                return false;
+            }
+            blobURL = URL.createObjectURL(file);
+            $('.cropper-canvas').attr("src",blobURL);
+            $image.one('built.cropper', function () {
+              URL.revokeObjectURL(blobURL); // Revoke when load complete
+            }).cropper('reset', true).cropper('replace', blobURL);
+            $inputImage.val('');
+            $('.upload_btn span').text("重新上传");
+            $('.ava_wrap').addClass('active');
+          } else {
+            layer.msg('请选择上传正确的图片格式！');
+          }
+        }else{
+            $inputImage.select();
+            $inputImage.blur();
+            if(document.selection){
+                var imgSrc = document.selection.createRange().text;
+            }else{
+                var imgSrc = obj.value.substring(obj.selectionStart,obj.selectionEnd);
+            }
+            $image.cropper('reset', true).cropper('replace', imgSrc);
+            $inputImage.val('');
+            $('.upload_btn span').text("重新上传");
+            $('.ava_wrap').addClass('active');
+        }
+      });
+    // } else {
+    //   $inputImage.parent().remove();
+    // }
+
+    //放大
+    $('.control_btn em.icon1').click(function() {
+        if($('.ava_wrap').hasClass('active')){
+            $image.cropper("zoom", 0.1)
+        }
+    });
+
+    //缩小
+    $('.control_btn em.icon2').click(function() {
+        if($('.ava_wrap').hasClass('active')){
+            $image.cropper("zoom", -0.1)
+        }
+    });
+
+    //旋转
+    $('.control_btn em.icon3').click(function() {
+        if($('.ava_wrap').hasClass('active')){
+            $image.cropper("rotate", 90)
+        }
+    });
+
+    //开启图片上传
+    $('.info_avatar').click(function() {
+        $('.ava_bg').fadeIn();
+    });
+
+    //关闭图片上传
+    $('.ava_wrap .close').click(function() {
+        if($('.ava_wrap').hasClass('active')){
+            layer.confirm('是否取消上传头像？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                $image.cropper("destroy");
+                $('.ava_wrap').removeClass('active');
+                $('.ava_bg').fadeOut();
+                $('.upload_btn span').text("上 传");
+                $('.inputImage').val("");
+            });
+        }else{
+            $image.cropper("destroy").cropper(options);
+            $('.ava_wrap').removeClass('active');
+            $('.upload_btn span').text("上 传");
+            $('.inputImage').val("");
+            $('.ava_bg').fadeOut();
+        }
+    });
+
+    $('.show_all').click(function(event) {
+        $('#all').toggle();
+    });
+
+    $('.info_sub').click(function(event) {
+        if ($('#profile').val().length > 40) {
+            layer.open({
+                content: '个性签名不能大于40个字符',
+                btn: '确定',
+                shadeClose: false,
+                yes: function(index){
+                    layer.close(index);
+                }
+            });
+            return false;
+        } else {
+            $('#info_form').submit();
+        }
+    });
+});
+</script>

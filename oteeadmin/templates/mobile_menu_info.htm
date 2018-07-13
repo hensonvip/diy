@@ -1,0 +1,92 @@
+{include file="pageheader.htm"}
+
+<form method="post" action="mobile_menu.php" name="theForm" enctype="multipart/form-data" onSubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--菜单名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 菜单名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="menu_name" value="{$menu.menu_name}" class="layui-input" />
+            </div>
+        </div>
+        <!--菜单图片-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 菜单图片</label>
+            <div class="layui-input-block">
+                <input type="file" name="menu_img" style="margin-left:10px;margin-top:5px;" />
+                {if $menu.menu_img}
+                    <br/><br/><img src="../{$menu.menu_img}" width="100" height="100"  style="margin-top:10px"/>
+                {/if}
+            </div>
+        </div>
+        <!--链接地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.require_field} 链接地址
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="menu_url" value="{$menu.menu_url}" class="layui-input" />
+            </div>
+        </div>
+        <!--APP跳转类型-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">APP跳转类型</label>
+            <div class="layui-input-block">
+                <select name="type">
+                    <option value="0" {if $menu.type eq 0}selected{/if} >链接地址</option>
+                    <option value="1" {if $menu.type eq 1}selected{/if} >商品分类</option>
+                    <option value="2" {if $menu.type eq 2}selected{/if} >积分汇换</option>
+                    <option value="3" {if $menu.type eq 3}selected{/if} >购物车</option>
+                    <option value="4" {if $menu.type eq 4}selected{/if} >个人中心</option>
+                    <option value="5" {if $menu.type eq 5}selected{/if} >优惠券</option>
+                    <option value="6" {if $menu.type eq 6}selected{/if} >我的订单</option>
+                    <option value="7" {if $menu.type eq 7}selected{/if} >我的收藏</option>
+                    <option value="8" {if $menu.type eq 8}selected{/if} >文章咨询</option>
+                    <option value="9" {if $menu.type eq 9}selected{/if} >设置</option>
+                    <option value="10" {if $menu.type eq 10}selected{/if} >读取分类ID跳转访问商品列表</option>
+                    <option value="11" {if $menu.type eq 11}selected{/if} >充值余额</option>
+                    <option value="14" {if $menu.type eq 14}selected{/if} >店铺列表</option>
+                    <option value="15" {if $menu.type eq 15}selected{/if} >虚拟商品</option>
+                    <option value="16" {if $menu.type eq 16}selected{/if} >砍价活动</option>
+                    <option value="17" {if $menu.type eq 17}selected{/if} >拼团活动</option>
+                </select>
+            </div>
+        </div>
+        <!--分类ID-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticeUrl');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                分类ID
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="cat_id" value="{$menu.cat_id}" class="layui-input" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeUrl">APP跳转类型为“读取分类ID跳转访问商品列表”时必须填写</span>
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="text" name="sort" value="{$menu.sort}" class="layui-input" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="提交" />
+            <input type="hidden" name="act" value="{$from_act}" />
+            <input type="hidden" name="id" value="{$menu.id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部 
+    });
+</script>
+{include file="pagefooter.htm"}

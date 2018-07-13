@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no, email=no" />
+    <link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+    <title>发现</title>
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {if condition="$user_id"}
+    {include file="public/user_right" /}
+    {else/}
+    {include file="public/right" /}
+    {/if}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="bg_f6f6f6">
+    <div class="i_bar">
+        <div class="i_bar_wrap">
+            <ul>
+                <li class="type">
+                    {if $fieldName eq 0}
+                    <a href="javascript:void(0);">所有创意领域</a>
+                    {else}
+                    <a href="javascript:void(0);">{$fieldName.0.name}</a>
+                    {/if}
+                    <div class="i_bar_nav type_box type_2">
+                        <h2>常用</h2>
+                        <div class="clearfix">
+                            <dl class="fl">
+                                <dd><a href="{:url('finds/index',array('field'=>0))}">所有创意领域</a></dd>
+                                {foreach name="common_field_list" item="cfl"}
+                                <dd><a href="{:url('finds/index',array('field'=>$cfl['type_id']))}">{$cfl.name}</a></dd>
+                                {/foreach}
+                            </dl>
+                            <div class="i_bar_more" class="fr">
+                                <h2>按字母顺序</h2>
+                                {foreach name="all_field_list" item="afl"}
+                                <div class="i_bar_box">
+                                    <h3>{$afl.en_name}</h3>
+                                    {foreach name="$afl.fields" item="afl_fields"}
+                                    <p><a href="{:url('finds/index',array('field'=>$afl_fields['type_id']))}">{$afl_fields.name}</a></p>
+                                    {/foreach}
+                                </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="javascript:void(0);">最新</a>
+                    <div class="i_bar_nav">
+                        <dl>
+                            <dd><a href="">最新</a></dd>
+                            <dd><a href="">推荐</a></dd>
+                            <dd><a href="">收藏</a></dd>
+                        </dl>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="i_type">
+                <i class="count4 on"></i>
+                <i class="count6"></i>
+            </div>
+        </div>
+    </div>
+    <div class="d_pwrap">
+        <ul class="d_plist clearfix">
+            {foreach name="production_list" item="pl"}
+<!--            &lt;!&ndash;获取参数用&ndash;&gt;
+            <div id="parameter_one" style="display: none">{$pl.user_id}</div>
+            <div id="parameter_two" style="display: none">{$pl.find_id}</div>-->
+            <a href="{:url('Finds/details',array('field'=>$pl['user_id']))}">
+            <li class="d_pli" data-show="on-scroll">
+               <div class="card_box" onclick="user_date({$pl.user_id},{$pl.find_id})">
+                    <div class="card_before">
+                        <div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic20.jpg"></div>
+                        <div class="card_info d_pinfo">
+                            <span class="view">23</span>
+                            <span class="zan">{$pl.user_data.works_admire_num}</span>
+                            <span class="favor">33</span>
+                        </div>
+                    </div>
+                    <div class="card_after">
+                        <div class="card_name">{$pl.title}</div>
+                        <div class="card_des">
+                            {$pl.short}
+                           <!-- <p>设计理念，设计理念，设计。</p>
+                            <p>设计，设计设计。</p>
+                            <p>设计理念，设计理念，</p>
+                            <p>设计。</p>-->
+                        </div>
+                        <div class="card_tag">
+                            <a href="">{$pl.name}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="desi_box">
+                    <h2 class="tover">{$pl.user_name}</h2>
+                    <div class="desi_info">
+                        <div class="desi_top">
+                            <ul class="clearfix">
+                                {foreach name="$pl.user_data.works" item="works"}
+                                <li><a href=""><span class="lazybg" data-lazyload-bg="{$works.pc_surface_img}"></span></a></li>
+<!--                                <li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li>
+                                <li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li>
+                                <li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li>-->
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <div class="desi_mid">
+                            <div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="/{$pl.face_card}"></a></div>
+                            <a href=""><h2 class="desi_name" id="user_type">{$pl.user_name}</h2></a>
+                            <a href="" class="desi_btn nb_t2">关 注</a>
+                        </div>
+                        <div class="desi_bot d_pinfo">
+                            <span class="view">23</span>
+                            <span class="zan">{$pl.user_data.author_admire_num}</span>
+                            <span class="favor">33</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            </a>
+            {/foreach}
+        </ul>
+    </div>
+</div>
+<!--作品详情弹窗-->
+<div class="ipro_popup" id="ipro_popup" >
+    <div class="ipro_inner" >
+        <div class="ipro_content dpro_content">
+            <div class="ipro_wrap top">
+<!--                <div style="width:100%;height:1762px;overflow:hidden;border:0px;">
+                    <div style="width:141%;height:800px;margin:-91px 0px 0px -100px;">
+                    <iframe src="popup.html" seamless scrolling="yes" height="2000px" width="80%" frameborder="0" marginheight="100px" ></iframe>
+                    </div>
+                </div>-->
+                <div class="ipro_left">
+                    <div class="ipro_piclist clearfix">
+                        <div class="box"><img realsrc="__IMGPC__/pic25.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic25.jpg"></div>
+                        <div class="box"><img realsrc="__IMGPC__/pic26.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic26.jpg"></div>
+                    </div>
+                    <div class="ipro_txt">
+                        <p>Thanks for visiting!</p>
+                        <p>If you want to know more about Solo, please, visit our website, Twitter or Facebook Page </p>
+                        <p>If you want to know more about Solo, please, visit our website</p>
+                        <p>感谢观看！</p>
+                    </div>
+                    <div class="ipro_zan">
+                        <span class="icon"></span>
+                    </div>
+                    <div class="ipro_share">
+                        <div class="icon_bg"><span class="icon"></span></div>
+                        <div class="share_box">
+                            <a href="" class="weibo"></a>
+                            <a href="" class="wechat"></a>
+                            <a href="" class="qq"></a>
+                            <a href="" class="ins"></a>
+                            <a href="" class="talk"></a>
+                            <a href="" class="facebook"></a>
+                            <a href="" class="twitter"></a>
+                        </div>
+                    </div>
+                    <div class="ipro_com">
+                        <h2>其他作品</h2>
+                        <div class="ipro_com_top">
+                            <ul class="d_plist change6 clearfix">
+
+                                <li class="d_pli">
+                                    <div class="card_box">
+                                        <div class="card_before">
+                                            <div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div>
+                                            <div class="card_info d_pinfo">
+                                                <span class="view">23</span>
+                                                <span class="zan">88</span>
+                                                <span class="favor">33</span>
+                                            </div>
+                                        </div>
+                                        <div class="card_after">
+                                            <div class="card_name">作品名称</div>
+                                            <div class="card_des">
+                                                <p>设计理念，设计理念，设计。</p>
+                                                <p>设计，设计设计。</p>
+                                                <p>设计理念，设计理念，</p>
+                                                <p>设计。</p>
+                                            </div>
+                                            <div class="card_tag">
+                                                <a href="">插画</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ipro_com_bot">
+                            <a name="f1"></a>
+                            <div class="ipro_com_bot_pf">评论(88)</div>
+                            <form class="ipro_com_bot_form">
+                                <textarea name="" placeholder="添加评论···"></textarea>
+                                <div class="tr"><input type="submit" value="发 表" class="ipro_com_bot_sub nb_t2"></div>
+                            </form>
+                            <ul class="ipro_com_bot_ul">
+                                <li class="clearfix">
+                                    <div class="ipro_com_icon">
+                                        <i class="comment"></i>
+                                        <i class="zan">23</i>
+                                        <i class="favor"></i>
+                                    </div>
+                                    <div class="clearfix">
+                                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar2.jpg"></div></a>
+                                        <div class="ipro_com_txt">
+                                            <h3><a href=""><b>Adam</b></a><span>2017-08-24 19:03:01</span></h3>
+                                            <p>设计很时尚！</p>
+                                        </div>
+                                        <div class="ipro_com_rbox">
+                                            <form class="ipro_com_bot_form">
+                                                <textarea name="" placeholder="添加回复···"></textarea>
+                                                <div class="tr"><input type="submit" value="回 复" class="ipro_com_bot_sub nb_t1"></div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="ipro_com_detail">
+                                        <em>Brian: </em>Nice Work!
+                                    </div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="ipro_com_icon">
+                                        <i class="comment"></i>
+                                        <i class="zan">23</i>
+                                        <i class="favor"></i>
+                                    </div>
+                                    <div class="clearfix">
+                                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar2.jpg"></div></a>
+                                        <div class="ipro_com_txt">
+                                            <h3><a href=""><b>Adam</b></a><span>2017-08-24 19:03:01</span></h3>
+                                            <p>设计很时尚！</p>
+                                        </div>
+                                        <div class="ipro_com_rbox">
+                                            <form class="ipro_com_bot_form">
+                                                <textarea name="" placeholder="添加回复···"></textarea>
+                                                <div class="tr"><input type="submit" value="回 复" class="ipro_com_bot_sub nb_t1"></div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="ipro_right">
+                    <div class="ipro_right_bef">
+                        <div class="ipd_rtop">
+                            <div class="ipd_user clearfix">
+                                <div class="avatar">
+                                    <a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></span></a>
+                                    <div class="avatar_box">
+                                        <div class="avatar_wrap">
+                                            <div class="ava_top clearfix">
+                                                <a href=""><div class="ava_pic lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></div></a>
+                                                <div class="ava_txt">
+                                                    <a href=""><h2></h2></a>
+                                                    <p>设计师</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+                                            </div>
+                                            <div class="ava_bot">
+                                                <ul class="clearfix">
+                                                    <li><span>T恤作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>设计作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>粉丝</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>话题</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text" id="uname">
+                                    <a href=""><h2></h2></a>
+                                    <span class="follow nb_t2">关 注</span>
+                                </div>
+                            </div>
+                            <div class="ipd8" style="height: 100%;">
+                                <div class="ipd_detail">
+                                    <div class="tag_list">
+                                        <h2>作品名称</h2>
+                                        <a href="">插画</a>，<a href="">界面设计</a>，<a href="">工业设计</a>，<a href="">建筑</a>，<a href="">交互设计</a>
+                                    </div>
+                                    <p class="des"><span class="view">23</span><span class="zan" id="box_zan"></span><a href="#f1"><span class="comment">23</span></a><span class="favor"></span></p>
+                                    <div class="time">发布时间：2017-01-07</div>
+                                </div>
+                                <div class="ipd_tag">
+                                    <h2>Tags</h2>
+                                    <div><a href="">标签1</a><a href="">标签2</a><a href="">标签标签3</a><a href="">标签1</a><a href="">标签2</a></div>
+                                </div>
+                                <div class="ipd_rbot_wrap">
+                                    <div class="ipd_favar nb_t5"><i></i>收 藏</div>
+                                    <div class="ipd_exp2 clearfix">
+                                        <div class="ipd_exp_txt"><span>版权声明</span>
+                                            <div class="ipd_exp_box">
+                                                <p>原创；禁止匿名转载；禁止商业使用；<br/>禁止个人使用。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ipd_rbot">
+                            <div class="share_box">
+                                <a href="" class="weibo"></a>
+                                <a href="" class="wechat"></a>
+                                <a href="" class="qq"></a>
+                                <a href="" class="ins"></a>
+                                <a href="" class="talk"></a>
+                                <a href="" class="facebook"></a>
+                                <a href="" class="twitter"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rep_bg">
+        <div class="rep_wrap">
+            <i class="del"></i>
+            <div class="mem_rtit">我要举报</div>
+            <form class="rep_form tc">
+                <div class="item">
+                    <span>举报对象:</span>
+                    <div class="r_box">
+                        <font class="rep_name">张 三</font>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>原 因:</span>
+                    <div class="r_box">
+                        <select name="" class="select">
+                            <option value="">XXXXXXXXXXX</option>
+                            <option value="">XXXXXXXXXXXXXXXXXXXXXX</option>
+                            <option value="">XXXXXXXXXXX</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="item w100">
+                    <input type="button" value="提 交" class="rep_sub nb_t2">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="p_y">
+    <div class="p_ycon2">
+        <h4>发送私信</h4>
+        <div class="p_ycon2b fix">
+            <div class="p_img fl">
+                <img src="__IMGPC__/refer/p_peo3.png" alt="">
+                <p>UMI</p>
+            </div>
+
+            <div class="p_txt fl">
+                <textarea placeholder="私信内容"></textarea>
+            </div>
+        </div>
+        <a href="#" class="p_fs nb_t2">发 送</a>
+        <div class="p_pclo1"></div>
+    </div>
+</div>
+<div class="ipro_bg"></div>
+<i class="ipro_close"></i>
+<a href="" class="ipro_prev"></a>
+<a href="" class="ipro_next"></a>
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+    <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+        <span class="lightbox-spinner"></span>
+    </div>
+    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+        <div class="js-img-wrap" id="lightbox-img-wrap">
+            <div class="lightbox-extra control prev js-control js-prev hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control next js-control js-next hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control close js-control js-close">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                    <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                    <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                </svg>
+            </div>
+            <div class="lightbox-contents js-contents"></div>
+        </div>
+    </div>
+</div>
+<div id="fancybox-loading"></div>
+</div>
+<!--作品详情弹窗and-->
+<!--main end-->
+<!--footer start-->
+<div class="footer tc">
+    <ul class="fnav">
+        <li><a href="首页.html">OTEE</a></li>
+        <li><a href="">协议</a></li>
+        <li><a href="">服务</a></li>
+        <li><a href="">问题</a></li>
+        <li><a href="">联络</a></li>
+        <li><a href="">客服</a></li>
+        <li><a href="">分享</a></li>
+    </ul>
+    <p>Copyright © 2017 公司名, All Rights Reserved 粤ICP备18003913号-1</p>
+</div>
+
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src='__JSPC__/jquery.zoombie.js'></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script>
+    $(function(){
+        check_move();
+        check_card_w();
+        //4%6栏切换
+        $('.i_type i').click(function() {
+
+            if ($(this).hasClass('on')) { return false; }
+            $(this).addClass('on').siblings().removeClass('on');
+            if ($(this).index() == 1) {
+                $('.d_pwrap').addClass('change6');
+            } else {
+                $('.d_pwrap').removeClass('change6');
+            }
+            $('.d_plist li.d_pli').removeClass('in-view');
+            check_move();
+            check_card_w();
+        });
+
+        //商品列表下拉刷新
+        $(window).scroll(function() {
+            var winH = $(window).height();
+            var pageH = $(document.body).height();
+            var scrollT = $(window).scrollTop();
+            // 如果滚动条到达底部就获取新数据追加到容器
+            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                if ($('.d_pwrap .d_plist li.d_pli').length > 20) { return false; }
+                var html = '<li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲某某</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲某某</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">Sam Smith</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">Sam Smith</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲某某</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲某某</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic20.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲乙丙丁</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲乙丙丁</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲某某</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲某某</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">Sam Smith</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">Sam Smith</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic19.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲某某</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲某某</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li><li class="d_pli" data-show="on-scroll"><div class="card_box"><div class="card_before"><div class="card_pic lazybg" data-lazyload-bg="__IMGPC__/pic20.jpg"></div><div class="card_info d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div><div class="card_after"><div class="card_name">作品名称</div><div class="card_des"><p>设计理念，设计理念，设计。</p><p>设计，设计设计。</p><p>设计理念，设计理念，</p><p>设计。</p></div><div class="card_tag"><a href="">插画</a></div></div></div><div class="desi_box"><h2 class="tover">甲乙丙丁</h2><div class="desi_info"><div class="desi_top"><ul class="clearfix"><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic21.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic22.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic23.jpg"></span></a></li><li><a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/pic24.jpg"></span></a></li></ul></div><div class="desi_mid"><div class="desi_ava"><a href=""><img class="lazybg" data-lazyload-img="__IMGPC__/avatar1.jpg"></a></div><a href=""><h2 class="desi_name">甲乙丙丁</h2></a><a href="" class="desi_btn nb_t2">关 注</a></div><div class="desi_bot d_pinfo"><span class="view">23</span><span class="zan">88</span><span class="favor">33</span></div></div></div></li>';
+                $('.d_pwrap .d_plist').append(html);
+                check_move();
+                check_card_w();
+                $('.lazybg').lazyload({d:300,r:250});
+                $('.card_after .card_des').mCustomScrollbar({
+                    axis: "y",
+                    scrollInertia: 100,
+                    scrollButtons: {
+                        enable: true,
+                        scrollSpeed: 20
+                    },
+                    theme: "3d"
+                });
+            }
+        });
+
+        $(window).resize(function() {
+            check_card_w();
+        });
+
+        $(window).scroll(function() { //商品列表动态出现
+            check_move();
+        });
+    });
+
+    function check_move() {
+        var scrollTop = $(window).scrollTop();
+        $('.d_plist li').each(function(index, el) {
+            if (scrollTop > $(this).offset().top - $(window).height()) {
+                $(this).addClass('in-view');
+            }
+        });
+    }
+    function check_card_w(){
+        if($('.d_pwrap').hasClass('change6')){
+            var wrap_w = $('.d_plist').outerWidth() * 0.932;
+            var li_w = (wrap_w - 96) / 4;
+            $('.desi_info').css({"width":li_w});
+        }
+    }
+</script>
+
+<script>
+    //弹窗代码
+    $(function() {
+/*        //展开详情
+        $(document).on('click', '.d_plist li .card_after', function() {
+            $('#fancybox-loading').fadeIn();
+            $('.ipro_bg').show();
+            $('html').addClass('enabled');
+            setTimeout(function() {
+                $('.ipro_popup').fadeIn();
+                $('#fancybox-loading').hide();
+                loadpList(0);
+                r_top_bot(2);
+            }, 0);
+        });*/
+
+        //关闭详情
+        $('.ipro_close').click(function() {
+            $('.ipro_popup').animate({ scrollTop: 0 }, 0);
+            $('.ipro_popup').hide();
+            $('.ipro_bg').hide();
+            $('html').removeClass('enabled bottom');
+        });
+
+
+        //详情左边点赞
+        $('.ipro_zan .icon').click(function() {
+            if ($(this).parents('.ipro_zan').hasClass('on')) {
+                $(this).parents('.ipro_zan').removeClass('on');
+            } else {
+                $(this).parents('.ipro_zan').addClass('on');
+            }
+        });
+
+
+        var fav_this;
+        //详情左边底下评论点赞举报标记
+        $(document).on('click', '.ipro_com_icon i', function() {
+            if($(this).hasClass('favor')){
+                right_favor = false;
+                if($(this).hasClass('on')){ return false; }
+                fav_this = $(this);
+                $('.rep_bg').fadeIn();
+                $('html').addClass('report');
+                return false;
+            }
+            if ($(this).hasClass('on')) {
+                $(this).removeClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) - 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeOut();
+                    r_top_bot(2);
+                }
+            } else {
+                $(this).addClass('on');
+                if($(this).hasClass('zan')){
+                    $(this).text(parseInt($(this).text()) + 1);
+                }
+                if($(this).hasClass('comment')){
+                    $(this).parents('li').find('.ipro_com_rbox').fadeIn();
+                    r_top_bot(2);
+                }
+            }
+        });
+
+        //举报弹窗（确认）
+        $('.rep_form .rep_sub').click(function() {
+            var _this = $(this);
+            layer.confirm('确定要举报该评论？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                $('.rep_bg').fadeOut();
+                $('html').removeClass('report');
+                if(right_favor){
+                    fav_right.addClass('on');
+                }else{
+                    fav_this.addClass('on');
+                }
+            });
+        });
+
+        //举报弹窗（取消）
+        $('.rep_wrap .del').click(function() {
+            $('.rep_bg').fadeOut();
+            $('html').removeClass('report');
+        });
+
+        //右边举报
+        var right_favor = false;
+        var fav_right;
+        $('.ipd_detail .des span.favor').click(function() {
+            if($(this).hasClass('on')){ return false; }
+            $('.rep_bg').fadeIn();
+            $('html').addClass('report');
+            right_favor = true;
+            fav_right = $(this);
+        });
+
+        //详情右侧点赞
+        $(document).on('click', '.ipd_detail .des span.zan', function(event) {
+            var zan_num = $(this).text();
+            if($(this).hasClass('on')){
+                $(this).removeClass('on');
+                $(this).text(parseInt(zan_num) - 1);
+            }else{
+                $(this).addClass('on');
+                $(this).text(parseInt(zan_num) + 1);
+            }
+        });
+
+        $(window).scroll(function() {
+            var scrollTop = $(window).scrollTop();
+            if (scrollTop > $('.i_bar').offset().top - $('.header').outerHeight()) {
+                $('.i_bar').addClass('fixed');
+            } else {
+                $('.i_bar').removeClass('fixed');
+            }
+        });
+    });
+</script>
+
+<!--<script type="text/javascript">
+    //切换所在领域作品数据
+    function go_field(type) {
+        $.ajax({
+            type: 'GET',
+            url: "{:url('Finds/index')}",
+            data: {is_ajax: 1, page: 1, type: type},
+            dataType: 'json',
+            success: function (result) {
+                //alert(result);
+                $('#field').text(result);
+            }
+        });
+    }
+</script>-->
+<!--<script type="text/javascript">
+    function user_date(user,find) {
+        $('#fancybox-loading').fadeIn();
+        $.ajax({
+            type: 'GET',
+            url: "{:url('Finds/index')}",
+            data: {user: user,find:find,type:1},
+            dataType: 'json',
+            success: function (result) {
+                var uname=result['data'][0]['user_name'];//名字
+                var design=result['data']['finds_type'];//领域
+                var worksAdmire=result['data']['works_admire_num'];//作品点赞数
+                //alert(design);
+                //var uname=result['data'][0]['user_name'];//名字
+
+                $('#uname h2').text(uname);
+                //$('#uname h2').text(design);
+                $('#box_zan').text(worksAdmire);
+
+                $('.ipro_bg').show();
+                $('html').addClass('enabled');
+                setTimeout(function() {
+                    $('.ipro_popup').fadeIn();
+                    $('#fancybox-loading').hide();
+                    loadpList(0);
+                    r_top_bot(2);
+                }, 0);
+                //alert(result['data']);
+                //var a=JSON.parse(result);
+                //var data=eval(result);
+                //alert(data);
+                //$('#user_type').text(date['data'][0]['user_name']);
+            }
+        });
+    }
+</script>-->

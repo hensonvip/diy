@@ -1,0 +1,367 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/region.js"}
+
+<form method="post" action="users.php" name="theForm" onsubmit="return validate()" enctype="multipart/form-data" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--文章分类名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.username}</label>
+            <div class="layui-input-block">
+                {if $form_action eq "update"}
+                    <input type="text" name="username" value="{$user.user_name}" class="layui-input" readonly="readonly" />
+                {else}
+                    <input type="text" name="username" maxlength="60" value="{$user.user_name}" class="layui-input" placeholder="请输入会员名称" />
+                {/if}
+            </div>
+        </div>
+        {if $form_action eq "update"}
+        <!--可用资金-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.user_money}</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$user.formated_user_money}" class="layui-input" disabled="disabled" />
+                <a href="account_log.php?act=list&user_id={$user.user_id}&account_type=user_money">[ {$lang.view_detail_account} ]</a>
+            </div>
+        </div>
+        <!--冻结资金-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.frozen_money}</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$user.formated_frozen_money}" class="layui-input" disabled="disabled" />
+                <a href="account_log.php?act=list&user_id={$user.user_id}&account_type=frozen_money">[ {$lang.view_detail_account} ]</a>
+            </div>
+        </div>
+        <!--等级积分-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticeRankPoints');" title="{$lang.form_notice}"><img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}"></a>
+                {$lang.rank_points}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" value="{$user.rank_points}" class="layui-input" disabled="disabled" />
+                <a href="account_log.php?act=list&user_id={$user.user_id}&account_type=rank_points">[ {$lang.view_detail_account} ]</a>
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticeRankPoints">{$lang.notice_rank_points}</span>
+            </div>
+        </div>
+        <!--消费积分-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('noticePayPoints');" title="{$lang.form_notice}"><img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}"></a>
+                {$lang.pay_points}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" value="{$user.pay_points}" class="layui-input" disabled="disabled" />
+                <a href="account_log.php?act=list&user_id={$user.user_id}&account_type=pay_points">[ {$lang.view_detail_account} ]</a>
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="noticePayPoints">{$lang.notice_pay_points}</span>
+            </div>
+        </div>
+        {/if}
+        <!--邮件地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.email}</label>
+            <div class="layui-input-block">
+                <input type="text" id="email" name="email" value="{$user.email}" class="layui-input" />
+            </div>
+        </div>
+        <!--手机-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.mobile_phone}</label>
+            <div class="layui-input-block">
+                <input type="text" id="mobile_phone" name="mobile_phone" value="{$user.mobile_phone}" class="layui-input" />
+            </div>
+        </div>
+        {if $form_action eq "insert"}
+        <!--密码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.password}</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" value="" class="layui-input" />
+            </div>
+        </div>
+        <!--确认密码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.confirm_password}</label>
+            <div class="layui-input-block">
+                <input type="password" name="confirm_password" value="" class="layui-input" />
+            </div>
+        </div>
+        {elseif  $form_action eq "update"}
+        <!--新密码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.newpass}</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" value="" class="layui-input" />
+            </div>
+        </div>
+        <!--确认密码-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.confirm_password}</label>
+            <div class="layui-input-block">
+                <input type="password" name="confirm_password" value="" class="layui-input" />
+            </div>
+        </div>
+        {/if}
+        <!--会员等级-->
+        <div class="layui-form-item" style="display:none;">
+            <label class="layui-form-label">{$lang.user_rank}</label>
+            <div class="layui-input-block">
+                <select name="user_rank">
+                  <option value="0">{$lang.not_special_rank}</option>
+                  {html_options options=$special_ranks selected=$user.user_rank}
+                </select>
+            </div>
+        </div>
+        <!--性别-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.gender}</label>
+            <div class="layui-input-block">
+                <!-- {html_radios name="sex" options=$lang.sex checked=$user.sex title=$lang.sex} -->
+                <input type="radio" {if $user['sex'] eq 0}checked{/if} value="0" title="保密" name="sex">
+                <input type="radio" {if $user['sex'] eq 1}checked{/if} value="1" title="男" name="sex">
+                <input type="radio" {if $user['sex'] eq 2}checked{/if} value="2" title="女" name="sex">
+            </div>
+        </div>
+        <!--出生日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.birthday}</label>
+            <div class="layui-input-block">
+                {html_select_date field_order="YMD" prefix="birthday" time=$user.birthday start_year="-60" end_year="+1" display_days=true month_format="%m"}
+            </div>
+        </div>
+        <!--信用额度-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.credit_line}</label>
+            <div class="layui-input-block">
+                <input name="credit_line" type="text" id="credit_line" value="{$user.credit_line}" class="layui-input" />
+            </div>
+        </div>
+        <!--扩展-->
+        {foreach from=$extend_info_list item=field}
+            <div class="layui-form-item">
+            <label class="layui-form-label">{$field.reg_field_name}</label>
+            <div class="layui-input-block">
+                <input name="extend_field{$field.id}" type="text" class="layui-input" value="{$field.content}"/>
+            </div>
+        </div>
+        {/foreach}
+        <!--真实姓名-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">真实姓名</label>
+            <div class="layui-input-block">
+                <input name="real_name" type="text" value="{$user.real_name}" class="layui-input" />
+            </div>
+        </div>
+        <!--身份证号-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证号</label>
+            <div class="layui-input-block">
+                <input name="card" type="text" value="{$user.card}" class="layui-input" />
+            </div>
+        </div>
+        <!--身份证正面-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证正面</label>
+            <div class="layui-input-block">
+                <input type="file" name="face_card" style="margin-left:10px;margin-top:5px;"/>
+                <br/><br/>{if $user.face_card neq ''}<img src="../{$user.face_card}" width="100" height="100" />{else}暂无上传图片{/if}
+            </div>
+        </div>
+        <!--身份证正面-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">身份证反面</label>
+            <div class="layui-input-block">
+                <input type="file" name="back_card" style="margin-left:10px;margin-top:5px;"/>
+                <br/><br/>{if $user.back_card neq ''}<img src="../{$user.back_card}" width="100" height="100" />{else}暂无上传图片{/if}
+            </div>
+        </div>
+        <!--现居地-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">现居地</label>
+            <div class="layui-input-block">
+                <select name="country" id="selCountries" lay-filter="selCountries" >
+                    <option value="0">请选择</option>
+                    {foreach from=$country_list item=country}
+                    <option value="{$country.region_id}" {if $user.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                    {/foreach}
+                </select>
+                <select name="province" id="selProvinces" lay-filter="selProvinces" >
+                    <option value="0">请选择</option>
+                    {foreach from=$province_list item=province}
+                    <option value="{$province.region_id}" {if $user.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                    {/foreach}
+                </select>
+                <select name="city" id="selCities" lay-filter="selCities" >
+                    <option value="0">请选择</option>
+                    {foreach from=$city_list item=city}
+                    <option value="{$city.region_id}" {if $user.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                    {/foreach}
+                </select>
+                <select name="district" id="selDistricts" {if !$district_list}style="display:none"{/if}>
+                    <option value="0">请选择</option>
+                    {foreach from=$district_list item=district}
+                    <option value="{$district.region_id}" {if $user.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <!--详细地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">详细地址</label>
+            <div class="layui-input-block">
+                <input name="address" type="text" value="{$user.address}" class="layui-input" />
+            </div>
+        </div>
+        <!--审核状态-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">审核状态</label>
+            <div class="layui-input-block">
+                <select name="status">
+                    <option value="0" {if $user.status eq 0} selected="selected"{/if}>请选择审核状态</option>
+                    <option value="1" {if $user.status eq 1} selected="selected"{/if}>审核通过</option>
+                    <option value="2" {if $user.status eq 2} selected="selected"{/if}>审核中</option>
+                    <option value="3" {if $user.status eq 3} selected="selected"{/if}>审核不通过</option>
+                </select>
+            </div>
+        </div>
+        {if $user.parent_id}
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.parent_user}</label>
+            <div class="layui-input-block">
+                <input type="text" value="{$user.parent_username}" class="layui-input" disabled="disabled" />
+                <a href="users.php?act=edit&id={$user.parent_id}">编辑推荐人</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="users.php?act=remove_parent&id={$user.user_id}">{$lang.parent_remove}</a>
+            </div>
+        </div>
+        {/if}
+        {if $affiliate.on eq 1 && $affdb}
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.affiliate_user}</label>
+            <div class="layui-input-block" style="line-height:40px;padding-left:10px;">
+                [<a href="users.php?act=aff_list&auid={$user.user_id}">{$lang.show_affiliate_users}</a>][<a href="affiliate_ck.php?act=list&auid={$user.user_id}">{$lang.show_affiliate_orders}</a>]
+                <table border="0" cellspacing="1" style="background: #dddddd; width:30%;" class="layui-table">
+                    <tr>
+                        <td bgcolor="#ffffff">{$lang.affiliate_lever}</td>
+                        {foreach from=$affdb key=level item=val0}
+                        <td bgcolor="#ffffff">{$level}</td>
+                        {/foreach}
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff">{$lang.affiliate_num}</td>
+                        {foreach from=$affdb item=val}
+                        <td bgcolor="#ffffff">{$val.num}</td>
+                        {/foreach}
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {/if}
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$user.user_id}" />
+        </p>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+region.isAdmin = true;
+if (document.forms['theForm'].elements['act'].value == "insert")
+{
+  document.forms['theForm'].elements['username'].focus();
+}
+else
+{
+  document.forms['theForm'].elements['email'].focus();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+
+    if ($.trim($("#email").val()).length > 0) {
+		validator.isEmail("email", invalid_email, true);
+	}
+	if ($.trim($("#mobile_phone").val()).length > 0) {
+		validator.isMobile("mobile_phone", invalid_mobile_phone, true);
+	}
+	if ($.trim($("#mobile_phone").val()).length == 0 && $.trim($("#email").val()).length == 0) {
+		alert("邮箱和手机号码至少要填写一项！");
+		return false;
+	}
+
+    if (document.forms['theForm'].elements['act'].value == "insert")
+    {
+        validator.required("username",  no_username);
+        validator.required("password", no_password);
+        validator.required("confirm_password", no_confirm_password);
+        validator.eqaul("password", "confirm_password", password_not_same);
+
+        var password_value = document.forms['theForm'].elements['password'].value;
+        if (password_value.length < 6)
+        {
+          validator.addErrorMsg(less_password);
+        }
+        if (/ /.test(password_value) == true)
+        {
+          validator.addErrorMsg(passwd_balnk);
+        }
+    }
+    else if (document.forms['theForm'].elements['act'].value == "update")
+    {
+        var newpass = document.forms['theForm'].elements['password'];
+        var confirm_password = document.forms['theForm'].elements['confirm_password'];
+        if(newpass.value.length > 0 || confirm_password.value.length)
+        {
+          if(newpass.value.length >= 6 || confirm_password.value.length >= 6)
+          {
+            validator.eqaul("password", "confirm_password", password_not_same);
+          }
+          else
+          {
+            validator.addErrorMsg(password_len_err);
+          }
+        }
+    }
+
+    return validator.passed();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+
+        form.on('select(selCountries)', function(data){
+            region.changed(data.elem, 1, 'selProvinces');
+            region.changed(data.elem, 2, 'selCities');
+            region.changed(data.elem, 3, 'selDistricts');
+        });
+        form.on('select(selProvinces)', function(data){
+            region.changed(data.elem, 2, 'selCities');
+            region.changed(data.elem, 3, 'selDistricts');
+        });
+        form.on('select(selCities)', function(data){
+            region.changed(data.elem, 3, 'selDistricts');
+        });
+
+    });
+</script>
+{include file="pagefooter.htm"}

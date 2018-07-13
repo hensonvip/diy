@@ -1,0 +1,33 @@
+{if $data.list}
+    {foreach $data.list as $key =>$vo}
+    <li>
+        <label><input type="checkbox" class="checkbox-item s-item" name="delid[]" value="{$vo.rec_id}"><i class="icon"></i></label>
+        <div class="pic fl">
+            <img src="{$webUrl}/{$vo.thumb}" alt="" onclick="window.location.href='{:url('Goods/details',array('goods_id'=>$vo.goods_id))}'">
+        </div>
+        <div class="text" onclick="window.location.href='{:url('Goods/details',array('goods_id'=>$vo.goods_id))}'">
+            <h2 class="title" style="height:1.5rem;">{$vo.goods_name}</h2>
+            <div class="price ">
+                    <span class="symbol">¥</span>
+                    <span class="number">{$vo.shop_price}</span>
+             </div>
+        </div>
+        <button class="del" onclick="delOne({$vo.rec_id})">删除</button>
+    </li>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

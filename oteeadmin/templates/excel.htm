@@ -1,0 +1,127 @@
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form action="excel.php?act=excel" method="post" enctype="multipart/form-data" name="searchForm" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--请选择订单状态-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择订单状态</label>
+            <div class="layui-input-block">
+                <select name="order_status" id="select9">
+                    <option value="-1">请选择...</option>
+                    <option value="0">未确认</option>
+                    <option value="1">已确认</option>
+                    <option value="2">已取消</option>
+                    <option value="3">无效</option>
+                    <option value="4">退货</option>
+                </select>
+            </div>
+        </div>
+        <!--请选择下单时间-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择下单时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="start_time" maxlength="60" size="20" readonly="readonly" id="start_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                ~
+                <input type="text" name="end_time" maxlength="60" size="20" readonly="readonly" id="end_time_id" class="layui-input"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--请选择订单号-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择订单号</label>
+            <div class="layui-input-block">
+                <input name="order_sn1" type="text" id="order_sn1" class="layui-input"> ~ <input name="order_sn2" type="text" id="order_sn2" class="layui-input"/>开始订单号 到 结尾订单号
+            </div>
+        </div>
+         <!--请选择地区-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择地区</label>
+            <div class="layui-input-block">
+                <select name="country" id="selCountries" lay-filter="selCountries">
+                    <option value="0">{$lang.select_please}</option>
+                    {foreach from=$country_list item=country}
+                    <option value="{$country.region_id}">{$country.region_name}</option>
+                    {/foreach}
+                </select>
+                <select name="province" id="selProvinces" lay-filter="selProvinces">
+                  <option value="0">{$lang.select_please}</option>
+                </select>
+                <select name="city" id="selCities" lay-filter="selCities">
+                  <option value="0">{$lang.select_please}</option>
+                </select>
+                <select name="district" id="selDistricts">
+                  <option value="0">{$lang.select_please}</option>
+                </select>
+            </div>
+        </div>
+        <!--请选择店铺-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择店铺</label>
+            <div class="layui-input-block">
+                <select name="shop_id" lay-filter="sel_shop_id">
+                    <option value="-1">{$lang.select_please}</option>
+                    <option value="0">平台自营</option>
+                    <option value="1">入驻商</option>
+                </select>
+            </div>
+        </div>
+        <!--请选择店铺-->
+        <div class="layui-form-item" id="suppliers" style="display:none;">
+            <label class="layui-form-label">请选择入驻商</label>
+            <div class="layui-input-block">
+                <select name="suppliers_id">
+                    <option value="-1">{$lang.select_please}</option>
+                    {$supplier_list}
+                </select>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input name="query" type="submit" class="layui-btn" id="query" value="开始导出" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/region.js"}
+{literal}
+<script language="JavaScript">
+region.isAdmin = true;
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+    function show_suppliers(get_value)
+    {
+        document.getElementById("suppliers").style.display =  (get_value == 1) ? "" : "none";
+    }
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+        //监听指定开关
+        form.on('select(selCountries)', function(data){
+            region.changed(data.elem, 1, 'selProvinces');
+            region.changed(data.elem, 2, 'selCities');
+            region.changed(data.elem, 3, 'selDistricts');
+        });   
+        form.on('select(selProvinces)', function(data){
+            region.changed(data.elem, 2, 'selCities');
+            region.changed(data.elem, 3, 'selDistricts');
+        });  
+        form.on('select(selCities)', function(data){
+            region.changed(data.elem, 3, 'selDistricts');
+        });  
+        form.on('select(sel_shop_id)', function(data){
+            show_suppliers(data.value);
+        });
+
+    });
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,113 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+<div class="form-div">
+  <form action="javascript:searchField()" name="searchForm" class="layui-form">
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" style="float:left;margin-top:10px;" />
+    举报人&nbsp;
+    <span style="position:relative"><input type="text" name="user_name" id="user_name" placeholder="搜索举报人" /></span>
+    设计师&nbsp;
+    <span style="position:relative"><input type="text" name="designer" id="designer" placeholder="搜索设计师" /></span>
+    <!--商品名称&nbsp;
+    <span style="position:relative"><input type="text" name="keyword" id="keyword" placeholder="搜索商品名称" /></span>-->
+    <input type="submit" value="{$lang.button_search}" class="layui-btn" />
+  </form>
+</div>
+<form method="POST" action="goods_report.php" name="listForm" class="layui-form">
+<!-- start goods_report list -->
+<div class="list-div" id="listDiv">
+{/if}
+<table cellspacing='1' cellpadding='3' id='list-table' class="layui-table">
+  <tr>
+    <th>
+      <input type="checkbox" lay-filter="sel_all_checkboxes">
+      <a href="javascript:listTable.sort('{$report_list.report_cid}'); ">{$lang.report_cid}</a>{$sort_report_id}
+    </th>
+    <th><a href="javascript:listTable.sort('user_id'); ">{$lang.user_id}</a>{$sort_user_name}</th>
+    <th><a href="javascript:listTable.sort('be_user_id'); ">{$lang.be_user_id}</a>{$sort_designer}</th>
+    <th><a href="javascript:listTable.sort('type'); ">{$lang.type}</a>{$sort_goods_id}</th>
+    <th><a href="javascript:listTable.sort('id'); ">{$lang.id}</a>{$sort_goods_name}</th>
+    <th><a href="javascript:listTable.sort('report_reaso}'); ">{$lang.report_reason}</a>{$sort_report_reason}</th>
+    <th><a href="javascript:listTable.sort('comment'); ">{$lang.comment}</a>{$sort_report_reason}</th>
+    <th><a href="javascript:listTable.sort('add_time'); ">{$lang.add_time}</a>{$sort_report_time}</th>
+    <th>操作</th>
+  </tr>
+  {foreach from=$report_list item=list}
+  <tr>
+    <td><span><input name="checkboxes[]" type="checkbox" value="{$list.report_id}" />{$list.report_cid}</span></td>
+    <td>{$list.user_name|escape:html}</td>
+    <td>{$list.be_user_name}</td>
+    <td>{$list.type}</td>
+    <td>{$list.id}</td>
+    <td>{$list.report_reason}</td>
+    <td>{$list.comment}</td>
+    <td>{$list.add_time}</td>
+    <td align="left" nowrap="true">
+      <span>
+        <a href="javascript:;" onclick="listTable.remove({$list.report_id}, '您确认要删除这条记录吗？')" title="删除">删除</a>
+       </span>
+    </td>
+   </tr>
+   {foreachelse}
+    <tr><td class="no-records" colspan="10">您现在还没有任何项目</td></tr>
+  {/foreach}
+  <tr>&nbsp;
+    <td align="right" nowrap="true" colspan="10">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+{if $full_page}
+</div>
+<div>
+  <input type="hidden" name="act" value="batch" />
+  <select name="type" id="selAction" lay-filter="selAction">
+    <option value="">请选择...</option>
+    <option value="button_remove">批量删除</option>
+  </select>
+
+  <input type="submit" value="确定" id="btnSubmit" name="btnSubmit" class="layui-btn"  style="margin-left:10px;"/>
+</div>
+</form>
+<!-- end type list -->
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+
+ /* 搜索领域 */
+ function searchField()
+ {
+    listTable.filter.keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter.user_name = Utils.trim(document.forms['searchForm'].elements['user_name'].value);
+    listTable.filter.designer = Utils.trim(document.forms['searchForm'].elements['designer'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+
+ {/literal}
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        form.on('checkbox(sel_all_checkboxes)', function(data){
+            listTable.selectAll(this, "checkboxes");
+            form.render(); //更新全部
+        });
+
+    });
+</script>
+{include file="pagefooter.htm"}
+{/if}

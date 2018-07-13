@@ -1,0 +1,24 @@
+{if $data.list}
+	{foreach $data.list as $key =>$vo}
+	<li > <a href="{:url('User/my_message_details',array('l_id'=>$vo['l_id']))}">     
+	    <p> {if $vo.readed eq 0}<font color="red">●</font>{/if}{$vo.title}</p>
+	    <span>{$vo.receive_time}</span>
+	    </a>
+	</li>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

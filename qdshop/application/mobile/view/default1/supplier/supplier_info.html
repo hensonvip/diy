@@ -1,0 +1,49 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+{include file="supplier/supplier_header" /}
+
+<div class="content">
+    <div class="mt3 bgc dp2">
+        <ul >
+            <li> <span>描述：</span>{$supplier_data.avg_comment}</li>
+            <li> <span>服务：</span>{$supplier_data.avg_server}</li>
+            <li> <span>物流：</span>{$supplier_data.avg_shipping}</li>
+            <li class="last"> <span>好评率：</span>{$supplier_data.haoping}</li>
+        </ul>
+    </div>
+    <div class="mt3 bgc dp3"> 
+        <div class="dp3_c on clearfix"><span>联系电话：</span><span>{$supplier_data.service_phone}</span></div>
+        <div class="dp3_c clearfix"><span>商家地址：</span><span>{$supplier_data.address}</span></div>
+    </div>
+    <div class=" mt3 bgc dp4"><span>开店时间：</span>{$supplier_data.open_time}</div>
+    <div class="bgc dp5 clearfix">
+        <a href="javascript:;" onclick="guanzhu({$supplier_id});">关注店铺</a>
+        {if $supplier_data.qq}
+            <a title="点击这里给我发消息" alt="点击这里给我发消息" href="http://wpa.qq.com/msgrd?v=3&uin={$supplier_data.qq}&site=qq&menu=yes" target="_blank">
+        {else}
+        <a href="javascript:;" onclick="noChat()">
+        {/if}
+            联系客服
+        </a>
+    </div>
+</div>  
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script type="text/javascript">
+    function noChat(){
+        layer.open({
+            content: '该商家暂无客服！'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+        return false;
+    }
+</script>

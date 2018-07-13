@@ -1,0 +1,242 @@
+{include file="public/header" /}
+<body data-psd-width="840">
+<div class="ss2 hg"> 
+    <a href="{:url('User/order_list')}"><div class="pa back on "></div></a>
+    <h2>订单详情</h2>
+</div>
+<div class="content ">
+    <div class="con11">
+        <div class="bgc t1 clearfix">
+            <div class="t1_l"><em class="icon"></em></div>
+            <ul class="bgc">    
+                <li class="clearfix"><span>订单编号：</span><em>{$data.order_info.order_sn} </em></li>
+                {if $data.order_info.extension_code eq ''}
+                <li class="clearfix"><span>订单状态：</span>
+                    {if $data.order_info.status eq 2}<em>待付款</em>{/if}
+                    {if $data.order_info.status eq 3}<em>待发货</em>{/if}
+                    {if $data.order_info.status eq 4}<em>待收货</em>{/if}
+                    {if $data.order_info.status eq 5}<em>已完成</em>{/if}
+                    {if $data.order_info.status eq 6}<em>取消</em>{/if}
+                    {if $data.order_info.status eq 7}<em>退款</em>{/if}
+                </li>
+                {/if}
+
+                <li class="clearfix"><span>下单时间：</span><em>{$data.order_info.add_time}</em></li>
+            </ul>
+        </div>
+
+        {if $kuaidi_data && $kuaidi_data.data.0.context neq ''}
+        <div class="weiz bgc mt3">
+            <a href="{:url('User/kuaidi',array('typeCom'=>$kuaidi_data.com,'typeNu'=>$kuaidi_data.nu))}">
+            <em class="icon"></em>
+                <p>{$kuaidi_data.data.0.context}</p>
+                <p>{$kuaidi_data.data.0.time}</p>
+            </a>    
+        </div>
+        {/if}
+
+        {if $data.order_info.extension_code eq ''}
+        <div class="bgc t2 t1 clearfix" >
+            <div class="t1_l"><em class="icon"></em></div>
+            <ul class="bgc">    
+                <li class="clearfix"><span>收货人：</span><em>{$data.order_info.consignee} </em></li>
+                <li class="clearfix"><span>手机：</span><em class="">{$data.order_info.mobile} </em></li>
+                <li class="clearfix"><span>收货地址：</span><em>{$data.order_info.address}</em></li>
+            </ul>
+        </div>
+        {/if}
+
+        <!-- <div class="bgc t2 t1 clearfix" >
+            <div class="t1_l"><em class="icon"></em></div>
+            <ul class="bgc">    
+                <li class="clearfix"><span>提货码：</span><em>666 </em></li>
+                <li class="clearfix"><span>收货人：</span><em>龚清林</em></li>
+                <li class="clearfix" style="margin-bottom: .4rem"><span>手机：</span><em>12345678901</em></li>
+                <li class="clearfix"><span>收货地址：</span><em>广东省 广州市 越秀区 
+                    沿江中路313号康富来国际大厦1301室</em></li>
+            </ul>
+        </div> -->
+
+        <!-- <div class="yan bgc mt3 clearfix">
+            <em></em> <span>留言：</span> <input type="text" value="尽快配送啊" name="" readonly="readonly">
+        </div> -->
+
+        {if $data.goods_list}
+        <div class="zying mt3 bgc" >
+            <a class="zy_t" href="{if $data.order_info.supplier_id}{:url('supplier/supplier_details',array('supplier_id'=>$data.order_info.supplier_id))}{else}javascript:;{/if}">{$data.order_info.referer} </a>
+            <ul class="bgc">
+                {foreach $data.goods_list as $key => $vo}
+                <li class="clearfix">
+                    <a href="{:url('Goods/details',array('goods_id'=>$vo.goods_id))}"><div class="pic fl"><img src="{$webUrl}/{$vo.goods_thumb}"></div></a>
+                    <div class="fr tt1_r">
+                        <p>{$vo.goods_name}</p>
+                        <dir class="clearfix gue"><span>{$vo.goods_attr}</span><em class="fr">x{$vo.goods_number}</em></dir> 
+                        <div class="clearfix tk"><p class="fl hc">{$vo.formated_subtotal}</p>{if $vo.can_goods_do eq 4}<a class="fr" href="">退货</a>{/if} </div>
+                    </div>
+                </li>
+                {if $vo.virtual_goods_card}
+                <li class="clearfix">
+                    <table width="100%" cellspacing="1" cellpadding="5" border="0" bgcolor="#eeeeee">
+                    <tbody>
+                    <tr height="30">
+                    <th bgcolor="#ffffff" align="center">验证码</th>
+                    <th bgcolor="#ffffff" align="center">过期时间</th>
+                    <th bgcolor="#ffffff" align="center">状态</th>
+                    </tr>
+                    {foreach $vo.virtual_goods_card as $k => $v}
+                    <tr height="30">
+                        <td bgcolor="#ffffff" align="center">{$v.card_sn}</td>
+                        <td bgcolor="#ffffff" align="center">{$v.end_date}</td>
+                        <td bgcolor="#ffffff" align="center">{if $v.buy_date eq ''}未使用{else}已使用{/if}</td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                    </table>
+                </li>
+                {/if}
+                {/foreach}
+            </ul>
+        </div>
+        {/if}
+        
+        <div class="zong zzong">
+            <ul class="bgc">
+                <li class="clearfix"><span>商品金额</span><em>{$data.order_info.formated_goods_amount}</em></li>
+                {if $data.order_info.integral gt 0}<li class="clearfix"><span>积分</span><em>-{$data.order_info.integral_money}</em></li>{/if}
+                {if $data.order_info.bonus gt 0}<li class="clearfix"><span>优惠券</span><em >-{$data.order_info.formated_bonus}</em></li>{/if}
+                {if $data.order_info.discount gt 0}<li class="clearfix"><span>折扣金额</span><em >-{$data.order_info.formated_discount}</em></li>{/if}
+                {if $data.order_info.tax gt 0}<li class="clearfix"><span>发票金额</span><em >+{$data.order_info.formated_tax}</em></li>{/if}
+                {if $data.order_info.shipping_fee gt 0}<li class="clearfix"><span>配送费用</span><em >+{$data.order_info.formated_shipping_fee}</em></li>{/if}
+                {if $data.order_info.surplus gt 0}<li class="clearfix"><span>余额支付</span><em >-{$data.order_info.formated_surplus}</em></li>{/if}
+                {if $data.order_info.money_paid gt 0}<li class="clearfix"><span>已付款金额</span><em >-{$data.order_info.formated_money_paid}</em></li>{/if}
+                <li>   <em class="hc fr">{$data.order_info.formated_total}</em><span class="fr sf">实付</span><i class="fr">共{$goods_sum}件商品</i></li>
+            </ul>
+        </div>
+
+        {if $data.order_info.status eq 2}
+        <div class="buy_sty">
+            <h1>支付方式</h1>
+            <div class="clearfix bgc wz"> <a href="javascript:;" onclick="showPay('{$data.order_info.order_id}')"><!-- <img src="__IMGWAP__/icon24.png"> --><span>请选择支付方式</span></a></div>
+        </div>
+        {/if}
+
+        {if $data.order_info.invoice.inv_type}
+        <div class="tur5">
+             <h1>发票信息</h1>
+             <div class="tur5_list fpx  bgc">
+             <form>
+                <div class="item clearfix item3">
+                    <span >发票类型：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" value="{$data.order_info.invoice.inv_type_name}" name="" readonly="readonly">
+                    </div>
+                </div>
+                {if $data.order_info.invoice.inv_type eq 'normal_invoice'}
+                    <div class="item clearfix item3">
+                        <span >发票抬头类型：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.inv_payee_type_name}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >发票抬头：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.inv_payee}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    {if $data.order_info.invoice.inv_payee_type eq 'unit'}
+                    <div class="item clearfix item3">
+                        <span >纳税人识别码：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_taxpayer_id}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    {/if}
+                {else}
+                    <div class="item clearfix item3">
+                        <span >公司名称：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_company_name}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >纳税人识别码：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_taxpayer_id}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >注册地址：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_registration_address}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >注册电话：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_registration_phone}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >开户银行：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_deposit_bank}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="item clearfix item3">
+                        <span >银行账户：</span>
+                        <div class="gr fr clearfix">
+                            <input class="fl" type="text" value="{$data.order_info.invoice.vat_inv_bank_account}" name="" readonly="readonly">
+                        </div>
+                    </div>
+                {/if}
+                <div class="clearfix item item3">
+                    <span >发票内容：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" value="{$data.order_info.invoice.inv_content}" name="" readonly="readonly">
+                    </div>
+                </div>
+
+                </form>
+             </div>
+        </div>
+        {/if}
+
+    </div>
+    <!-- <div class="lif clearfix">  
+        {if $data.order_info.status eq 4}<a class="hg a3" href="{:url('User/arrived_order',array('order_id'=>$data.order_info.order_id))}">确认收货</a>{/if}
+    </div> -->
+</div>
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script type="text/javascript">
+    //重新选择支付
+    function showPay(order_id){
+        var index = layer.open({type: 2,content: '加载中'});
+        $.ajax({
+            type: 'GET',
+            url: "{:url('User/order_pay_list')}",
+            data:{is_ajax:1,order_id:order_id},
+            dataType: 'html',
+            success: function(result){
+                layer.close(index);
+                //自定义标题风格
+                layer.open({
+                    title: [
+                      '请选择支付方式',
+                      'background-color: #FF4351; color:#fff;'
+                    ]
+                    ,content: result
+                });
+            }
+        });
+        return false;
+    }
+</script>

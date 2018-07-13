@@ -1,0 +1,32 @@
+{if isset($diy_page)}
+<a href="/" class="logo" style="background-image: url(__IMGPC__/logo2.png);"></a>
+{else}
+<a href="/" class="logo" style="background-image: url(__IMGPC__/logo.png);"></a>
+{/if}
+<ul class="nav">
+    <li>
+        <a href="/">OTEE</a>
+        <!-- <dl>
+            <dd><a href="">排行榜</a></dd>
+        </dl> -->
+    </li>
+    <li><a href="{:url('finds/index',array('field'=>0))}">发现</a></li>
+    <!-- <li><a href="圈子.html">圈子</a></li> -->
+    <li><a href="">排行榜</a></li>
+    <li class="design">
+        <a href="{:url('diy/index',array('type_id'=>7))}"><span class="">我要设计</span></a>
+        <div class="snav_main">
+            <div class="snav_top">
+                <div class="snav_box">
+                    <img src="__IMGPC__/icon50.png">
+                </div>
+            </div>
+            <div class="snav_bot">
+                <a href="{:url('Diy/entrance')}" class="nb_t2">了解更多</a>
+            </div>
+        </div>
+    </li>
+    <li>
+        <a href="{:url('Originality/index')}">创意擂台</a>
+    </li>
+</ul>

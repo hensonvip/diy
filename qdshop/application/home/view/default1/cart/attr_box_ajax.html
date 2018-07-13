@@ -1,0 +1,49 @@
+{if condition="isset($goods_data)"}
+<div class="edit_wrap ipd_type">
+    <div class="item clearfix">
+        <span>款式</span>
+        <div class="r_box sex_box">
+            {foreach $goods_data.properties as $spec_key => $spec}
+                {if $spec.name eq '款式'}
+                    {foreach $spec.values as $attr_key => $attr}
+                    <label data-src='{$webUrl}{$attr.default_icon}' data-srcon='{$webUrl}{$attr.select_icon}' {if $attr.id eq $goods_attr_id.0}style="background-image: url({$webUrl}{$attr.select_icon});"{else /}style="background-image: url({$webUrl}{$attr.default_icon});"{/if}>
+                        <input type="radio" id="spec_value_{$attr.id}" name="spec_0" value="{$attr.id}" {if $attr.id eq $goods_attr_id.0}checked="checked"{/if}>
+                    </label>
+                    {/foreach}
+                {/if}
+            {/foreach}
+        </div>
+    </div>
+    <div class="item clearfix">
+        <span>颜色</span>
+        <div class="r_box color_box">
+            {foreach $goods_data.properties as $spec_key => $spec}
+                {if $spec.name eq '颜色'}
+                    {foreach $spec.values as $attr_key => $attr}
+                    <label {if $attr.id eq $goods_attr_id.1}class="white on"{else}class="white"{/if} style="background-color: #{$attr.color_code};">
+                        <input type="radio" id="spec_value_{$attr.id}" name="spec_1" value="{$attr.id}" {if $attr.id eq $goods_attr_id.1}checked="checked"{/if}>
+                    </label>
+                    {/foreach}
+                {/if}
+            {/foreach}
+        </div>
+    </div>
+    <div class="item clearfix">
+        <span>尺码</span>
+        <div class="r_box size_box">
+            {foreach $goods_data.properties as $spec_key => $spec}
+                {if $spec.name eq '尺码'}
+                    {foreach $spec.values as $attr_key => $attr}
+                    <label {if $attr.id eq $goods_attr_id.2}class="on"{/if}>
+                        <input type="radio" id="spec_value_{$attr.id}" name="spec_2" value="{$attr.id}" {if $attr.id eq $goods_attr_id.2}checked="checked"{/if}>{$attr.label}
+                    </label>
+                    {/foreach}
+                {/if}
+            {/foreach}
+        </div>
+    </div>
+    <div class="edit_btn tr">
+        <a class="edit_sub nb_t1" onclick="edit_cart_attr(this, {$rec_id}, {$goods_id}, {$supp_id})">确 定</a>
+    </div>
+</div>
+{/if}

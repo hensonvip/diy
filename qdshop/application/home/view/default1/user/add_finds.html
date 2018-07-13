@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{$site_title}</title>
+<meta name="description" content="{$site_description}">
+<meta name="keywords" content="{$site_keywords}">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/cropper.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {if condition="$user_id"}
+    {include file="public/user_right" /}
+    {else/}
+    {include file="public/right" /}
+    {/if}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+    <div class="mem_right">
+        <div class="mem_rtit">发布作品</div>
+        <div class="mem_rcon myot_part61">
+            <div class="mep_tright">
+                <div class="item">
+                    <span>标题</span>
+                    <div class="r_box">
+                        <input type="text" name="title" id="title">
+                    </div>
+                </div>
+                <div class="item">
+                    <span>简介</span>
+                    <div class="r_box">
+                        <textarea name="short" id="short"></textarea>
+                        <p class="tips_txt">简介将在封面显示</p>
+                    </div>
+                </div>
+                <div class="item type_item">
+                    <span>声明</span>
+                    <div class="r_box" id="type_name">
+                        <ul>
+                            <li>
+                                <span class="type_name">原创</span>
+                                <dl>
+                                    <dd><label><i></i><input type="radio" name="claim_type" value="原创；禁止匿名转载；禁止商业使用；禁止个人使用"><font>禁止匿名转载；禁止商业使用；禁止个人使用</font></label></dd>
+
+                                    <dd><label><i></i><input type="radio" name="claim_type" value="原创；禁止匿名转载；禁止商业使用"><font>禁止匿名转载；禁止商业使用</font></label></dd>
+                                    <dd><label><i></i><input type="radio" name="claim_type" value="原创；不限制作品用途"><font>不限制作品用途</font></label></dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <span class="type_name">非原创</span>
+                                <dl>
+                                    <dd><label><i></i><input type="radio" name="claim_type" value="非原创；临摹作品转载"><font>临摹作品转载</font></label></dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>作品类型</span>
+                    <div class="r_box">
+                        <dl class="type_list" id="production"></dl>
+                        <div class="type_box pr">
+                            <input type="button" value="选择领域（0/4）" class="type_btn">
+                            <div class="i_bar_nav type_2">
+                                <h2>常用</h2>
+                                <dl>
+                                    <dd>
+                                        <a href="javascript:void(0);">插图</a>
+                                        <div class="i_bar_more">
+                                            <h2>按字母顺序</h2>
+
+                                            {foreach $data['list'] as $key=>$val}
+                                            <div class="i_bar_box">
+                                                <h3>{$key}</h3>
+                                                {foreach $val as $k=>$v}
+                                                <p><a href="javascript:void(0);">{$v['name']}</a></p>
+                                                {/foreach}
+
+                                            </div>
+                                            {/foreach}
+                                        </div>
+                                    </dd>
+
+                                    {foreach $data['common'] as $key =>$val}
+                                    <dd><a href="javascript:void(0);" id="{$val.type_id}">{$val.name}</a></dd>
+                                    {/foreach}
+                                </dl>
+                            </div>
+                        </div>
+                        <p class="tips_txt">多选类型时，第一个类型将在列表中封面显示</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>上传图片</span>
+                    <div class="r_box upload_box">
+                        <ul class="clearfix" id="updateimgs">
+                            <li class="add"><input type="file" class="upload_img" name="upload_img[]" id="upload_img" accept="image/gif,image/jpeg,image/jpg,image/png"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>详细介绍</span>
+                    <div class="r_box">
+                        <textarea name="content" id="contents"></textarea>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>标签</span>
+                    <div class="r_box tag_box">
+                        <div class="tag_input">
+                            <i class="left_length">16</i>
+                            <input class="get_tag" type="text" name="tags" placeholder="空格或回车添加标签">
+                            <font class="tag_txt">0/5 标签</font>
+                        </div>
+                        <dl class="n_tag_list" id="tags"></dl>
+                        <dl class="tag_hot clearfix"><dd>热门标签1</dd><dd>热门标签2</dd></dl>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>上传封面</span>
+                    <div class="r_box">
+                        <div class="info_avatar" id="faseimg">
+                            <img src="__IMGPC__/micon74.png">
+                        </div>
+                        <div class="info_poster"></div>
+                    </div>
+                </div>
+
+
+                <div class="btn_list">
+                    <input type="button" value="浏 览" class="preview nb_t1">
+                    <input type="button" value="发 布" class="release nb_t2" onclick="getDatas(1);">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ava_bg poster_bg">
+    <div class="ava_wrap">
+        <i class="close"></i>
+        <h2>上传头像</h2>
+        <div class="ava_main clearfix">
+            <div class="img-container fl">
+                <img src="__IMGPC__/micon58.png" alt="Picture">
+            </div>
+            <div class="prev_container fr">
+                <div class="img-preview preview-md"></div>
+                <p>PC网站封面预览</p>
+                <div class="img-preview preview-bg"></div>
+                <p>手机版封面浏览</p>
+            </div>
+        </div>
+        <div class="control_btn">
+            <em class="icon1"></em>
+            <em class="icon2"></em>
+            <em class="icon3"></em>
+        </div>
+        <div class="ava_btn">
+            <div class="upload_btn"><span>上 传</span><input class="upload_pic" id="inputImage" name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png*"></div>
+            <input type="button" value="保 存" class="save_btn">
+        </div>
+    </div>
+</div>
+
+<div class="ipro_bg"></div>
+<i class="ipro_close"></i>
+<div class="ipro_popup">
+    <div class="ipro_inner">
+        <div class="ipro_content dpro_content">
+            <div class="ipro_wrap preview_wrap top">
+                <div class="ipro_left">
+                    <div class="ipro_piclist clearfix">
+                        <!-- <div class="box"><img realsrc="__IMGPC__/pic25.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic25.jpg"></div> -->
+                        <!-- <div class="box"><img realsrc="__IMGPC__/pic26.jpg" class="lazybg" data-lazyload-img="__IMGPC__/pic26.jpg"></div> -->
+                    </div>
+                    <div class="ipro_txt">
+                    <p></p>
+                        <!-- <p>Thanks for visiting!</p>
+                        <p>If you want to know more about Solo, please, visit our website, Twitter or Facebook Page </p>
+                        <p>If you want to know more about Solo, please, visit our website</p>
+                        <p>感谢观看！</p> -->
+                    </div>
+                    <!-- <div class="ipro_zan">
+                        <span class="icon"></span>
+                    </div> -->
+                    <!-- <div class="ipro_share"> -->
+                        <!-- <div class="icon_bg"><span class="icon"></span></div> -->
+                        <!-- <div class="share_box">
+                            <a href="" class="weibo"></a>
+                            <a href="" class="wechat"></a>
+                            <a href="" class="qq"></a>
+                            <a href="" class="ins"></a>
+                            <a href="" class="talk"></a>
+                            <a href="" class="facebook"></a>
+                            <a href="" class="twitter"></a>
+                        </div> -->
+                    <!-- </div> -->
+                </div>
+                <div class="ipro_right">
+                    <div class="ipro_right_bef">
+                        <div class="ipd_rtop">
+                            <div class="ipd_user clearfix">
+                                <div class="avatar">
+                                    <a href=""><span class="lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></span></a>
+                                    <div class="avatar_box">
+                                        <div class="avatar_wrap">
+                                            <div class="ava_top clearfix">
+                                                <a href=""><div class="ava_pic lazybg" data-lazyload-bg="__IMGPC__/avatar4.jpg"></div></a>
+                                                <div class="ava_txt">
+                                                    <a href=""><h2>Marco</h2></a>
+                                                    <p>设计师</p>
+                                                </div>
+                                                <a href="javascript:void(0);" class="ava_talk nb_t1">私 信</a>
+                                            </div>
+                                            <div class="ava_bot">
+                                                <ul class="clearfix">
+                                                    <li><span>T恤作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>设计作品</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>粉丝</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                    <li><span>话题</span>
+                                                        <a href=""><font>23</font></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text">
+                                    <a href=""><h2>Marco</h2></a>
+                                    <!-- <span class="follow nb_t2">关 注</span> -->
+                                </div>
+                            </div>
+                            <div class="ipd8">
+                                <div class="ipd_detail">
+                                    <div class="tag_list">
+                                        <h2>作品名称</h2>
+                                        <!-- <a href="">插画</a>，<a href="">界面设计</a>，<a href="">工业设计</a>，<a href="">建筑</a>，<a href="">交互设计</a> -->
+                                    </div>
+                                    <!-- <p class="des"><span class="view">0</span><span class="zan">0</span><span class="comment">0</span></p> -->
+                                    <div class="time">发布时间：{$today}</div>
+                                </div>
+                                <div class="ipd_tag">
+                                    <h2>Tags</h2>
+                                    <div>
+                                    <!-- <a href="">标签1</a><a href="">标签2</a><a href="">标签标签3</a><a href="">标签1</a><a href="">标签2</a> -->
+                                    </div>
+                                </div>
+                                <div class="ipd_rbot_wrap">
+                                    <!-- <div class="ipd_favar nb_t5"><i></i>收 藏</div> -->
+                                    <div class="ipd_exp2 clearfix">
+                                        <div class="ipd_exp_txt"><span>版权声明</span>
+                                            <div class="ipd_exp_box">
+                                                <p>原创；禁止匿名转载；禁止商业使用；<br/>禁止个人使用。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="ipd_rbot">
+                            <div class="share_box">
+                                <a href="" class="weibo"></a>
+                                <a href="" class="wechat"></a>
+                                <a href="" class="qq"></a>
+                                <a href="" class="ins"></a>
+                                <a href="" class="talk"></a>
+                                <a href="" class="facebook"></a>
+                                <a href="" class="twitter"></a>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="js-lightbox-wrap extras-hidden" id="lightbox-wrap">
+    <div class="js-blocking" id="lightbox-blocking" style="background-color: rgb(0, 0, 0);opacity: 1;">
+        <span class="lightbox-spinner"></span>
+    </div>
+    <div class="js-lightbox-inner-wrap" id="lightbox-inner-wrap">
+        <div class="js-img-wrap" id="lightbox-img-wrap">
+            <div class="lightbox-extra control prev js-control js-prev hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M36.8,36.4L30.3,30l6.5-6.4l-3.5-3.4l-10,9.8l10,9.8L36.8,36.4z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control next js-control js-next hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" width="60" height="60" viewBox="0 0 60 60" xml:space="preserve">
+                    <circle class="lightbox-icon-bg" cx="30" cy="30" r="30"></circle>
+                    <path class="lightbox-icon-arrow" d="M24.2,23.5l6.6,6.5l-6.6,6.5l3.6,3.5L37.8,30l-10.1-9.9L24.2,23.5z"></path>
+                </svg>
+            </div>
+            <div class="lightbox-extra control close js-control js-close">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0" y="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" fill="#FFF">
+                    <circle class="lightbox-icon-bg" cx="50" cy="50" r="47.5"></circle>
+                    <polygon class="lightbox-icon-close" points="64.5,39.8 60.2,35.5 50,45.7 39.8,35.5 35.5,39.8 45.7,50 35.5,60.2 39.8,64.5 50,54.3 60.2,64.5 64.5,60.2 54.3,50"></polygon>
+                </svg>
+            </div>
+            <div class="lightbox-contents js-contents"></div>
+        </div>
+    </div>
+</div>
+<div id="fancybox-loading"></div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/cropper.js"></script>
+
+<script>
+    $(function(){
+        //选择类型
+        $('.mep_tright .type_item label input').change(function() {
+            if($(this).prop("checked") == true){
+                $(this).parents('ul').find('label').removeClass('on');
+                $(this).parents('label').addClass('on');
+            }
+        });
+
+        //滚动条
+        $('.i_bar_more').mCustomScrollbar({
+            axis: "y",
+            scrollInertia: 100,
+            scrollButtons: {
+                enable: true,
+                scrollSpeed: 20
+            },
+            theme: "3d"
+        });
+
+        //显示领域
+        $('.type_box').click(function() {
+            $(this).find('.i_bar_nav').show();
+        });
+        //选中领域
+        $('.type_box .i_bar_nav a').click(function() {
+            var text = $(this).text();
+            $('.type_list').append('<dd>'+ text +'<i class="type_del"></i></dd>');
+            if($('.type_list dd').length == 4){
+                $('.type_box').hide();
+            }else{
+                $('.type_box').show();
+            }
+            $('.type_btn').val("选择领域（"+ $('.type_list dd').length +"/4）");
+        });
+        //删除选中领域
+        $(document).on('click', '.type_list dd i', function(event) {
+            var _this = $(this);
+            layer.confirm('确定删除该领域？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                _this.parents('dd').remove();
+                if($('.type_list dd').length == 4){
+                    $('.type_box').hide();
+                }else{
+                    $('.type_box').show();
+                }
+                $('.type_btn').val("选择领域（"+ $('.type_list dd').length +"/4）");
+            });
+        });
+        //点其他隐藏领域
+        $(document).on("click",function(e){
+            if($(e.target).closest(".i_bar_nav").length == 0 && $(e.target).parents(".type_box").length == 0){
+                $(".i_bar_nav").hide();
+            }
+        });
+
+        //标签字数
+        $('.get_tag').keyup(function(event){
+            var val_length = $('.get_tag').val().length;
+            var max_length = 16;
+            var left_length = max_length - val_length;
+            if(max_length <= val_length){
+                $('.get_tag').val($('.get_tag').val().slice(0,16));
+                left_length == 0;
+                $('.left_length').text("0");
+            }else{
+                $('.left_length').text(left_length);
+            }
+        });
+
+        //回车或者空格添加标签
+        $('.get_tag').keydown(function(event){
+            var get_tag_val = $('.get_tag').val();
+            var val = $.trim(get_tag_val);
+            if(val){
+                if(event.keyCode==13 || event.keyCode==32){
+                    if($('.n_tag_list dd').length >= 5){
+                        layer.msg("最多只能添加五个标签！");
+                        return false;
+                    }else{
+                        $('.n_tag_list').append('<dd>'+ val +'<i class="type_del"></i></dd>');
+                    }
+                    // console.log($('.n_tag_list dd').length);
+                    $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+                    $('.mep_tright .tag_input input').val("");
+                    if($('.n_tag_list dd').length != 0){
+                        $('.tag_box').addClass('active');
+                    }else{
+                        $('.tag_box').removeClass('active');
+                    }
+                }
+            }
+        });
+
+        //删除标签
+        $(document).on('click', '.n_tag_list dd i', function(event) {
+            var _this = $(this);
+            layer.confirm('确定删除该标签？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                _this.parents('dd').remove();
+                $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+                if($('.n_tag_list dd').length != 0){
+                    $('.tag_box').addClass('active');
+                }else{
+                    $('.tag_box').removeClass('active');
+                }
+            });
+        });
+
+        //热门标签
+        $('.mep_tright .tag_hot dd').click(function() {
+            var text = $(this).text();
+            if($('.n_tag_list dd').length >= 5){
+                layer.msg("最多只能添加五个标签！");
+                return false;
+            }else{
+                $('.n_tag_list').append('<dd>'+ text +'<i class="type_del"></i></dd>');
+            }
+            // console.log($('.n_tag_list dd').length);
+            $('.tag_txt').text($('.n_tag_list dd').length +"/5 标签");
+            if($('.n_tag_list dd').length != 0){
+                $('.tag_box').addClass('active');
+            }else{
+                $('.tag_box').removeClass('active');
+            }
+        });
+
+        //上传图片
+        $('.upload_img').click(function() {
+            if($('.upload_box li.uploading').length != 0){
+                layer.msg("还有图片在上传中，请稍等！")
+                return false;
+            }
+        });
+        $('.upload_img').change(function() {
+            if($(this).val()){
+                loadImageFile();//实时预览
+                //异步上传图片,传完返回图片链接src
+                // $('.upload_box li.uploading b').css({'background-image':'url('+ src +')'});
+                //模拟2秒上传完
+                setTimeout(function(){
+                    $('.upload_box li.uploading b').css({'background-image':'url('+ $('.upload_box li.uploading').css("background-image") +')'});
+                    $('.upload_box li.uploading').removeClass('uploading').addClass('uploaded');
+                }, 2000);
+            }
+        });
+
+        //删除上传图片
+        $(document).on('click', '.upload_box li.uploaded em', function(event) {
+            event.preventDefault();
+            var _this = $(this);
+            layer.confirm('确定删除该图片？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                _this.parents('li').remove();
+                //异步删图片
+            });
+        });
+
+        //浏览
+        $('.mep_tright .btn_list .preview').click(function() {
+            getDatas();
+            $('#fancybox-loading').fadeIn();
+            $('.ipro_bg').show();
+            $('html').addClass('enabled');
+            setTimeout(function() {
+                $('.ipro_popup').fadeIn();
+                $('#fancybox-loading').hide();
+                r_top_bot();
+            }, 0);
+        });
+
+         //关闭详情
+        $('.ipro_close').click(function() {
+            $('.ipro_popup').animate({ scrollTop: 0 }, 0);
+            $('.ipro_popup').hide();
+            $('.ipro_bg').hide();
+            $('html').removeClass('enabled bottom');
+        });
+    });
+</script>
+<script> //上传图片
+    oFReader = new FileReader(),
+    rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+
+    oFReader.onload = function (oFREvent) {
+      // console.log(oFREvent.target.result);
+      $('.upload_box ul').prepend('<li class="uploading" style="background-image: url('+ oFREvent.target.result +')"><i></i><em></em><b></b></li>')
+    };
+
+    function loadImageFile() {
+        if (document.getElementById("upload_img").files && document.getElementById("upload_img").files.length) {
+            var oFile = document.getElementById("upload_img").files[0];
+            if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }
+            oFReader.readAsDataURL(oFile);
+        }else{
+            $('.upload_box ul').prepend('<li class="uploading"><i></i><em></em><b></b></li>')
+            return;
+        }
+    }
+</script>
+<script>
+    $(function(){
+        var $image = $('.img-container > img'),
+            $dataX = $('#dataX'),
+            $dataY = $('#dataY'),
+            $dataHeight = $('#dataHeight'),
+            $dataWidth = $('#dataWidth'),
+            $dataRotate = $('#dataRotate'),
+            options = {
+                aspectRatio: 96 / 65,
+                preview: '.img-preview',
+                crop: function (data) {
+                    // console.log(Math.round(data.x));
+                    // console.log(Math.round(data.y));
+                    // console.log(Math.round(data.height));
+                    // console.log(Math.round(data.width));
+                    // console.log(Math.round(data.rotate));
+                }
+            };
+
+        $image.on({
+          'build.cropper': function (e) {
+            // console.log(e.type);
+          },
+          'built.cropper': function (e) {
+            // console.log(e.type);
+          },
+          'dragstart.cropper': function (e) {
+            // console.log(e.type, e.dragType);
+          },
+          'dragmove.cropper': function (e) {
+            // console.log(e.type, e.dragType);
+          },
+          'dragend.cropper': function (e) {
+            // console.log(e.type, e.dragType);
+          },
+          'zoomin.cropper': function (e) {
+            // console.log(e.type);
+          },
+          'zoomout.cropper': function (e) {
+            // console.log(e.type);
+          }
+        }).cropper(options);
+
+        //编辑头像
+        $('.img-container').click(function() {
+            if($('.ava_wrap').hasClass('active')){ return false; }
+            $('#inputImage').click();
+        });
+        var poster;
+        //确定上传头像
+        $('.save_btn').click(function() {
+            $('.info_avatar').append($image.cropper('getCroppedCanvas'));
+            $('.info_poster img').remove();
+            $('.info_poster').append("<img src='" + poster + "' style='transform: rotate(" + 90 * rotate_t + "deg);'>");
+            $('.ava_wrap').removeClass('active');
+            $('.ava_bg').fadeOut();
+            $image.cropper("destroy").cropper(options);
+            $('.upload_btn span').text("上 传");
+            $('.inputImage').val("");
+            $('.info_avatar,.info_poster').addClass('uploaded');
+        });
+        var rotate_t = 0;
+        $('.control_btn em.icon3').click(function() {
+            rotate_t ++;
+        });
+
+        //上传图片
+        var $inputImage = $('#inputImage'),
+            URL = window.URL || window.webkitURL,
+            blobURL;
+        // if (URL) {
+          $inputImage.change(function () {
+            rotate_t = 0;
+            var files = this.files,
+                file;
+
+            if (files && files.length) {
+              file = files[0];
+              if (/^image\/\w+$/.test(file.type)) {
+                if(file.size>5*1024*1024){
+                    layer.msg('上传的图片的大于5M,请重新选择');
+                    $inputImage.val('');
+                    return false;
+                }
+                blobURL = URL.createObjectURL(file);
+                $('.cropper-canvas').attr("src",blobURL);
+                poster = blobURL;
+                $image.one('built.cropper', function () {
+                  // URL.revokeObjectURL(blobURL); // Revoke when load complete
+                }).cropper('reset', true).cropper('replace', blobURL);
+                $inputImage.val('');
+                $('.upload_btn span').text("重新上传");
+                $('.ava_wrap').addClass('active');
+              } else {
+                layer.msg('请选择上传正确的图片格式！');
+              }
+            }else{
+                $inputImage.select();
+                $inputImage.blur();
+                if(document.selection){
+                    var imgSrc = document.selection.createRange().text;
+                }else{
+                    var imgSrc = obj.value.substring(obj.selectionStart,obj.selectionEnd);
+                }
+                $image.cropper('reset', true).cropper('replace', imgSrc);
+                poster = imgSrc;
+                $inputImage.val('');
+                $('.upload_btn span').text("重新上传");
+                $('.ava_wrap').addClass('active');
+            }
+          });
+        // } else {
+        //   $inputImage.parent().remove();
+        // }
+
+        //放大
+        $('.control_btn em.icon1').click(function() {
+            if($('.ava_wrap').hasClass('active')){
+                $image.cropper("zoom", 0.1)
+            }
+        });
+
+        //缩小
+        $('.control_btn em.icon2').click(function() {
+            if($('.ava_wrap').hasClass('active')){
+                $image.cropper("zoom", -0.1)
+            }
+        });
+
+        //旋转
+        $('.control_btn em.icon3').click(function() {
+            if($('.ava_wrap').hasClass('active')){
+                $image.cropper("rotate", 90)
+            }
+        });
+
+        //开启图片上传
+        $('.info_avatar').click(function() {
+            $('.ava_bg').fadeIn();
+        });
+
+        //关闭图片上传
+        $('.ava_wrap .close').click(function() {
+            if($('.ava_wrap').hasClass('active')){
+                layer.confirm('是否取消上传头像？', {
+                    title: false,
+                    closeBtn: 0,
+                    btn: ['取 消','确 定']
+                }, function(){
+                    layer.closeAll();
+                }, function(){
+                    $image.cropper("destroy");
+                    $('.ava_wrap').removeClass('active');
+                    $('.ava_bg').fadeOut();
+                    $('.upload_btn span').text("上 传");
+                    $('.inputImage').val("");
+                });
+            }else{
+                $image.cropper("destroy").cropper(options);
+                $('.ava_wrap').removeClass('active');
+                $('.upload_btn span').text("上 传");
+                $('.inputImage').val("");
+                $('.ava_bg').fadeOut();
+            }
+        });
+    });
+</script>
+<script>
+    $(function(){
+        r_top_bot();
+        $('.ipro_popup').scroll(function() {
+            r_top_bot();
+        });
+        $(window).resize(function() {
+            r_top_bot();
+        });
+
+        var ihtml = '';
+        $('.ipro_piclist img').each(function(index, el) {
+           $(this).attr("data-index",index);
+           ihtml += '<div data-slide-id="'+ index +'" class="js-slide" zoom-in="false"><div class="js-slide-content lightbox-content"><img data-src="'+ $(this).attr("realsrc") +'"></div></div>';
+        });
+        $('.js-contents').append(ihtml);
+
+        //详情左边图片放大
+        var pic_index = 0;
+        // $('.ipro_piclist img').click(function() {
+        //     pic_index = $(this).attr("data-index");
+        //     picCheck(pic_index);
+        //     $('.js-lightbox-wrap').fadeIn();
+        //     $('.js-contents .js-slide').eq(pic_index).show().siblings().hide();
+        //     picLoad(pic_index);
+        // });
+
+        $(document).on('click', '.ipro_piclist img', function() {
+            pic_index = $(this).attr("data-index");
+            picCheck(pic_index);
+            $('.js-lightbox-wrap').fadeIn();
+            $('.js-contents .js-slide').eq(pic_index).show().siblings().hide();
+            picLoad(pic_index);
+        });
+
+        $(document).on('click', '.js-slide-content', function() {
+            if($('html').hasClass('lightbox-zoomed')){
+                $('html').removeClass('lightbox-zoomed');
+            }else{
+                if($(this).parents('.js-slide').attr("zoom-in") == "true"){
+                    $('html').addClass('lightbox-zoomed');
+                }
+            }
+        });
+
+        $('.js-lightbox-wrap').hover(function() {
+            $(this).removeClass('extras-hidden')
+        }, function() {
+            $(this).addClass('extras-hidden');
+        });
+
+        //切换
+        $('#lightbox-inner-wrap .prev').click(function() {
+            pic_index = parseInt(pic_index)-1;
+            if(pic_index <= 0){
+                pic_index = 0;
+            }
+            picCheck(pic_index);
+            $('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+            picLoad(pic_index);
+        });
+
+        $('#lightbox-inner-wrap .next').click(function() {
+            pic_index = parseInt(pic_index)+1;
+            if(pic_index >= $('.ipro_piclist img').length){
+                pic_index = $('.ipro_piclist img').length - 1;
+            }
+            picCheck(pic_index);
+            $('.js-contents .js-slide').eq(pic_index).fadeIn().siblings().hide();
+            picLoad(pic_index);
+        });
+
+        //详情左边图片关闭
+        $('.js-close').click(function() {
+            $('.js-lightbox-wrap').fadeOut();
+        });
+
+        //详情左边点赞
+        // $('.ipro_zan .icon').click(function() {
+        //     if ($(this).parents('.ipro_zan').hasClass('on')) {
+        //         $(this).parents('.ipro_zan').removeClass('on');
+        //     } else {
+        //         $(this).parents('.ipro_zan').addClass('on');
+        //     }
+        // });
+
+        //详情左边展开分享按钮
+        // $('.ipro_share .icon').click(function() {
+        //     if ($(this).parents('.ipro_share').hasClass('on')) {
+        //         $(this).parents('.ipro_share').removeClass('on');
+        //     } else {
+        //         $(this).parents('.ipro_share').addClass('on');
+        //     }
+        // });
+
+        //详情右边滚动条
+        $('.ipro_right_bef .ipd_rtop .ipd8,.card_after .card_des,.i_bar_more').mCustomScrollbar({
+            axis: "y",
+            scrollInertia: 100,
+            scrollButtons: {
+                enable: true,
+                scrollSpeed: 20
+            },
+            theme: "3d"
+        });
+    });
+
+    //商品详情右边top+bot
+    function r_top_bot() {
+        $('.ipro_right_bef .ipd_rtop .ipd8').mCustomScrollbar("update");
+        var nDivHight = $(".ipro_popup").height();
+        var nScrollHight = $('.ipro_popup')[0].scrollHeight;
+        var nScrollTop = $('.ipro_popup')[0].scrollTop;
+        var pad = 80;
+        var bot_dis = 0;
+        if ($('.ipro_popup').scrollTop() < pad) {
+            $('.ipro_wrap').removeClass('top mid bot').addClass('top');
+            $('.ipro_right_bef .ipd_rbot').css({"position" : "absolute","top" : $('.ipro_popup').scrollTop() + $(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight() - pad});
+            $('.ipro_right_bef .ipd_rtop').css({"position" : "static","top" : "auto","height":$('.ipro_popup').scrollTop(),"height":$(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight() - pad + nScrollTop});
+        } else if ($('.ipro_popup').scrollTop() > pad && nScrollTop + nDivHight < nScrollHight - pad) {
+            $('.ipro_wrap').removeClass('top mid bot').addClass('mid');
+            $('.ipro_right_bef .ipd_rtop').css({"position" : "absolute","top" : $('.ipro_popup').scrollTop(),"height":$(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight()});
+            $('.ipro_right_bef .ipd_rbot').css({"position" : "absolute","top" : $('.ipro_popup').scrollTop() + $(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight()});
+        } else if (nScrollTop + nDivHight >= nScrollHight - pad) {
+            bot_dis = nScrollHight - nScrollTop - nDivHight;
+            $('.ipro_wrap').removeClass('top mid bot').addClass('bot');
+            $('.ipro_right_bef .ipd_rtop').css({"position" : "absolute","top" : $('.ipro_popup').scrollTop(),"height":$(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight() - pad});
+            $('.ipro_right_bef .ipd_rbot').css({"position" : "absolute","top" : $('.ipro_popup').scrollTop() + $(window).height() - $('.dpro_content .ipro_right .share_box').outerHeight() - pad + bot_dis});
+        }
+
+        if ($('.ipro_wrap').hasClass('top')) {
+            $('html').addClass('close_top');
+        } else {
+            $('html').removeClass('close_top');
+        }
+        if ($('.ipro_wrap').hasClass('bot')) {
+            $('html').addClass('bottom');
+            $('.float_right').css({ "bottom": "calc(5% + " + (pad - bot_dis) + "px)" })
+        } else {
+            $('html').removeClass('bottom');
+        }
+    }
+    function picCheck(pic_index){
+        var pic_length = $('.ipro_piclist img').length;
+        if(pic_index == 0){
+            $('.js-prev').addClass('hidden');
+        }else{
+            $('.js-prev').removeClass('hidden');
+        }
+        if(pic_index >= pic_length - 1){
+            $('.js-next').addClass('hidden');
+        }else{
+            $('.js-next').removeClass('hidden');
+        }
+    }
+    function picLoad(pic_index){
+        if($('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded") == true){
+            return false;
+        }
+        $('.js-contents .js-slide').eq(pic_index).find('img').attr("src", $('.js-contents .js-slide').eq(pic_index).find('img').attr("data-src"));
+        $('.js-contents .js-slide').eq(pic_index).find('img').bind('load',function(){
+            var nWidth = $(this).naturalWidth();
+            var nHeight = $(this).naturalHeight();
+            var w_h = nHeight * $(window).width() / nWidth;
+            if(nHeight > $(window).height() && w_h > $(window).height()){
+                $(this).parents('.js-slide').attr("zoom-in","true");
+                $(this).parents('.js-slide-content').addClass('zoomable');
+            }
+            $('.js-contents .js-slide').eq(pic_index).find('img').attr("loaded",true);
+        });
+    }
+    (function($){
+        var
+        props = ['Width', 'Height'],
+        prop;
+
+        while (prop = props.pop()) {
+        (function (natural, prop) {
+          $.fn[natural] = (natural in new Image()) ?
+          function () {
+          return this[0][natural];
+          } :
+          function () {
+          var
+          node = this[0],
+          img,
+          value;
+
+          if (node.tagName.toLowerCase() === 'img') {
+            img = new Image();
+            img.src = node.src,
+            value = img[prop];
+          }
+          return value;
+          };
+        }('natural' + prop, prop.toLowerCase()));
+        }
+      }(jQuery));
+</script>
+
+
+
+
+
+
+<!-- 2018*4*9 -->
+<script>
+    // 获取参数
+    function getDatas(issubmit)
+    {
+        var data = new Array();
+
+        data['title']       = $('#title').val();
+        data['shorts']      = $('#short').val();
+        data['claim_type']  = $("input[name='claim_type']:checked").val();
+        data['contents']    = $('#contents').val();
+
+        data['productions'] = new Array();
+        data['imgdatas']    = new Array();
+        data['tagss']       = new Array();
+        data['PCfaseimg']   = new Array();
+        data['wapfaseimg']   = new Array();
+
+        var production      = $("#production dd");
+        var imgs            = $("#updateimgs .uploaded");
+        var tags            = $("#tags dd");
+        var PCfaseimg       = $('#faseimg').children("canvas:last");
+
+        var wapfaseimg      = $('.info_poster img');
+        //console.dir(wapfaseimg);
+        //alert(1);
+        //alert(wapfaseimg);
+        //
+        for (var i = 0; production.length > i; i++)
+        {
+            data['productions'][i] = production.eq(i).attr('id');
+        };
+
+        for (var i = 0; imgs.length > i; i++) {
+            data['imgdatas'][i] = imgs.eq(i).css("background-image").replace('url("','').replace('")','');
+        };
+
+        for (var i = 0; tags.length > i; i++) {
+            data['tagss'][i] = tags.eq(i).text();
+        };
+
+        if (PCfaseimg[0]) {
+            data['PCfaseimg'] = convertCanvasToImage(PCfaseimg[0]);
+        };
+        //console.dir(data);
+
+
+        if (issubmit == 1)
+        {
+            ajxform(data)
+        }else{
+            updateWindData(data);
+        };
+    }
+
+    // 浏览显示是替换数据
+    function updateWindData(data)
+    {
+        $('.tag_list h2').html(data['title']);
+        $('.ipro_txt p').html(data['contents'].replace(/\n/g,'<\/p><p>'));
+        $('.ipd_exp_box p').html(data['claim_type']);
+
+
+        var imgHtml = "";
+        for (var i = 0; data['imgdatas'].length > i; i++)
+        {
+            imgHtml += '<div class="box"><img realsrc="'+data['imgdatas'][i]+'" src="'+data['imgdatas'][i]+'" class="lazybg" data-lazyload-suc="true" data-lazyload-img="'+data['imgdatas'][i]+'"></div>';
+        };
+        $('.ipro_piclist').html(imgHtml);
+
+
+        var ihtml = '';
+        $('.ipro_piclist img').each(function(index, el)
+        {
+           $(this).attr("data-index",index);
+           ihtml += '<div data-slide-id="'+ index +'" class="js-slide" zoom-in="false"><div class="js-slide-content lightbox-content"><img data-src="'+ $(this).attr("realsrc") +'"></div></div>';
+        });
+        $('.js-contents').html(ihtml);
+
+
+        var tagHtml = "";
+        for (var i = 0; data['tagss'].length > i; i++)
+        {
+            tagHtml += '<a href="javascript(void(0);)">'+data['tagss'][i]+'</a>';
+        };
+        $(".ipd_tag div").html(tagHtml);
+
+
+        var productionHtml = '<h2>标题</h2>';
+        if (data['productions'])
+        {
+            productionHtml += '<a href="javascript:void(0);">'+data['productions'].join("，")+'</a>';
+        };
+        $(".ipd_detail .tag_list").html(productionHtml);
+
+    }
+
+    // 转换canvas为img标签
+    function convertCanvasToImage(canvas)
+    {
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        return image.src;
+    }
+
+    // 提交表单
+    function ajxform(data)
+    {
+        // var fd = new FormData();
+        // fd.append("username", data['title']);
+        // fd.append("username2", data['imgdatas']);
+        // fd.append("username", "Groucho");
+        // fd.append("username", "Groucho");
+        // fd.append("username", "Groucho");
+        // fd.append("username", "Groucho");
+        // fd.append("username", "Groucho");
+        // fd.append("username", "Groucho");
+        //console.log(data);
+
+        $.ajax({
+            url: "{:url('user/ajx_finds')}",
+            type: "POST",
+            data:{'PCfaseimg':data['PCfaseimg'],'claim_type':data['claim_type'],'contents':data['contents'],'imgdatas':data['imgdatas'],'productions':data['productions'],'shorts':data['shorts'],'tagss':data['tagss'],'title':data['title'],'wapfaseimg':data['wapfaseimg']},
+            // processData: false,  // 告诉jQuery不要去处理发送的数据
+            // contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
+            success: function(e){
+               console.log(e);
+            },
+            error: function(){
+                alert('请求失败');
+            }
+        });
+        return false;
+    }
+</script>

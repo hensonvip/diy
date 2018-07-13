@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+	{include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">我的消息</div>
+		<div class="mem_rcon msg_rcon">
+			<ul class="msg_rlist">
+				<li><a href="{:url('User/my_message')}">
+					<h2>通知</h2>
+					{if $unread_count.message gt 0}<p>{$unread_count.message}</p>{/if}
+				</a></li>
+				<li class="on"><a href="{:url('User/personal_letter')}">
+					<h2>私信</h2>
+					{if $unread_count.letter gt 0}<p>{$unread_count.letter}</p>{/if}
+				</a></li>
+				<li><a href="{:url('User/my_hudong')}">
+					<h2>互动</h2>
+					{if $unread_count.hudong gt 0}<p>{$unread_count.hudong}</p>{/if}
+				</a></li>
+			</ul>
+			<div class="msg_rwrap clearfix">
+				<div class="msg_rleft">
+					<ul>
+						{foreach name="$letter_users" item="item"}
+						<li {if $item.receive_user_id eq $receive_user_id}class="on"{/if} data-id="{$item.receive_user_id}">
+							<a href="{:url('User/personal_letter', ['receive_user_id' => $item.receive_user_id])}">
+								<em {if $item.is_read eq 0}class="active"{/if} data-id="{$item.receive_user_id}"></em>
+								<font class="lazybg" data-lazyload-bg="{if $item.headimg}{$webUrl}{$item.headimg}{else /}__IMGPC__/avatar8.jpg{/if}"></font>
+								<span>{if $item.nickname}{$item.nickname}{else /}{$item.user_name}{/if}</span>
+								<i></i>
+							</a>
+						</li>
+						{/foreach}
+					</ul>
+				</div>
+				<div class="msg_rright">
+					<div class="msg_rrtop">
+						<div class="msg_box clearfix">
+							{foreach name="$letters" item="item"}
+							{if $item.user_id eq $user_id}
+							<div class="msg_word fr">
+								<div class="msg_wtop clearfix">
+									<span class="info"><font>{$item.user_name}</font><em style="background-image: url({if $item.headimg}{$webUrl}{$item.headimg}{else /}__IMGPC__/avatar8.jpg{/if});"></em></span>
+									<div class="des dc_pr"><i class="del"></i><div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes" data-id="{$item.msg_id}">确 定</span></div>
+									</div>
+									<div class="des_date">{$item.msg_time}</div>
+								</div>
+								<div class="msg_wbot">
+									<p>{$item.msg_content}</p>
+								</div>
+							</div>
+							{else /}
+							<div class="msg_word fl">
+								<div class="msg_wtop clearfix">
+									<span class="info"><em style="background-image: url({if $item.headimg}{$webUrl}{$item.headimg}{else /}__IMGPC__/avatar8.jpg{/if});"></em><font>{$item.user_name}</font></span>
+									<div class="des dc_pr"><i class="tag"></i><i class="del"></i><div class="dc_firm"><span class="dc_no">取 消</span><span class="dc_yes" data-id="{$item.msg_id}">确 定</span></div></div>
+									<div class="des_date">{$item.msg_time}</div>
+								</div>
+								<div class="msg_wbot">
+									<p>{$item.msg_content}</p>
+								</div>
+							</div>
+							{/if}
+							{/foreach}
+						</div>
+					</div>
+					<div class="msg_rrbot">
+						<form action="{:url('User/send_letter')}" method="post">
+							<textarea name="msg_content" id="msg_content" placeholder="请输入私信内容"></textarea>
+							<div class="btn tr">
+								<input type="hidden" name="receive_user_id" id="receive_user_id" value="{$receive_user_id}">
+								<input type="submit" value="发 送" class="msg_rrb_sub nb_t1">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{include file="public/report" /}
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+	$(function(){
+		//滚动条
+		$('.msg_rleft,.msg_rrtop').mCustomScrollbar({
+	        axis: "y",
+	        scrollInertia: 100,
+	        scrollButtons: {
+	            enable: true,
+	            scrollSpeed: 20
+	        },
+	        theme: "3d"
+	    });
+		//删除左边列表
+		$('.msg_rleft li i').click(function(e) {
+			var _this = $(this);
+			var receive_user_id = _this.siblings('em').attr('data-id');
+			e.preventDefault();
+			layer.confirm('确定删除该聊天记录？', {
+				title: false,
+				closeBtn: 0,
+				btn: ['取 消','确 定'] //按钮
+			}, function(){
+				layer.closeAll();
+			}, function(){
+				$.ajax({
+				   type: "post",
+				   url: "{:url('User/remove_letter_user')}",
+				   dataType: 'json',
+				   data:{receive_user_id:receive_user_id},
+				   success: function(res){
+				        // _this.parents('li').remove();
+				        location.href = "{:url('User/personal_letter')}";
+				   }
+				});
+			});
+		});
+
+		//聊天内容标记
+		var fav_this;
+		$('.msg_wtop i.tag').click(function() {
+			fav_this = $(this);
+			var report_obj = fav_this.parent('.dc_pr').siblings('.info').children('font').text();
+			$('.rep_name').text(report_obj);
+			var msg_id = fav_this.siblings('.dc_firm').children('.dc_yes').attr('data-id');
+			$('#msg_id').val(msg_id);
+
+            $('.rep_bg').fadeIn();
+		});
+
+		//举报
+	    $('.rep_form .rep_sub').click(function() {
+	    	var msg_id = $('#msg_id').val();
+	    	var reason = $('#reason').val();
+	        var _this = $(this);
+	        layer.confirm('确定要举报该私信？', {
+	            title: false,
+	            closeBtn: 0,
+	            btn: ['取 消','确 定'] //按钮
+	        }, function(){
+	            layer.closeAll();
+	        }, function(){
+	        	$.ajax({
+	        	   type: "post",
+	        	   url: "{:url('User/do_letter_report')}",
+	        	   dataType: 'json',
+	        	   data:{msg_id:msg_id, reason:reason},
+	        	   success: function(data){
+	        	   		layer.open({
+	        	            content: data.message,
+	        	            btn: '确定',
+	        	            shadeClose: false,
+	        	            yes: function(index){
+	        	                layer.close(index);
+	        	            }
+	        	        });
+	        	        $('.rep_bg').hide();
+	        	        fav_this.addClass('on');
+	        	   }
+	        	});
+	        });
+	    });
+
+	    $('.rep_wrap .del').click(function() {
+	        $('.rep_bg').fadeOut();
+	    });
+
+		//删除右边列表
+		// $('.msg_wtop i.del').click(function(e) {
+		// 	var _this = $(this);
+		// 	layer.confirm('确定删除该聊天内容？', {
+		// 		title: false,
+		// 		closeBtn: 0,
+		// 		btn: ['取 消','确 定'] //按钮
+		// 	}, function(){
+		// 		layer.closeAll();
+		// 	}, function(){
+		// 		_this.parents('.msg_word').remove();
+		// 	});
+		// });
+
+        $('.msg_wtop i.del').click(function() {
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        $('.dc_firm .dc_yes').click(function(event) {
+        	var _this = $(this);
+        	var receive_user_id = parseInt('{$receive_user_id}');
+        	var msg_id = _this.attr('data-id');
+        	$.ajax({
+        		type: "post",
+        	   	url: "{:url('User/remove_letter')}",
+        	   	dataType: 'json',
+        	   	data:{receive_user_id:receive_user_id, msg_id:msg_id},
+        	   	success: function(res){
+        	   		_this.parents('.msg_word').remove();
+        	   		// alert($('.msg_box').html());
+        	   		if (!$.trim($('.msg_box').html())) {
+        	   			location.href = "{:url('User/personal_letter')}";
+        	   		}
+        	   	}
+        	});
+        });
+
+       	$('.msg_rrb_sub').click(function(event) {
+       		var msg_content = $.trim($('#msg_content').val());
+       		var receive_user_id = $('#receive_user_id').val();
+       		if (msg_content.length == 0) {
+       			layer.open({
+       			    content: '请输入私信内容',
+       			    btn: '确定',
+       			    shadeClose: false,
+       			    yes: function(index){
+       			        layer.close(index);
+       			        // location.reload();
+       			    }
+       			});
+       		} else {
+       			$.ajax({
+       				url: "{:url('User/send_letter')}",
+       				type: 'POST',
+       				dataType: 'json',
+       				data: {receive_user_id: receive_user_id, msg_content: msg_content},
+       				beforeSend: function(){
+       				     layer.msg('消息发送中，请耐心等待...');
+       				},
+       				success: function(res) {
+       					if (res.code == 200) {
+       						layer.open({
+       						    content: res.message,
+       						    btn: '确定',
+       						    shadeClose: false,
+       						    yes: function(index){
+       						        location.reload();
+       						    }
+       						});
+       					} else {
+       						layer.open({
+       						    content: res.message,
+       						    btn: '确定',
+       						    shadeClose: false,
+       						    yes: function(index){
+       						        layer.close(index);
+       						    }
+       						});
+       					}
+       				}
+       			});
+       			return false;
+       		}
+       	});
+
+       	var receive_user_id = parseInt('{$receive_user_id}');
+       	$('.msg_rleft').find('em').each(function(index, el) {
+       		if ($(this).attr('data-id') == receive_user_id) {
+       			$(this).removeClass('active');
+       		}
+       	});
+	});
+</script>
+

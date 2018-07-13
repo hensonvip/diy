@@ -1,0 +1,208 @@
+{include file="public/header" /}
+<link rel="stylesheet" type="text/css" href="__EXTENDWAP__/head/css/cropper.min.css">
+<link rel="stylesheet" type="text/css" href="__EXTENDWAP__/head/css/mui.min.css">
+<style type="text/css">
+    #image{    display: block;
+    width: 100%;
+    height: 40px;
+    /* position: absolute; */
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 5px;}
+    .img_btn{width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-image: url('__IMGWAP__/head_btn.png');
+    display: block;
+    font-size: 16px;
+    border-radius: 5px;}
+</style>
+
+
+<body data-psd-width="840" >
+<header class="pr hg ">
+    <a href="{:url('User/index')}"><div class="pa back on"></div></a>
+    <h1 class="tc col" style="color: #fff;">头像</h1>
+</header>   
+<div class="content ">
+    <form action="" id="myForm" enctype="multipart/form-data">
+    <div id="showResult">
+        
+        <div class="img_btn" style="width: 55%;margin: 0 auto;margin-top: 10px;color:#fff;">
+            <input id="image" type="file" name="headimg" accept="image/*" />
+        </div>
+        
+
+        <div id="changeAvatar" style="margin-top: 35px;">
+            <img src="{$webUrl}/{$data.headimg}"  onerror="showImgDelay(this,'__EXTENDWAP__/head/image/default.jpg','2')" style="max-width: 100px;margin-top: 10px;margin: 0 auto;display:block;">
+        </div>
+    </div>
+    <div id="showEdit" style="display: none;width:100%;height: 100%;position: absolute;top:49;left: 0;z-index: 9;">
+        <div style="width:100%;position: absolute;top:10px;left:0px;">
+            <button class="mui-btn" data-mui-style="fab" id='cancleBtn' style="margin-left: 10px;">取消</button>
+            <button class="mui-btn" data-mui-style="fab" data-mui-color="primary" id='confirmBtn' style="float:right;margin-right: 10px;">确定</button>
+        </div>
+        <div id="report">
+          <img src="" style="width: 300px;height:300px"> 
+      </div>
+        
+    </div>
+    <div style="width:98%; margin:50px auto;display:none;">
+        <textarea name="txt" rows="10" id="basetxt" style="width:100%; border-radius:5px" onclick="this.checked = true" placeholder="base64码" ></textarea>
+    </div>
+    </form>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+
+<script type="text/javascript" src="__EXTENDWAP__/head/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="__EXTENDWAP__/head/js/lrz6.mobile.min.js"></script> 
+<script type="text/javascript" src="__EXTENDWAP__/head/dist/lrz.all.bundle.js"></script>
+<script type="text/javascript" src="__EXTENDWAP__/head/js/cropper.min.js"></script>
+<script type="text/javascript">
+$(function() {
+
+    function toFixed2(num) {
+        return parseFloat(+num.toFixed(2));
+    }
+    
+    $('#cancleBtn').on('click', function() {
+        $("#showEdit").fadeOut();
+        $('#showResult').fadeIn();
+    });
+
+    $('#confirmBtn').on('click', function() {
+        $("#showEdit").fadeOut();
+
+        var $image = $('#report > img');
+        var dataURL = $image.cropper("getCroppedCanvas");
+        var imgurl = dataURL.toDataURL("image/jpeg", 0.5);
+        $("#changeAvatar > img").attr("src", imgurl);
+        $("#basetxt").val(imgurl);
+        $('#showResult').fadeIn();
+
+        $.ajax({
+            type: "post",
+            url: "{:Url('User/do_headicon')}",
+            dataType: 'text',
+            data:{headimg:imgurl},
+            success: function(data){
+                if(data){
+                    var msg = '上传成功！';
+                }else{
+                    var msg = '上传失败！';
+                }
+                layer.open({
+                    content: msg
+                    ,skin: 'msg'
+                    ,time: 2 //2秒后自动关闭
+                });
+                return false;
+            }  
+        });
+        //禁止页面刷新
+        return false;
+
+    });
+
+    function cutImg() {
+        $('#showResult').fadeOut();
+        $("#showEdit").fadeIn();
+        var $image = $('#report > img');
+        $image.cropper({
+            aspectRatio: 1 / 1,
+            autoCropArea: 0.7,
+            strict: true,
+            guides: false,
+            center: true,
+            highlight: false,
+            dragCrop: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            zoom: -0.2,
+            checkImageOrigin: true,
+            background: false,
+            minContainerHeight: 400,
+            minContainerWidth: 300
+        });
+    }
+
+    function doFinish(startTimestamp, sSize, rst) {
+        var finishTimestamp = (new Date()).valueOf();
+        var elapsedTime = (finishTimestamp - startTimestamp);
+        //$('#elapsedTime').text('压缩耗时： ' + elapsedTime + 'ms');
+
+        var sourceSize = toFixed2(sSize / 1024),
+            resultSize = toFixed2(rst.base64Len / 1024),
+            scale = parseInt(100 - (resultSize / sourceSize * 100));
+        $("#report").html('<img src="' + rst.base64 + '" style="width: 100%;height:100%">');
+        cutImg();
+    }
+
+    $('#image').on('change', function() {
+        var startTimestamp = (new Date()).valueOf();
+        var that = this;
+        lrz(this.files[0], {
+                width: 800,
+                height: 800,
+                quality: 0.7
+            })
+            .then(function(rst) {
+                //console.log(rst);
+                doFinish(startTimestamp, that.files[0].size, rst);
+                return rst;
+            })
+            .then(function(rst) {
+                // 这里该上传给后端啦
+                // 伪代码：ajax(rst.base64)..
+                /*var fd = new FormData(document.getElementById('myForm'));
+                var xhr = new XMLHttpRequest();
+                xhr.open('post', "{:Url('User/do_headicon')}");
+                xhr.send(fd);
+                xhr.onreadystatechange = function(){
+                    if ( xhr.readyState == 4 && xhr.status == 200 ) {
+                　　　　var res = xhr.responseText;
+                        if(res=='1') {location.reload();}
+                　　}
+                };
+                return rst;*/
+            })
+            .then(function(rst) {
+                // 如果您需要，一直then下去都行
+                // 因为是Promise对象，可以很方便组织代码 \(^o^)/~
+            })
+            .catch(function(err) {
+                // 万一出错了，这里可以捕捉到错误信息
+                // 而且以上的then都不会执行
+
+                alert(err);
+            })
+            .always(function() {
+                // 不管是成功失败，这里都会执行
+            });
+    });
+
+});
+
+//加载图片出错时，加载其他图片
+function showImgDelay(imgObj,imgSrc,maxErrorNum){  
+    if(maxErrorNum>0){ 
+        imgObj.onerror=function(){
+            showImgDelay(imgObj,imgSrc,maxErrorNum-1);
+        };
+        setTimeout(function(){
+            imgObj.src=imgSrc;
+        },500);
+        maxErrorNum=parseInt(maxErrorNum)-parseInt(1);
+    }
+}
+</script>

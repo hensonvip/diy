@@ -1,0 +1,19 @@
+{include file="public/header" /}
+
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $(function(){
+        //设置不允许点遮罩关闭
+        layer.open({
+            content: '{$msg}',
+            btn: '确定',
+            shadeClose: false,
+            yes: function(){
+                location.href = '{$url}';
+            }
+        });
+    })
+
+</script>

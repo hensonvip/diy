@@ -1,0 +1,436 @@
+{include file="public/header" /}
+<style type="text/css">
+    .sps3 a{width: 49.9%;}
+    .nav_title{line-height: 0.9rem;font-size: 0.4rem;color: #666;border-left: 3px solid #c01414;padding-left: 0.2rem;}
+    .tur5 .tur5_list{padding:0px;}
+    .tur5 .fpx .item{padding:0px 0.3rem;}
+    .coid{padding-left:0.3rem;padding-right:0.3rem;}
+    select{padding: 0.2rem;border: 1px solid #ccc;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr hg ">
+    <a href="{:url('User/index')}"><div class="pa back on"></div></a>
+    <h1 class="tc col" style="color: #fff">申请入驻</h1>
+</header>   
+{if $info.contacts_name eq ''}
+<div class="sps sps3 clearfix">
+    <a class="on" href="javascript:;">个人</a>
+    <a href="{:url('Supplier/apply_enter_company')}">公司</a>
+</div>
+{/if}
+<div class="content ">
+    <div class="con11">
+        <div class="tur5">
+             <div class="tur5_list fpx  bgc">
+             <form action="{:url('Supplier/do_apply_enter')}" method="post" enctype="multipart/form-data" style="padding-top:0.3rem;" name="apply_form" id="apply_form" onsubmit="return checkForm();">
+                <p class="nav_title">个人信息</p>
+                <!-- <div class="item clearfix item3">
+                    <span ><font color="red">*</font>店铺名称：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入店铺名称" name="company_name" id="company_name" value="{$info.company_name}">
+                    </div>
+                </div> -->
+                
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>姓名：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入姓名" name="contacts_name" id="contacts_name" value="{$info.contacts_name}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>联系人电话：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入联系人电话" name="contacts_phone" id="contacts_phone" value="{$info.contacts_phone}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>电子邮箱：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入电子邮箱" name="email" id="email" value="{$info.email}">
+                    </div>
+                </div>
+                <div class="item clearfix item3" {if $info.province_name neq ''}style="height:2.2rem;"{/if} >
+                    <span ><font color="red">*</font>联系地址：</span>
+                    <div class="gr fr clearfix" {if $info.province_name neq ''}style="height:2.2rem;"{/if} >
+                        <input type="hidden" id="pkey" value="0">
+                        <select name="province" id="province" onChange="getRegionC()">
+                            <option value="0">请选择</option>
+                            {foreach $regionP as $key => $vo}
+                            <option value="{$vo.region_id}" key="{$vo.pkey}">{$vo.region_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="city" id="city" onChange="getRegionD()">
+                            <option value="0">请选择</option>
+                        </select>
+                        <select name="district" id="district">
+                            <option value="0">请选择</option>
+                        </select><br/>
+                        {if $info.province_name neq ''}{$info.province_name} {$info.city_name} {$info.district_name}{/if}
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>详细地址：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入详细地址" name="address" id="address" value="{$info.address}">
+                    </div>
+                </div>
+
+                <p class="nav_title" style="margin-top:0.3rem;">身份证信息</p>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>身份证号码：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入身份证号码" name="id_card_no" id="id_card_no" value="{$info.id_card_no}">
+                    </div>
+                </div>
+                <div class="coid clearfix bgc">
+                    <span class="coid_l">手持身份证照片：</span>
+                    <div class="coid_r">
+                        <div class="adb23">
+                            <div class="uploadimg clearfix">
+                                <div class="obm fl">
+                                    <div class="upload_box">
+                                        <span class="btn_upload" style="float:left;margin-right:0.2rem;"><input type="file" class="upload_pic" name="handheld_idcard" id="handheld_idcard" onchange="javascript:setImagePreviews('handheld_idcard','handheld_idcard_box','168px','100px');" /></span>
+                                        <div id="handheld_idcard_box">{if $info.handheld_idcard}<img src="{$webUrl}/{$info.handheld_idcard}" height="93">{/if}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="coid clearfix bgc">
+                    <span class="coid_l">身份证正面：</span>
+                    <div class="coid_r">
+                        <div class="adb23">
+                            <div class="uploadimg clearfix">
+                                <div class="obm fl">
+                                    <div class="upload_box">
+                                        <span class="btn_upload" style="float:left;margin-right:0.2rem;"><input type="file" class="upload_pic" name="idcard_front" id="idcard_front" onchange="javascript:setImagePreviews('idcard_front','idcard_front_box','168px','100px');" /></span>
+                                        <div id="idcard_front_box">{if $info.idcard_front}<img src="{$webUrl}/{$info.idcard_front}" height="93">{/if}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="coid clearfix bgc">
+                    <span class="coid_l">身份证反面：</span>
+                    <div class="coid_r">
+                        <div class="adb23">
+                            <div class="uploadimg clearfix">
+                                <div class="obm fl">
+                                    <div class="upload_box">
+                                        <span class="btn_upload" style="float:left;margin-right:0.2rem;"><input type="file" class="upload_pic" name="idcard_reverse" id="idcard_reverse" onchange="javascript:setImagePreviews('idcard_reverse','idcard_reverse_box','168px','100px');" /></span>
+                                        <div id="idcard_reverse_box">{if $info.idcard_reverse}<img src="{$webUrl}/{$info.idcard_reverse}" height="93">{/if}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="nav_title" style="margin-top:0.3rem;">开户银行信息</p>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>银行开户名：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入银行开户名" name="bank_account_name" id="bank_account_name" value="{$info.bank_account_name}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>个人银行账号：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入个人银行账号" name="bank_account_number" id="bank_account_number" value="{$info.bank_account_number}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>开户支行名称：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入开户银行支行名称" name="bank_name" id="bank_name" value="{$info.bank_name}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="#ccc">*</font>支行联行号：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="选填" name="bank_code" id="bank_code" value="{$info.bank_code}">
+                    </div>
+                </div>
+
+                <p class="nav_title" style="margin-top:0.3rem;">店铺经营信息</p>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>店铺名称：</span>
+                    <div class="gr fr clearfix">
+                        <input class="fl" type="text" placeholder="请输入店铺名称" name="supplier_name" id="supplier_name" value="{$info.supplier_name}">
+                    </div>
+                </div>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>店铺分类：</span>
+                    <div class="gr fr clearfix">
+                        <select name="type_id" id="type_id" style="width:100%;">
+                            <option value="0">请选择</option>
+                            {foreach $type_id_arr as $key => $vo}
+                            <option value="{$vo.str_id}" {if $info.type_id eq $vo.str_id}selected="selected"{/if} >{$vo.str_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                
+                {if ($info.status eq 0 and $info.applynum eq 0) or ($info.status eq -1 and $info.applynum eq 3)}
+                <p class="nav_title" style="margin-top:0.3rem;">入驻协议</p>
+                <div class="item clearfix item3">
+                    <span ><font color="red">*</font>入驻协议</span>
+                    <div class="gr fr clearfix">
+                        <input id="agreement" name="agreement" type="checkbox" checked="checked" style="width:20px;height:0.4rem;margin-top: 0.4rem;" value="1">
+                        <label>我已阅读并同意<a href="{:url('Article/news_details',array('id'=>$info['article_id'],'device'=>'wap'))}">《入驻协议》</a></label>
+                    </div>
+                </div>
+                {/if}
+                
+                </form>
+             </div>
+        </div>
+    </div>
+    <!-- {if ($info.status eq 0 and $info.applynum eq 0) or ($info.status eq -1 and $info.applynum eq 3)}
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" onclick="$('#apply_form').submit();">{if($info.applynum eq 0)}提交{else}更新{/if}申请</a>
+    </div>
+    {/if} -->
+    
+    {if $info.status eq 0 and $info.applynum eq 0}
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" onclick="$('#apply_form').submit();">提交申请</a>
+    </div>
+    {/if}
+
+    {if $info.status eq 0 and $info.applynum eq 3}
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" style="background:#ccc;">等待审核</a>
+    </div>
+    {/if}
+
+    {if $info.status eq -1 and $info.applynum eq 3}
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" onclick="$('#apply_form').submit();">更新申请</a>
+    </div>
+    {/if}
+
+    {if $info.status eq 1 and $info.applynum eq 3}
+    <div class="lif clearfix">  
+        <a class="hg a3" href="javascript:;" style="background:#ccc;">已通过审核</a>
+    </div>
+    {/if}
+
+
+</div>
+
+</body>
+</html>
+
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/pace.min.js"></script>
+<script type="text/javascript">
+//下面用于多图片上传预览功能
+function setImagePreviews(file_id,box_id,width,height) {
+    var docObj = document.getElementById(file_id);
+    var box = document.getElementById(box_id);
+    box.innerHTML = "";
+    var fileList = docObj.files;
+    for (var i = 0; i < fileList.length; i++) {            
+        box.innerHTML += "<div style='float:left' > <img id='img_" + box_id + "'  /> </div>";
+        var imgObjPreview = document.getElementById("img_"+box_id); 
+        if (docObj.files && docObj.files[i]) {
+            //火狐下，直接设img属性
+            imgObjPreview.style.display = 'block';
+            imgObjPreview.style.width = 'auto';
+            imgObjPreview.style.height = height;
+            //imgObjPreview.src = docObj.files[0].getAsDataURL();
+            //火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+            imgObjPreview.src = window.URL.createObjectURL(docObj.files[i]);
+        }
+        else {
+            //IE下，使用滤镜
+            docObj.select();
+            var imgSrc = document.selection.createRange().text;
+            var localImagId = document.getElementById("img_" + box_id);
+            //必须设置初始大小
+            localImagId.style.width = width;
+            localImagId.style.height = height;
+            //图片异常的捕捉，防止用户修改后缀来伪造图片
+            try {
+                localImagId.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+                localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+            }
+            catch (e) {
+                alert("您上传的图片格式不正确，请重新选择!");
+                return false;
+            }
+            imgObjPreview.style.display = 'none';
+            document.selection.empty();
+        }
+    }  
+    return true;
+}
+</script>
+
+<script type="text/javascript">
+    function getRegionC(){
+        var options=$("#province option:selected"); //获取选中的项
+        var pkey = options.attr('key');
+        $('#pkey').val(pkey);
+        var province_id = options.val();
+        if(province_id == 0){
+            $('#city').html('<option value="0">请选择</option>');
+            $('#district').html('<option value="0">请选择</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionC')}",
+            dataType: 'json',
+            data:{pkey:pkey},
+            success: function(data){
+                var l = '<option value="0">请选择</option>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" key="'+data[i].ckey+'">'+data[i].region_name+'</option>';
+                 }
+                 $('#city').html(l);
+                 return false;
+            }  
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function getRegionD(){
+        var options=$("#city option:selected"); //获取选中的项
+        var ckey = options.attr('key');
+        var pkey = $('#pkey').val();
+        var city_id = options.val();
+        if(city_id == 0){
+            $('#district').html('<option value="0">请选择</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionD')}",
+            dataType: 'json',
+            data:{pkey:pkey,ckey:ckey},
+            success: function(data){
+                var l = '<option value="0">请选择</option>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" >'+data[i].region_name+'</option>';
+                 }
+                 $('#district').html(l);
+                 return false;
+            }  
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>
+
+<script type="text/javascript">
+    $('#agreement').click(function(){
+        if($('#agreement').val() == 1){
+            $('#agreement').val(0);
+        }else{
+            $('#agreement').val(1);
+        }
+    });
+
+    function checkForm(){
+        /*var company_name = $('#company_name').val();
+        if(company_name == ''){
+            $('#company_name').focus();
+            layer.open({content: '请输入店铺名称！',skin: 'msg',time: 2});return false;
+        }*/
+
+        var contacts_name = $('#contacts_name').val();
+        if(contacts_name == ''){
+            $('#contacts_name').focus();
+            layer.open({content: '请输入姓名！',skin: 'msg',time: 2});return false;
+        }
+
+        var contacts_phone = $('#contacts_phone').val();
+        if(contacts_phone == ''){
+            $('#contacts_phone').focus();
+            layer.open({content: '请输入联系人电话！',skin: 'msg',time: 2});return false;
+        }
+
+        var email = $('#email').val();
+        if(email == ''){
+            $('#email').focus();
+            layer.open({content: '请输入邮箱！',skin: 'msg',time: 2});return false;
+        }
+        var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        if(!myreg.test(email)){
+            $('#email').focus();
+            layer.open({content: '请输入有效的邮箱！',skin: 'msg',time: 2});return false;
+        }
+
+        var address = $('#address').val();
+        if(address == ''){
+            $('#address').focus();
+            layer.open({content: '请输入详细地址！',skin: 'msg',time: 2});return false;
+        }
+
+        var id_card_no = $('#id_card_no').val();
+        if(id_card_no == ''){
+            $('#id_card_no').focus();
+            layer.open({content: '请输入身份证号码！',skin: 'msg',time: 2});return false;
+        }
+
+        var bank_account_name = $('#bank_account_name').val();
+        if(bank_account_name == ''){
+            $('#bank_account_name').focus();
+            layer.open({content: '请输入银行开户名！',skin: 'msg',time: 2});return false;
+        }
+
+        var bank_account_number = $('#bank_account_number').val();
+        if(bank_account_number == ''){
+            $('#bank_account_number').focus();
+            layer.open({content: '请输入个人银行账号！',skin: 'msg',time: 2});return false;
+        }
+
+        var bank_name = $('#bank_name').val();
+        if(bank_name == ''){
+            $('#bank_name').focus();
+            layer.open({content: '请输入开户支行名称！',skin: 'msg',time: 2});return false;
+        }
+
+        var bank_code = $('#bank_code').val();
+        if(bank_code == ''){
+            $('#bank_code').focus();
+            layer.open({content: '请输入支行联行号！',skin: 'msg',time: 2});return false;
+        }
+
+        var supplier_name = $('#supplier_name').val();
+        if(supplier_name == ''){
+            $('#supplier_name').focus();
+            layer.open({content: '请输入店铺名称！',skin: 'msg',time: 2});return false;
+        }
+
+        var type_id = $('#type_id').val();
+        if(type_id == 0){
+            $('#type_id').focus();
+            layer.open({content: '请选择店铺分类！',skin: 'msg',time: 2});return false;
+        }
+
+        var agreement = $('#agreement').val();
+        if(agreement == 1){
+            return true;
+        }else{
+            layer.open({
+                content: '请阅读并同意入驻协议！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            return false;
+        }
+    }
+</script>

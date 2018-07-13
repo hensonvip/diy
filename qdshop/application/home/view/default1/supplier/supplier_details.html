@@ -1,0 +1,53 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<div class="ss2 hg"> 
+    <div class="pa back " onclick="history.go(-1)"></div>
+    <div class="search bgc" onclick="window.location.href='{:url('Goods/search')}'">
+        <input type="text" placeholder="搜索">
+    </div> 
+    <div class="fx clearfix">
+        <em class="icon fl"></em>
+    </div>
+</div>
+<div class="dpu clearfix">
+    <div class="fl dpu_l clearfix">
+        <div class="pic fl"><img src="{$webUrl}{$data.logo}"></div>
+        <div class="tit fl">
+            <h2>{$data.supplier_name}</h2>
+            <em class="icon" style="float:left;"></em><div style="color:#fff;float:left;margin-top: 0.05rem;margin-left: 0.05rem;">{$data.rank}</div>
+        </div>  
+    </div>
+    <div class="fr dpu_r">
+         <h2>{$data.fensi}</h2>
+         <p>粉丝数</p>
+    </div>
+</div>
+<div class="content">
+    <div class="hm1"><a href=""><img src="__IMGWAP__/img3.png"></a></div>
+    <div class="lve bgc">
+        <ul class="clearfix">
+            {include file="supplier/supplier_goods_ajax" /}
+        </ul>
+    </div>
+    <div class="hm2 mt3"><a href=""><img src="__IMGWAP__/img4.png"></a></div>
+    <div class="bgc dp5 clearfix">
+        <a href="javascript:;" onclick="guanzhu({$data.supplier_id});">关注店铺</a>
+        <a href="javascript:;">联系客服</a>
+    </div>
+</div>  
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/common.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $(function(){
+
+})
+</script>

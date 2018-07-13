@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="ds_tableCell" style="background-image: url(__IMGPC__/abg7.jpg);">
+	<div class="act_wrap act_box7">
+        <div class="act_left" style="background-image: url(__IMGPC__/apic7.jpg);">
+            <div class="act_lbox">
+                <h2>拥有你的原创T恤<br/>传播你的文化符号</h2>
+                <div class="text">
+                    <p>零风险 零成本 零压力</p>
+                    <p>传播及售出你的创作</p>
+                    <p>轻松获取佣金</p>
+                </div>
+                <a href="{:url('Diy/index')}" class="btn">我要设计</a>
+            </div>
+        </div>
+        <div class="act_right">
+            <div class="act_rbox">
+                <ul class="act_rul clearfix">
+                    {foreach $data.list as $key =>$vo}
+                    <li>
+                        <div class="icon"><img src="{$webUrl}/{$vo.file_url}"></div>
+                        <h2>{$vo.title}</h2>
+                        <div class="line"></div>
+                        <div class="txt">
+                            <p>{$vo.content}</p>
+                        </div>
+                    </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--main end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+    $('body').css({"padding-top":"0"});
+    $('.float_right').hide();
+	$('.ds_tableCell').css("height",$(window).height());
+    $('.act_wrap').height(($(window).height() - 70) * .7934);
+    checkHeight();
+    $(window).resize(function() {
+        checkHeight();
+        $('.ds_tableCell').css("height",$(window).height());
+        $('.act_wrap').height(($(window).height() - 70) * .7934);
+    });
+});
+function checkHeight(){
+    if($(window).height() < 800){
+        $('.act_box7').addClass('small');
+    }else{
+        $('.act_box7').removeClass('small');
+    }
+}
+</script>
+

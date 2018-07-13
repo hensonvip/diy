@@ -1,0 +1,78 @@
+{if !empty($voteUserList_results.data.list)}
+
+    {foreach name="$voteUserList_results.data.list" key="rkkey" item="rk"}
+
+    <?php $num =  ($voteUserList_results['data']['pager']['page']-1)*$voteUserList_results['data']['pager']['page_size']+$rkkey+1; ?>
+
+    <li class="fix">
+
+        <div class="p_dl fl fix">
+
+        	<div class="p_number d_ib vm">{$num}</div>
+
+            <div class="p_img d_ib vm">
+
+                <img style="width: 79px;height: 79px;border-radius:50%" class="lazybg" data-lazyload-img="__IMGPC__/refer/p_peo2.png" data-lazyload-suc="true" src="/{$rk.face_card}">
+
+            </div>
+
+            <div class="p_word d_ib vm">
+
+                <a href=""><h4>{$rk.name}</h4></a>
+
+                <h5>粉丝 <span class="fansi">{$rk.fansi}</span></h5>
+
+                <p>
+
+                    <a href="javascript:void(0)" user_id="{$rk.user_id}" value="{$rk.is_user_attention}" class="guanzhu p_no nb_t2 {if $rk.is_user_attention neq 0}followed{/if}">{if $rk.is_user_attention eq 1}已关注{elseif $rk.is_user_attention eq 2 }互相关注{else}关注{/if}</a>
+
+                    <a href="javascript:;" class="ava_talk author nb_t1">私 信</a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="p_dr fr fix">
+
+            <div class="middle">
+
+                {if $match_cycle neq 1}<p class="fix"><font>票数</font> <span>{$rk.vote_count}</span></p>{/if}
+
+                <p class="fix"><font>点赞</font> <span>{$rk.zan_count}</span></p>
+
+            </div>
+
+        </div>
+
+    </li>
+
+    {/foreach}
+
+{else}
+
+    <li class="fix">
+
+        {$voteUserList_results.message}
+
+    </li>
+
+    {if $is_ajax eq 1}
+
+        <script type="text/javascript">
+
+            $(function(){
+
+                layer.msg('没有数据了');
+
+            })
+
+        </script>
+
+    {/if}
+
+{/if}
+

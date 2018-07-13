@@ -1,0 +1,108 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<div class="ss" style="position: fixed;"> 
+    <div class="header2">
+        <div class="search bgc" onclick="window.location.href='{:url('Goods/search')}'">
+            <input type="text" placeholder="搜索">
+        </div> 
+        <a href="{:url('User/my_message')}">
+        <div class="inf icon">
+            <em class="hc">{$userinfo.message_count}</em>
+        </div>
+        </a>
+    </div>
+</div>  
+<div class="content" style="margin-top:1rem;">
+    <div class="fenlei">
+        <div class="fenl">
+            <ul class="clearfix">
+                <li class="on"><a href="javascript:;">品牌分类</a></li>
+                {if $data.category_list}
+                {foreach $data.category_list as $key => $vo}
+                <li><a href="javascript:;">{$vo.name}</a></li>
+                {/foreach}
+                {else}
+                <li><a href="javascript:;">没分类数据</a></li>
+                {/if}
+            </ul>   
+        </div>      
+        <div class="fenr fr">
+            {if $data.brand_list}
+                <div class="fen_con " style="display:block;" >
+                    <ul class="clearfix bgc" style="padding-bottom:1.5rem;">
+                        {foreach $data.brand_list as $key => $vo}
+                        <li style="text-align:center;">
+                            <a href="{:url('Goods/index',array('brand'=>$vo['brand_id']))}">
+                                <div><img src="{$webUrl}/{$vo.brand_logo}" style="width:1.8rem;height:1.8rem;"></div>
+                                <p>{$vo.brand_name}</p>
+                            </a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {else}
+                <div class="fen_con " >
+                <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+                <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+                </div>
+            {/if}
+            {if $data.category_list}
+                {foreach $data.category_list as $key => $vo}
+                <div class="fen_con " >
+                    {foreach $vo.cat_ad as $kk => $vv}
+                    {if $kk eq 0}<div class="fen_pic tc"><img src="{$webUrl}/{$vv.img_url}"></div>{/if}
+                    {/foreach}
+                    <ul class="clearfix bgc">
+                        {foreach $vo.cat_id as $kk => $vv}
+                        <li style="text-align:center;">
+                            <a href="{:url('Goods/index',array('cat_id'=>$vv['id']))}">
+                                <div><img src="{$webUrl}/{$vv.cat_nameimg}" style="width:1.8rem;height:1.8rem;"></div>
+                                <p>{$vv.name}</p>
+                            </a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                </div>
+                {/foreach}
+            {else}
+                <div class="fen_con " >
+                <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+                <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+                </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+{include file="public/footer" /}
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script>
+    //单独页面上的js
+    $(function() {
+        tab('.fenl li','.fenr>.fen_con');
+
+        function tab(a,b){
+        $(a).click(
+            function(){
+                var i = $(this).index();
+                if($(this).hasClass('on')){
+                }else{
+                    $(this).addClass('on').siblings().removeClass('on');
+                    $(b).hide();
+                    $(b).eq(i).fadeIn();
+                }
+                
+            }
+        )
+    }
+
+    });
+</script>

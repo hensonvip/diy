@@ -1,0 +1,208 @@
+{include file="pageheader_bd.htm"}
+{insert_scripts files="../js/utils.js,selectzone_bd.js,validator.js"}
+
+<form enctype="multipart/form-data" action="font.php" method="post" name="theForm" onsubmit="return validate()" class="layui-form layui-form-pane">
+    <div class="layui-tab layui-tab-card">
+        <div class="layui-tab-content">
+            <!--通用信息-->
+            <div class="layui-tab-item layui-show">
+                <!--字体名称-->
+                <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} 字体名称</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" placeholder="请输入字体名称" autocomplete="off" name="font_name" value="{$font.font_name|escape}">
+                    </div>
+                </div> -->
+
+                <!--字体分类-->
+                <!-- {if $font.type_id >= 0} -->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} 字体分类</label>
+                    <div class="layui-input-block">
+                        <select name="type_id" lay-filter="sel_type_id">
+                            <option value="0">请选择...</option>
+                            {$type_select}
+                        </select>
+                    </div>
+                </div>
+                <!-- {else} -->
+                <input type="hidden" name="type_id" value="-1" />
+                <!-- {/if} -->
+
+                <!--字体图片-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} 字体图片</label>
+                    <div class="layui-input-block">
+                        <input type="file" name="font_img" style="margin-left:10px;margin-top:5px;">
+                        <span class="narrow-label">
+                            或输入图片地址
+                            <input name="font_img" type="text" value="{$font.font_img|escape}" class="layui-input" />
+                            <font color="red">缩略图最佳尺寸比例：16:9（800x450）</font>
+                        </span>
+                        {if $font.font_img neq ''}<br/><br/><img src="/{$font.font_img}" style="max-height:100px;">{/if}
+                    </div>
+                </div>
+
+                <!--字体文件-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} 字体文件</label>
+                    <div class="layui-input-block">
+                        <input type="file" name="font_file" style="margin-left:10px;margin-top:5px;">
+                        <span class="narrow-label">
+                            或输入地址
+                            <input name="font_file" type="text" value="{$font.font_file|escape}" class="layui-input" />
+                            <font color="red">字体文件后缀名为“.ttf”</font>
+                        </span>
+                    </div>
+                </div>
+
+                <!--兼容IE字体文件-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$lang.require_field} 兼容IE字体文件</label>
+                    <div class="layui-input-block">
+                        <input type="file" name="font_file_ie" style="margin-left:10px;margin-top:5px;">
+                        <span class="narrow-label">
+                            或输入地址
+                            <input name="font_file_ie" type="text" value="{$font.font_file_ie|escape}" class="layui-input" />
+                            <font color="red">字体文件后缀名为“.eot”</font>
+                        </span>
+                    </div>
+                </div>
+
+                <!--是否显示-->
+                {if $form_action eq 'insert'}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_show" value="1" checked title="显示">
+                            <input type="radio" name="is_show" value="0" title="不显示">
+                        </div>
+                    </div>
+                {else}
+                    {if $font.type_id >= 0}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$lang.require_field} 是否显示</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_show" value="1" {if $font.is_show eq 1}checked{/if} title="显示">
+                            <input type="radio" name="is_show" value="0" {if $font.is_show eq 0}checked{/if} title="不显示">
+                        </div>
+                    </div>
+                    {else}
+                    <input type="hidden" name="is_show" value="1" />
+                    {/if}
+                {/if}
+
+                <!--排序-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" autocomplete="off" name="sort_order" value="{$font.sort_order|default:100}">
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                layui.use('form', function(){
+                    var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+                    form.render(); //更新全部
+                });
+            </script>
+
+            <div class="button-div">
+                <input type="hidden" name="act" value="{$form_action}" />
+                <input type="hidden" name="id" value="{$font.font_id}" />
+                <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+                <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script language="JavaScript">
+
+var font_id = {$font.font_id|default:0};
+var elements  = document.forms['theForm'].elements;
+var sz        = new SelectZone(1, elements['source_select'], elements['target_select'], '');
+
+{literal}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+function validate()
+{
+  var validator = new Validator('theForm');
+  {if $font.type_id >= 0}
+    validator.isNullOption('type_id','没有选择字体分类');
+  {/if}
+{/literal}
+
+{literal}
+
+  return validator.passed();
+}
+
+document.getElementById("tabbar-div").onmouseover = function(e)
+{
+    var obj = Utils.srcElement(e);
+
+    if (obj.className == "tab-back")
+    {
+        obj.className = "tab-hover";
+    }
+}
+
+document.getElementById("tabbar-div").onmouseout = function(e)
+{
+    var obj = Utils.srcElement(e);
+
+    if (obj.className == "tab-hover")
+    {
+        obj.className = "tab-back";
+    }
+}
+
+document.getElementById("tabbar-div").onclick = function(e)
+{
+    var obj = Utils.srcElement(e);
+
+    if (obj.className == "tab-front")
+    {
+        return;
+    }
+    else
+    {
+        objTable = obj.id.substring(0, obj.id.lastIndexOf("-")) + "-table";
+
+        var tables = document.getElementsByTagName("table");
+        var spans  = document.getElementsByTagName("span");
+
+        for (i = 0; i < tables.length; i++)
+        {
+            if (tables[i].id == objTable)
+            {
+                tables[i].style.display = (Browser.isIE) ? "block" : "table";
+            }
+            else
+            {
+                tables[i].style.display = "none";
+            }
+        }
+        for (i = 0; spans.length; i++)
+        {
+            if (spans[i].className == "tab-front")
+            {
+                spans[i].className = "tab-back";
+                obj.className = "tab-front";
+                break;
+            }
+        }
+    }
+}
+{/literal}
+
+</script>
+{include file="pagefooter.htm"}

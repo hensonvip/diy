@@ -1,0 +1,117 @@
+<!-- $Id: originality_info.htm 16780 2009-11-09 09:28:30Z sxc_shop $ -->
+{include file="pageheader_bd.htm"}
+{insert_scripts files="../js/utils.js,selectzone_bd.js,validator.js"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form enctype="multipart/form-data" action="originality_list.php" method="post" name="theForm" class="layui-form layui-form-pane" onsubmit="return validate()">
+<div class="layui-tab layui-tab-card">
+
+    <div class="layui-tab-content">
+        <!--通用信息-->
+        <div class="layui-tab-item layui-show">
+            <!--比赛名-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.require_field} {$lang.name}</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" placeholder="请输入比赛名" autocomplete="off" name="name" value="{$originality.name|escape}" style="width:80%;">
+                </div>
+            </div>
+            <!-- 征集起始时间 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <a href="javascript:showNotice2('noticeGoodsSN');" title="{$lang.form_notice}">
+                        <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                    </a>
+                    {$lang.require_field}{$lang.lab_collect_time}
+                </label>
+                <div class="layui-input-block">
+                    <input name="collect_start_time" type="text" id="collect_start_time" class="layui-input" value='{$originality.collect_start_time}' readonly="readonly" {if empty($originality.collect_start_time)} onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" {/if} /> - 
+                    <input name="collect_end_time" type="text" id="collect_end_time" class="layui-input" value='{$originality.collect_end_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                    <span class="notice-span" {if $help_open}style="display:none" {else} style="display:initial" {/if} id="noticeGoodsSN">起始时间，创建后将无法更改</span>
+                </div>
+            </div>
+            <!-- 投票起始时间 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    {$lang.require_field}{$lang.lab_vote_time}
+                </label>
+                <div class="layui-input-block">
+                    <input name="vote_start_time" type="text" id="vote_start_time" class="layui-input" value='{$originality.vote_start_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" /> - 
+                    <input name="vote_end_time" type="text" id="vote_end_time" class="layui-input" value='{$originality.vote_end_time}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                </div>
+            </div>
+            <!-- 公示开始时间 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    <a href="javascript:showNotice2('noticeGoodsSN2');" title="{$lang.form_notice}">
+                        <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                    </a>
+                    {$lang.require_field}{$lang.lab_publicity_time}
+                </label>
+                <div class="layui-input-block">
+                    <input name="publicity_start_time" type="text" id="publicity_start_time" class="layui-input" value='{$originality.publicity_start_time}' readonly="readonly" {if empty($originality.publicity_start_time)} onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" {/if} />
+                    <span class="notice-span" {if $help_open}style="display:none" {else} style="display:initial" {/if} id="noticeGoodsSN2">公示时间，创建后将无法更改</span>
+                </div>
+            </div>
+            <!--是否显示-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.is_show}</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="is_show" value="1" {if $originality.is_show eq 1}checked{/if} title="{$lang.isopen}"> 
+                    <input type="radio" name="is_show" value="0" {if $originality.is_show eq 0}checked{/if} title="{$lang.isclose}"> 
+                </div>
+            </div>
+
+            <!--排序-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">{$lang.sort_order}</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" name="sort_order" value="{$originality.sort_order}" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <tr><td>{$FCKeditor}</td></tr>
+            </div>
+
+
+        </div>
+
+        <script type="text/javascript">
+            layui.use('form', function(){
+                var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+                form.render(); //更新全部
+            });
+        </script>
+
+        <div class="button-div">
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="old_name" value="{$originality.old_name}"/>
+            <input type="hidden" name="id" value="{$originality.id}" />
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <!-- <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" /> -->
+        </div>
+    </div>
+</div>
+
+
+<script language="JavaScript">
+
+{literal}
+
+function validate()
+{
+  var validator = new Validator('theForm');
+  validator.required('name', "比赛名不能为空");
+  validator.required('collect_start_time', "征集开始时间不能为空");
+  validator.required('collect_end_time', "征集结束时间不能为空");
+  validator.required('vote_start_time', "投票开始时间不能为空");
+  validator.required('vote_end_time', "投票结束时间不能为空");
+  validator.required('publicity_start_time', "公示时间不能为空");
+
+  return validator.passed();
+}
+
+{/literal}
+
+</script>
+{include file="pagefooter.htm"}

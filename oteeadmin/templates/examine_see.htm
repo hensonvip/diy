@@ -1,0 +1,228 @@
+{include file="pageheader.htm"}
+
+<style>
+	/* SIMPLE DEMO STYLES */
+	body {
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 12px;
+		line-height: 1.6;
+	}
+	.container img {
+		width: 100%;
+	}
+	.container  {
+		position: relative;
+		z-index: 1;
+	}
+	.container .pull-left {
+		width: 55%;
+		float: left;
+		margin: 20px 20px 20px -80px;
+	}
+
+	.img-zoom img{
+		width:auto;
+		height:100px;
+		float: left;
+	}
+	.check input{
+		display: inline-block;
+		margin-top: 10px;
+	}
+	.layui-input, .layui-select, .layui-textarea{
+		background-color: #e6e6e6;
+	}
+</style>
+<!--审核时间、设计师会员、设计师等级、设计作品名称、设计作品领域、文字简介、标签、上传的图片-->
+
+<div class="container">
+<form enctype="multipart/form-data" action="find_list.php" method="post" name="theForm" class="layui-form layui-form-pane">
+	<div class="layui-tab layui-tab-card">
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<!--作品标题-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						作品标题
+					</label>
+					<div class="layui-input-block">
+						<input class="layui-input" disabled type="text" placeholder="请输入分类名" autocomplete="off" name="title" value="{$find_data.title}" style="width:60%;">
+
+					</div>
+				</div>
+				<!--内容简介-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						作品简介
+					</label>
+					<div class="layui-input-initial">
+						<textarea name="cat_desc" disabled placeholder="请输入内容" class="layui-textarea" style="float:left;width:45%;">{$find_data.short}</textarea>
+					</div>
+				</div>
+				<!--作品标题-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						声明类型
+					</label>
+					<div class="layui-input-block">
+						<input class="layui-input" type="text" disabled placeholder="请输入分类名" autocomplete="off" name="cat_name" value="{$find_data.title}" style="width:60%;">
+
+					</div>
+				</div>
+				<!--作品标题-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						作品领域
+					</label>
+					<div class="layui-input-block">
+						<input class="layui-input" disabled type="text" placeholder="请输入分类名" autocomplete="off" name="cat_name" value="{$find_data.title}" style="width:60%;">
+					</div>
+				</div>
+				<!--作品图片-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						作品图片
+					</label>
+					<div class="img-zoom" >
+						<img  src="images/palm.jpg" data-action="zoom"/>
+						<img  src="images/palm.jpg" data-action="zoom"/>
+						<img  src="images/palm.jpg" data-action="zoom"/>
+						<img  src="images/palm.jpg" data-action="zoom"/>
+					</div>
+				</div>
+				<!--作品封面-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						封面
+					</label>
+					<div class="layui-input-block">
+						<div class="img-zoom"  >
+							<img style="width:auto;height:100px;" src="images/palm.jpg" data-action="zoom"/>
+						</div>
+					</div>
+				</div>
+				<!--文字内容-->
+				<div class="layui-form-item">
+					<label class="layui-form-label">
+						文字内容
+					</label>
+					<div class="layui-input-initial">
+						<textarea name="cat_desc" disabled placeholder="请输入内容" class="layui-textarea" style="float:left;width:45%;">{$find_data.content}</textarea>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+					<label class="layui-form-label">
+						选择审核结果
+					</label>
+					<div class="check" >
+						<span>不处理<input  type="radio"   value="1"    name="checkboxes"   checked="checked" style="display:inline "/></span>
+						<span>不通过<input  type="radio"   value="2"    name="checkboxes"  style="display:inline "/></span>
+						<span>通过<input  type="radio"   value="3"    name="checkboxes" style="display:inline " /></span>
+					</div>
+				</div>
+			</div>
+			<!--文字内容-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">
+					备注理由
+				</label>
+				<div class="layui-input-initial">
+					<textarea style="background-color: #fff;" name="cat_desc" placeholder="请输入内容" class="layui-textarea" style="float:left;width:45%;"></textarea>
+				</div>
+			</div>
+	</div>
+			<input type="hidden" name="find_id" value="{$find_data.find_id}" />
+			<div class="button-div">
+				<input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+				<!--<input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />-->
+			</div>
+		</div>
+	</div>
+
+</form>
+</div>
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="http://www.jq22.com/jquery/bootstrap-3.3.4.js"></script>
+<script type="text/javascript" src="js/img_js/zoom.js"></script>
+<script language="JavaScript">
+	<!--
+	document.forms['theForm'].elements['cat_name'].focus();
+	/**
+	 * 检查表单输入的数据
+	 */
+	function validate()
+	{
+		validator = new Validator("theForm");
+		validator.required("cat_name",      catname_empty);
+		if (parseInt(document.forms['theForm'].elements['grade'].value) >10 || parseInt(document.forms['theForm'].elements['grade'].value) < 0)
+		{
+			validator.addErrorMsg('{$lang.grade_error}');
+		}
+		return validator.passed();
+	}
+	onload = function()
+	{
+		// 开始检查订单
+		startCheckOrder();
+	}
+
+	/**
+	 * 新增一个筛选属性
+	 */
+	function addFilterAttr(obj)
+	{
+		var src = obj.parentNode.parentNode;
+		var tbl = document.getElementById('tbody-attr');
+
+		var validator  = new Validator('theForm');
+		var filterAttr = document.getElementsByName("filter_attr[]");
+
+		if (filterAttr[filterAttr.length-1].selectedIndex == 0)
+		{
+			validator.addErrorMsg(filter_attr_not_selected);
+		}
+
+		for (i = 0; i < filterAttr.length; i++)
+		{
+			for (j = i + 1; j <filterAttr.length; j++)
+			{
+				if (filterAttr.item(i).value == filterAttr.item(j).value)
+				{
+					validator.addErrorMsg(filter_attr_not_repeated);
+				}
+			}
+		}
+
+		if (!validator.passed())
+		{
+			return false;
+		}
+
+		var row  = tbl.insertRow(tbl.rows.length);
+		var cell = row.insertCell(-1);
+		cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addFilterAttr)(.*)(\[)(\+)/i, "$1removeFilterAttr$3$4-");
+		filterAttr[filterAttr.length-1].selectedIndex = 0;
+
+		var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+		form.render(); //更新全部
+	}
+
+	/**
+	 * 删除一个筛选属性
+	 */
+	function removeFilterAttr(obj)
+	{
+		var row = rowindex(obj.parentNode.parentNode);
+		var tbl = document.getElementById('tbody-attr');
+
+		tbl.deleteRow(row);
+	}
+
+
+	//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

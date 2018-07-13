@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/index.css" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/css_reset.css" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/style.css" />
+<link rel="stylesheet" type="text/css" href="themes/default/css/common.css" />
+<script type="text/javascript" src="themes/default/js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="themes/default/js/jump.js"></script>
+<script type="text/javascript" src="themes/default/js/tab.js"></script>
+<script type="text/javascript" src="themes/default/js/home_index.js"></script>
+<script type="text/javascript">
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+{insert_scripts files='jquery.json.js,transport.js'}
+{insert_scripts files='common.js,index.js'}
+</head>
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_index.lbi" --><!-- #EndLibraryItem -->
+    <div class="banner">
+		<!-- #BeginLibraryItem "/library/index_ad.lbi" --><!-- #EndLibraryItem -->
+        <div class="right-sidebar">
+			<!-- #BeginLibraryItem "/library/recommend_right_promotion.lbi" --><!-- #EndLibraryItem -->
+            <div class="proclamation">
+					<ul class="tabs-nav">
+                    	<li class="tabs-selected">
+							<h3>商城公告</h3>
+						</li>
+						<li>
+							<h3>招商入驻</h3>
+						</li>
+					</ul>
+					<div class="tabs-panel">
+						{$shop_notice}
+					</div>
+					<div class="tabs-panel">
+						<a href="apply_index.php" title="申请商家入驻；已提交申请，可查看当前审核状态。" class="store-join-btn" target="_blank">&nbsp;</a>
+						<a href="supplier" target="_blank" class="store-join-help">
+							<i class="icon-cog"></i>
+							登录商家管理中心
+						</a>
+					</div>
+			</div>
+        </div>
+    </div>
+    <div style="margin-top:70px">
+    <!-- #BeginLibraryItem "/library/index_ad_groups.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    <div class="w1210 index-sale" >
+			<!-- #BeginLibraryItem "/library/stores_tab.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/recommend_promotion.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/recommend_hot_sale.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/recommend_hot.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/recommend_best.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/recommend_new.lbi" --><!-- #EndLibraryItem -->
+	</div>
+    <div class="w1210 floor-list">
+			<div class="floor"></div>
+			<!-- TemplateBeginEditable name="商品分类楼层" -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" --><!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+	</div>
+    <script type="text/javascript" src="themes/default/js/indexPrivate.min.js"></script>
+    <!-- #BeginLibraryItem "/library/right_sidebar.lbi" --><!-- #EndLibraryItem -->
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript">
+{foreach from=$lang.clips_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+$(function(){
+	$('.cancel-order').click(function(){
+		$('.pop-mask').show();
+		$('.pop-compare').show().css({'top':($(window).height()-$('.pop-compare').height())/2});
+		$('.sure-btn').attr('href',$(this).prev('.none').attr('href'));
+
+	})
+})
+</script>
+</html>

@@ -1,0 +1,65 @@
+{include file="pageheader.htm"}
+
+<form action="bonus.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--类型金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.bonus_type_id}</label>
+            <div class="layui-input-block">
+                <select name="bonus_type_id">
+                    {html_options options=$type_list selected=$smarty.get.id}
+                </select>
+            </div>
+        </div>
+        <!--红包数量-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.send_bonus_count}</label>
+            <div class="layui-input-block">
+                <input type="text" name="bonus_sum" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" class="layui-input" />
+                <span class="notice-span" >{$lang.bonus_sn_notic}</span>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="send_by_print" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['bonus_sum'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("bonus_type_id",   bonus_type_empty);
+    validator.required("bonus_sum",   bonus_sum_empty);
+    validator.isNumber("bonus_sum",   bonus_sum_number, true);
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

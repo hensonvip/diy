@@ -1,0 +1,199 @@
+{include file="pageheader.htm"}
+<script type="text/javascript" src="../js/My97DatePicker/WdatePicker.js"></script>
+
+<form action="bonus.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--类型名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.type_name}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入类型名称" autocomplete="off" name="type_name" value="{$bonus_arr.type_name}" >
+            </div>
+        </div>
+        <!--红包金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('Type_money_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.require_field} {$lang.type_money}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入红包金额" autocomplete="off" name="type_money" value="{$bonus_arr.type_money}" >
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Type_money_a">{$lang.type_money_notic}</span>
+            </div>
+        </div>
+        <!--最小订单金额-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('NoticeMinGoodsAmount');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.min_goods_amount}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="min_goods_amount" value="{$bonus_arr.min_goods_amount}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.]/g,'')" >
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="NoticeMinGoodsAmount">{$lang.notice_min_goods_amount}</span>
+            </div>
+        </div>
+        <!--发放类型-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.send_method}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="send_type" value="0" {if $bonus_arr.send_type eq 0} checked="true" {/if} title="{$lang.send_by[0]}" lay-filter="send_method"/>
+                <input type="radio" name="send_type" value="1" {if $bonus_arr.send_type eq 1} checked="true" {/if} title="{$lang.send_by[1]}" lay-filter="send_method"/>
+                <input type="radio" name="send_type" value="2" {if $bonus_arr.send_type eq 2} checked="true" {/if} title="{$lang.send_by[2]}" lay-filter="send_method"/>
+                <input type="radio" name="send_type" value="3" {if $bonus_arr.send_type eq 3} checked="true" {/if} title="{$lang.send_by[3]}" lay-filter="send_method"/>
+            </div>
+        </div>
+        <!--订单下限-->
+        <div class="layui-form-item" id="1" style="display:none">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('Order_money_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.min_amount}
+            </label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="min_amount" type="text" id="min_amount" value="{$bonus_arr.min_amount}" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.]/g,'')" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Order_money_a">{$lang.order_money_notic}</span>
+            </div>
+        </div>
+        <!--发放起始日期-->
+        <div class="layui-form-item" id="start_date">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('Send_start_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.send_startdate}
+            </label>
+            <div class="layui-input-block">
+                <input name="send_start_date" type="text" id="send_start_date" class="layui-input" value='{$bonus_arr.send_start_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Send_start_a">{$lang.send_startdate_notic}</span>
+            </div>
+        </div>
+        <!--发放结束日期-->
+        <div class="layui-form-item" id="end_date">
+            <label class="layui-form-label">
+                {$lang.send_enddate}
+            </label>
+            <div class="layui-input-block">
+                <input name="send_end_date" type="text" id="send_end_date" class="layui-input" value='{$bonus_arr.send_end_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <!--使用起始日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('Use_start_a');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.use_startdate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_start_date" type="text" id="use_start_date" class="layui-input" value='{$bonus_arr.use_start_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="Use_start_a">{$lang.use_startdate_notic}</span>
+            </div>
+        </div>
+        <!--使用结束日期-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                {$lang.use_enddate}
+            </label>
+            <div class="layui-input-block">
+                <input name="use_end_date" type="text" id="use_end_date" class="layui-input" value='{$bonus_arr.use_end_date}' readonly="readonly" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+            <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+            <input type="hidden" name="act" value="{$form_act}" />
+            <input type="hidden" name="type_id" value="{$bonus_arr.type_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="javascript">
+<!--
+document.forms['theForm'].elements['type_name'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  validator = new Validator("theForm");
+  validator.required("type_name",      type_name_empty);
+  validator.required("type_money",     type_money_empty);
+  validator.isNumber("type_money",     type_money_isnumber, true);
+  validator.islt('send_start_date', 'send_end_date', send_start_lt_end);
+  validator.islt('use_start_date', 'use_end_date', use_start_lt_end);
+  if (document.getElementById(1).style.display == "")
+  {
+    var minAmount = parseFloat(document.forms['theForm'].elements['min_amount'].value);
+    if (isNaN(minAmount) || minAmount <= 0)
+    {
+	  validator.addErrorMsg(invalid_min_amount);
+    }	
+  }
+  return validator.passed();
+}
+onload = function()
+{
+  {/literal}
+  get_value = '{$bonus_arr.send_type}';
+  {literal}
+
+  showunit(get_value)
+  // 开始检查订单
+  startCheckOrder();
+}
+/* 红包类型按订单金额发放时才填写 */
+function gObj(obj)
+{
+  var theObj;
+  if (document.getElementById)
+  {
+    if (typeof obj=="string") {
+      return document.getElementById(obj);
+    } else {
+      return obj.style;
+    }
+  }
+  return null;
+}
+
+function showunit(get_value)
+{
+	if(get_value==0||get_value==3){
+		$("#start_date").hide();
+		$("#end_date").hide();
+	}else{
+		$("#start_date").show();
+		$("#end_date").show();
+	}
+  gObj("1").style.display =  (get_value == 2) ? "" : "none";
+  document.forms['theForm'].elements['selbtn1'].disabled  = (get_value != 1 && get_value != 2);
+  document.forms['theForm'].elements['selbtn2'].disabled  = (get_value != 1 && get_value != 2);
+
+  return;
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+        //监听指定开关
+        form.on('radio(send_method)', function(data){//促销价
+            showunit(data.value);
+        });
+
+    });
+</script>
+{include file="pagefooter.htm"}

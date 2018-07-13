@@ -1,0 +1,35 @@
+{if $data.list}
+	{foreach $data.list as $key =>$vo}
+    <li class="clearfix">
+        <div class="pl_t">
+            <div class="clearfix name">
+                <span >{$vo.add_time}</span> 
+                <img  src="{$webUrl}__IMGWAP__/plxing{:intval($vo.comment_rank)}.png">
+            </div>
+            <p>{$vo.content}</p>
+            {if $vo.shaidan_img}
+            <dl class="clearfix">
+                {foreach $vo.shaidan_img as $k => $v}
+                <dd><img src="{$webUrl}/{$v.thumb}"></dd>
+                {/foreach}
+            </dl>
+            {/if}
+        </div>
+    </li>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png" style="max-width:156px;"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

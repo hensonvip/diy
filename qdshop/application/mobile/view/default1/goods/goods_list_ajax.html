@@ -1,0 +1,39 @@
+{if $data.list}
+	{foreach $data.list as $key => $vo}
+    <li>
+        <a href="{:url('Goods/details',array('goods_id'=>$vo['goods_id']))}">
+            <div class="pad">
+                <div class="img">
+                    <img src="{$webUrl}/{$vo.goods_thumb}" alt="">
+                </div>
+                <div class="idesc">
+                    <h3 style="height:0.85rem;">{$vo.goods_name}</h3>
+                    <div class=" clearfix">
+                        <div class="name fl">
+                            <p class="hc">{if $vo.discount_price gt 0}{$vo.format_discount_price}{else}{$vo.format_shop_price}{/if}</p>
+                        </div>  
+                        <!-- <div class="buy fr">
+                            <span class="buy"></span>
+                        </div> -->
+                    </div>
+                </div>
+            </div>  
+        </a>
+    </li>
+    {/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

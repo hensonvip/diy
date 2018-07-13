@@ -1,0 +1,31 @@
+<div class="cylt_wrap" style="background-color: #e5e2dd;">
+	<div class="cylt_top">
+		<div class="cylt_fw"><em style="background-image: url(__IMGPC__/bg2.jpg);"></em></div>
+		<i class="cylt_share"></i>
+		<div class="cylt_ttxt tr">
+			<div class="cylt_tbox">
+				<h2>Environmental<br/>Human & Nature</h2>
+				<!--<div class="cylt_blist">
+                    <div class="btn show_join">我要参赛</div>
+                </div>
+                <ul class="cylt_alist">
+                    <li><a href="创意擂台.html"><font>比赛详情</font><i></i></a></li>
+                    <li><a href="创意擂台T恤.html"><font>我的参赛作品</font><i></i></a></li>
+                </ul>-->
+
+<div class="cylt_blist">
+	{if $match_cycle eq 3}
+	<a style="color: #008045" href="{:url('Originality/open_list')}"><div class="btn">获奖公示</div></a>
+	{elseif $match_cycle eq 2}
+	<a style="color: #008045" href="{:url('Originality/vote_list')}"><div class="btn">我要投票</div></a>
+	{else}
+	<div class="btn show_join">我要参赛</div>
+	{/if}
+
+	<!--<div class="btn show_join">我要参赛</div>-->
+
+</div>
+<ul class="cylt_alist">
+	<li><a href="{:url('Originality/index')}"><font>比赛详情</font><i></i></a></li>
+	<li><a href="{:url('Originality/competit_my_list')}"><font>我的参赛作品</font><i></i></a></li>
+</ul>

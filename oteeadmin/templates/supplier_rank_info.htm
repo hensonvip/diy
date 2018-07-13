@@ -1,0 +1,59 @@
+{include file="pageheader.htm"}
+
+<form action="supplier_rank.php" method="post" name="theForm" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--入驻商等级名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.rank_name}</label>
+            <div class="layui-input-block">
+                <input type="text" name="rank_name" value="{$rank.rank_name}" class="layui-input" />
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.sort_order}</label>
+            <div class="layui-input-block">
+                <input type="text" name="sort_order" value="{$rank.sort_order}" class="layui-input" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$rank.rank_id}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['rank_name'].focus();
+
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+
+    validator = new Validator("theForm");
+    validator.required('rank_name', rank_name_empty);
+    validator.isInt('sort_order', sort_order_invalid, true);
+    return validator.passed();
+}
+
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

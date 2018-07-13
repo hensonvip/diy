@@ -1,0 +1,94 @@
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,validator.js"}
+<style>
+    .layui-form-label{width:190px !important;}
+</style>
+<form method="post" action="" name="theForm" enctype="multipart/form-data" class="layui-form layui-form-pane" onsubmit="return validate();">
+<div class="layui-tab-content">
+  <div class="layui-tab-item layui-show">
+    <!--商品类型名称-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$lang.require_field} {$lang.goods_type_name}</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" placeholder="请输入商品类型名称" name="cat_name" value="{$goods_type.cat_name|escape}" >
+        </div>
+    </div>
+    <!--状态-->
+    <div class="layui-form-item" style="display:none;">
+        <label class="layui-form-label">{$lang.goods_type_status}</label>
+        <div class="layui-input-block">
+            {html_radios name="enabled" options=$lang.arr_goods_status checked=$goods_type.enabled}
+        </div>
+    </div>
+    <!--编辑区域X轴偏移值-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$lang.require_field} 编辑区域X轴偏移值</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" placeholder="请输入编辑区域X轴偏移值" name="edit_area_x" value="{$goods_type.edit_area_x|escape}" >
+        </div>
+    </div>
+    <!--编辑区域Y轴偏移值-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$lang.require_field} 编辑区域Y轴偏移值</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" placeholder="请输入编辑区域Y轴偏移值" name="edit_area_y" value="{$goods_type.edit_area_y|escape}" >
+        </div>
+    </div>
+    <!--编辑区域宽度-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$lang.require_field} 编辑区域宽度</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" placeholder="请输入编辑区域宽度" name="edit_area_w" value="{$goods_type.edit_area_w|escape}" >
+        </div>
+    </div>
+    <!--编辑区域高度-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">{$lang.require_field} 编辑区域高度</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" placeholder="请输入编辑区域高度" name="edit_area_h" value="{$goods_type.edit_area_h|escape}" >
+        </div>
+    </div>
+    <!--属性分组-->
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="float:left;">
+            <a href="javascript:showNotice2('noticeAttrGroups');" title="{$lang.form_notice}">
+                <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+            </a>
+            {$lang.attr_groups}
+        </label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" name="attr_group" style="float:left;width:45%;">{$goods_type.attr_group|escape}</textarea>
+            <span class="notice-span" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeAttrGroups">
+                {$lang.notice_attr_groups}
+            </span>
+        </div>
+    </div>
+    <p style="padding-left:10%;">
+        <input type="hidden" name="cat_id" value="{$goods_type.cat_id}" />
+        <input type="submit" value="{$lang.button_submit}" class="layui-btn" />
+        <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+        <input type="hidden" name="act" value="{$form_act}" />
+    </p>
+</div>
+</form>
+
+<script type="text/javascript">
+<!--
+{literal}
+onload = function() {
+  document.forms['theForm'].elements['cat_name'].focus();
+  startCheckOrder();
+}
+
+function validate()
+{
+  var validator = new Validator('theForm');
+  validator.required('cat_name', type_name_empty);
+
+  return validator.passed();
+}
+{/literal}
+//-->
+</script>
+
+{include file="pagefooter.htm"}

@@ -1,0 +1,240 @@
+{include file="pageheader_bd.htm"} {insert_scripts files="../js/utils.js,selectzone_bd.js,colorselector.js"}
+<div class="layui-tab layui-tab-card">
+  <ul class="layui-tab-title">
+    <li class="layui-this">支付宝支付</li>
+    <li>微信支付</li>
+    <li>银联支付</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+		<form class="layui-form layui-form-pane" action="payment.php" method="post">
+			<div class="layui-form-item">
+				<label class="layui-form-label">选择开启的支付类型</label>
+				<div class="layui-input-block">
+					<input type="checkbox" {if $pay_list.QUICK_MSECURITY_PAY}checked="checked"{/if} name="product_code[QUICK_MSECURITY_PAY]" title="APP支付">
+					<input type="checkbox" {if $pay_list.FAST_INSTANT_TRADE_PAY}checked="checked"{/if}  name="product_code[FAST_INSTANT_TRADE_PAY]" title="电脑网站支付">
+					<input type="checkbox" {if $pay_list.QUICK_WAP_WAY}checked="checked"{/if}  name="product_code[QUICK_WAP_WAY]" title="手机网站支付">
+				</div>
+				<div class="layui-form-mid layui-word-aux">注意：请确认选中的支付类型都已经成功开通，否则对应的支付方式支付将会支付失败。</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">支付宝分配给开发者的应用ID</label>
+				<div class="layui-input-inline">
+					<input type="text" name="appId" lay-verify="number" placeholder="请输入appId" value="{$alipay.appId}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item" pane="">
+				<label class="layui-form-label">签名方式</label>
+				<div class="layui-input-block">
+					<input type="radio" name="sign_type" value="RSA2" title="RSA2" {if $alipay.sign_type eq 'RSA2' or $alipay.sign_type eq ''}checked="checked"{/if}>
+					<input type="radio" name="sign_type" value="RSA" title="RSA" {if $alipay.sign_type eq 'RSA'}checked="checked"{/if}>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">支付宝的公钥内容</label>
+				<div class="layui-input-block">
+					<input style="width:100%" type="text" name="ali_public_key" placeholder="请输入支付宝的公钥内容" value="{$alipay.ali_public_key}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">个人生成的私钥内容</label>
+				<div class="layui-input-block">
+					<input style="width:100%" type="text" name="rsa_private_key" placeholder="请输入个人生成的私钥内容" value="{$alipay.rsa_private_key}" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">可使用的支付方式</label>
+				<div class="layui-input-block">
+				  <input type="checkbox" {if in_array('balance',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[balance]" title="余额">
+				  <input type="checkbox" {if in_array('moneyFund',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[moneyFund]" title="余额宝">
+				  <input type="checkbox" {if in_array('debitCardExpress',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[debitCardExpress]" title="借记卡快捷支付">
+				  <input type="checkbox" {if in_array('creditCard',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[creditCard]" title="信用卡">
+				  <input type="checkbox" {if in_array('creditCardExpress',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[creditCardExpress]" title="信用卡快捷">
+				  <input type="checkbox" {if in_array('creditCardCartoon',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[creditCardCartoon]" title="信用卡卡通">
+				  <input type="checkbox" {if in_array('credit_group',$alipay.limit_pay)}checked="checked"{/if} name="limit_pay[credit_group]" title="信用卡类型（包含信用卡卡通、信用卡快捷、花呗、花呗分期）">
+				</div>
+			</div>
+		  
+			<div class="layui-form-item">
+				<input type="hidden" name="pay_name" value="alipay">
+				<input type="hidden" name="Submit" value="Submit">
+				<button class="layui-btn" lay-submit="" lay-filter="demo2">保存</button>
+			</div>
+		</form>
+	
+	</div>
+    <div class="layui-tab-item">		 
+		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+			<ul class="layui-tab-title">
+				<li class="layui-this">公众号微信支付配置</li>
+				<li>APP微信支付配置</li>
+				<li>小程序微信支付配置</li>
+		  </ul>
+		  <div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<form class="layui-form layui-form-pane" action="payment.php" method="post">
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">选择开启的微信支付类型</label>
+							<div class="layui-input-block">
+								<input type="checkbox" {if $pay_list.JSAPI}checked="checked"{/if} name="product_code[JSAPI]" title="手机微信公众号内支付">
+								<input type="checkbox" {if $pay_list.NATIVE}checked="checked"{/if} name="product_code[NATIVE]" title="电脑网站扫码支付">
+								<input type="checkbox" {if $pay_list.MWEB}checked="checked"{/if} name="product_code[MWEB]" title="手机浏览器内扫码支付">
+							</div>
+							<div class="layui-form-mid layui-word-aux">注意：手机浏览器内扫码支付需要在微信商付平台开通“H5支付”。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">公众号ID</label>
+							<div class="layui-input-inline">
+								<input type="text" name="appid" placeholder="请输入appid" value="{$wxpay_pub.appid}" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="mch_id" lay-verify="number" placeholder="请输入商户号" value="{$wxpay_pub.mch_id}" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">随机字符串</label>
+							<div class="layui-input-block">
+								<input style="width:100%" type="text" name="nonce_str" placeholder="请输入随机字符串" value="{$wxpay_pub.nonce_str}" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">微信的加密密钥，微信商户中心配置。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书</label>
+							<input type="file" name="apiclient_cert" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_cert.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书密钥</label>
+							<input type="file" name="apiclient_key" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_key.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书密钥。</div>
+						</div>													
+					  
+						<div class="layui-form-item">
+							<input type="hidden" name="pay_name" value="weixin">
+							<input type="hidden" name="Submit" value="Submit">
+							<button class="layui-btn" lay-submit="" lay-filter="demo2">保存</button>
+						</div>
+					</form>
+				</div>
+				<div class="layui-tab-item">
+					<form class="layui-form layui-form-pane" action="payment.php" method="post">
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">是否开启本支付类型</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="product_code" lay-skin="switch" {if $pay_list.APP}checked="checked"{/if} value="APP" lay-text="开启|关闭">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">开放平台APPID</label>
+							<div class="layui-input-inline">
+								<input type="text" name="appid" placeholder="请输入appid" value="{$wxpay_app.appid}" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="mch_id" lay-verify="number" placeholder="请输入商户号" value="{$wxpay_app.mch_id}" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">随机字符串</label>
+							<div class="layui-input-block">
+								<input style="width:100%" type="text" name="nonce_str" placeholder="请输入随机字符串" value="{$wxpay_app.nonce_str}" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">微信的加密密钥，微信商户中心配置。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书</label>
+							<input type="file" name="apiclient_cert" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_cert.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书密钥</label>
+							<input type="file" name="apiclient_key" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_key.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书密钥。</div>
+						</div>													
+					  
+						<div class="layui-form-item">
+							<input type="hidden" name="pay_name" value="weixin">
+							<input type="hidden" name="Submit" value="Submit">
+							<button class="layui-btn" lay-submit="" lay-filter="demo2">保存</button>
+						</div>
+					</form>	
+				</div>
+				<div class="layui-tab-item">
+					<form class="layui-form layui-form-pane" action="payment.php" method="post">
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">是否开启本支付类型</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="product_code" lay-skin="switch" {if $pay_list.XCX}checked="checked"{/if} value="XCX" lay-text="开启|关闭">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">小程序ID</label>
+							<div class="layui-input-inline">
+								<input type="text" name="appid" placeholder="请输入appid" value="{$wxpay_app.appid}"  class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="mch_id" lay-verify="number" placeholder="请输入商户号" value="{$wxpay_app.mch_id}" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">随机字符串</label>
+							<div class="layui-input-block">
+								<input style="width:100%" type="text" name="nonce_str" placeholder="请输入随机字符串" value="{$wxpay_app.nonce_str}" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">微信的加密密钥，微信商户中心配置。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书</label>
+							<input type="file" name="apiclient_cert" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_cert.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书。</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户证书密钥</label>
+							<input type="file" name="apiclient_key" lay-ext="pem" lay-type="file" lay-title="请上传apiclient_key.pem" class="layui-upload-file">
+							<div class="layui-word-aux">微信的商户证书密钥。</div>
+						</div>													
+					  
+						<div class="layui-form-item">
+							<input type="hidden" name="pay_name" value="weixin">
+							<input type="hidden" name="Submit" value="Submit">
+							<button class="layui-btn" lay-submit="" lay-filter="demo2">保存</button>
+						</div>
+					</form>
+				</div>
+			</div> 
+		</div> 
+	</div>
+    <div class="layui-tab-item">3</div>
+  </div>
+</div>
+
+
+
+<script>
+layui.use(['form', 'upload'], function(){ 
+  var form = layui.form() //获取form模块
+  ,upload = layui.upload; //获取upload模块
+
+  form.render(); 
+  //实例化一个上传控件
+  upload({
+    url: 'payment.php?act=upload',
+	method:'POST',
+	pay_name: 'test',
+	pay_code: 'fuck',
+    success: function(data){
+		console.log(data);
+    }
+  })
+});
+</script>
+{include file="pagefooter.htm"}

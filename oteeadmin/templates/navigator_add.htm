@@ -1,0 +1,168 @@
+{include file="pageheader.htm"}
+{insert_scripts files="validator.js"}
+
+<form action="navigator.php" method="post" name="form" onSubmit="return checkForm();" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--系统内容-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.system_main}</label>
+            <div class="layui-input-block">
+                <select name="menulist" id="menulist" lay-filter="sel_menulist">
+                    <option value='-'>-</option>
+                    {foreach from=$sysmain item=val key=key}
+                        <option value='{$key}'>{if $val.2}{$val.2}{else}{$val.0}{/if}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <!--名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.item_name}</label>
+            <div class="layui-input-block">
+                <input type="text" name="item_name" value="{$rt.item_name}" id="item_name" onKeyPress="javascript:key();" class="layui-input" />
+            </div>
+        </div>
+        <!--链接地址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('notice_url');" title="{$lang.notice_url}"><img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}"></a>
+                {$lang.item_url}
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="item_url" value="{$rt.item_url}" id="item_url" onKeyPress="javascript:key();" class="layui-input" />
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="notice_url">{$lang.notice_url}</span>
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.item_vieworder}</label>
+            <div class="layui-input-block">
+                <input type="text" name="item_vieworder" value="{$rt.item_vieworder}" class="layui-input" />
+            </div>
+        </div>
+        <!--是否显示-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.item_ifshow}</label>
+            <div class="layui-input-block">
+                <select name="item_ifshow">
+                    <option value='1' {$rt.item_ifshow_1}>{$lang.yes}</option>
+                    <option value='0' {$rt.item_ifshow_0}>{$lang.no}</option>
+                </select>
+            </div>
+        </div>
+        <!--是否新窗口-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.item_opennew}</label>
+            <div class="layui-input-block">
+                <select name="item_opennew">
+                    <option value='0' {$rt.item_opennew_0}>{$lang.no}</option>
+                    <option value='1' {$rt.item_opennew_1}>{$lang.yes}</option>
+                </select>
+            </div>
+        </div>
+        <!--位置-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.item_type}</label>
+            <div class="layui-input-block">
+                <select name="item_type">
+                    <option value='top' {$rt.item_type_top}>{$lang.top}</option>
+                    <option value='middle' {$rt.item_type_middle}>{$lang.middle}</option>
+                    <option value='bottom' {$rt.item_type_bottom}>{$lang.bottom}</option>
+                </select>
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="hidden" name="id" value="{$rt.id}" />
+            <input type="hidden" name="step" value="2" />
+            <input type="hidden" name="act" value="{$rt.act}" />
+            <input type="submit" class="layui-btn" name="Submit" value="{$lang.button_submit}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+<script type="Text/Javascript" language="JavaScript">
+var last;
+function add_main(key)
+{
+    var sysm = new Object;
+    {foreach from=$sysmain item=val key=key}
+      sysm[{$key}] = new Array();
+        sysm[{$key}][0] = '{$val.0}';
+        sysm[{$key}][1] = '{$val.1}';
+    {/foreach}
+    if (key != '-')
+    {
+        if(sysm[key][0] != '-')
+        {
+            document.getElementById('item_name').value = sysm[key][0];
+            document.getElementById('item_url').value = sysm[key][1];
+            last = document.getElementById('menulist').selectedIndex;
+        }
+        else
+        {
+            if(last < document.getElementById('menulist').selectedIndex)
+            {
+                document.getElementById('menulist').selectedIndex ++;
+            }
+            else
+            {
+                document.getElementById('menulist').selectedIndex --;
+            }
+            last = document.getElementById('menulist').selectedIndex;
+            document.getElementById('item_name').value = sysm[last-1][0];
+            document.getElementById('item_url').value = sysm[last-1][1];
+        }
+    }
+    else
+    {
+        last = document.getElementById('menulist').selectedIndex = 1;
+        document.getElementById('item_name').value = sysm[last-1][0];
+        document.getElementById('item_url').value = sysm[last-1][1];
+    }
+}
+function checkForm()
+{
+    if(document.getElementById('item_name').value == '')
+    {
+        alert('{$lang.namecannotnull}');
+        return false;
+    }
+    if(document.getElementById('item_url').value == '')
+    {
+        alert('{$lang.linkcannotnull}');
+        return false;
+    }
+    return true;
+}
+
+function key()
+{
+    last = document.getElementById('menulist').selectedIndex = 0;
+    var form = layui.form();
+    form.render(); //更新全部
+}
+<!--
+{literal}
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+//-->
+</script>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+        //监听指定开关
+        form.on('select(sel_menulist)', function(data){
+            add_main(data.value);
+        });      
+    });
+</script>
+{include file="pagefooter.htm"}

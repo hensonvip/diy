@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="bg_f6f6f6 bag_bg">
+    <div class="bag_main">
+        <form class="bag_wrap">
+            <div class="bag_tit">
+                <div class="part part0"></div>
+                <div class="part part1">商品信息</div>
+                <div class="part part2">数量</div>
+                <div class="part part3">金额</div>
+                <div class="part part4">操作</div>
+                <div class="part part5"></div>
+            </div>
+            {if $data.supplier_list}
+            {volist name="data.supplier_list" id="vo"}
+            <ul class="bag_list bag_list_one">
+                {volist name="vo.goods_list" id="vv"}
+                {if $vv.invalid eq 0}
+                <li>
+                    <div class="part part0">
+                        <label>
+                            <i></i>
+                            <input type="checkbox" name="rec_id" value="{$vv.rec_id}" class="check">
+                            <input type="checkbox" name="goods_id" value="{$vv.goods_id}" class="check" style="display:none;">
+                        </label>
+                    </div>
+                    <div class="part part1">
+                        <div class="info">
+                            <div class="pic d_ib vm">
+                                <a href="{:url('Goods/details',array('goods_id'=>$vv.goods_id))}">
+                                    <img class="lazybg" data-lazyload-img="{$webUrl}/{$vv.goods_thumb}">
+                                </a>
+                            </div>
+                            <div class="txt d_ib vm">
+                                <a href="{:url('Goods/details',array('goods_id'=>$vv.goods_id))}">
+                                    <h2>{$vv.goods_name}</h2>
+                                </a>
+                                <span>限量：{$vv.goods_stock}/{$vv.goods_total}</span>
+                                <p>￥<em class="one_price">{$vv.goods_price}</em></p>
+                            </div>
+                            <div class="des d_ib vm">
+                                <div class="icon icon1" style="background-image: url({$webUrl}/{$vv.attr_icon});"></div>
+                                <div class="icon icon2" style="background-color: #{$vv.attr_color};border: 1px solid #eee;"></div>
+                                <div class="icon icon3">{$vv.attr_size}</div>
+                                <div class="edit d_ib vm">
+                                    <span class="icon4" onclick="show_attr_box(this, {$vv.goods_id}, '{$vv.goods_attr_id}', {$vv.rec_id}, {$vo.supplier_id})">编辑</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part part2">
+                        <div class="ipd_type">
+                            <div class="num_box" data-max="5">
+                                <input type="button" value="-" class="btn_m" onclick="minus_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                                <input type="text" name="goods_number[{$vv.rec_id}]" value="{$vv.goods_number}" class="btn_input" onblur="change_price({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                                <input type="button" value="+" class="btn_a" onclick="add_num({$vv.rec_id}, {$vv.goods_id}, {$vo.supplier_id}, this)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part part3">
+                        <div class="price d_ib">￥<em>{$vv['goods_price']*$vv['goods_number']}</em></div>
+                    </div>
+                    <div class="part part4">
+                        <a href="javascript:void(0);" {if $vv.is_collected eq 1}class="favor active"{else}class="favor"{/if} onclick="collect({$vv.goods_id}, this)">{if $vv.is_collected eq 1}已收藏{else}加入收藏{/if}</a>
+                    </div>
+                    <div class="part part5 dc_pr">
+                        <a href="javascript:void(0);" class="del"></a>
+                        <div class="dc_firm">
+                            <span class="dc_no">取 消</span>
+                            <span class="dc_yes" onclick="delOne({$vv.rec_id}, this)">确 定</span>
+                        </div>
+                    </div>
+                </li>
+                {/if}
+                {/volist}
+            </ul>
+            {/volist}
+            {/if}
+            <div class="bag_list_text">
+                <div class="mem_rcon myot_part5">
+                    <div class="text">
+                        <p>购物袋还没有商品，马上把喜欢的T恤加入购物袋吧！</p>
+                        <a href="/" class="btn">返回OTEE</a>
+                    </div>
+                </div>
+            </div>
+
+            {if $data.supplier_list}
+            <div class="bag_tit bag_tit_none">
+                <div class="part">失效商品</div>
+            </div>
+            {volist name="data.supplier_list" id="vo"}
+            <ul class="bag_list bag_list_none">
+                {volist name="vo.goods_list" id="vv"}
+                {if $vv.invalid eq 1}
+                <li>
+                    <div class="part part0">
+                        <label><i></i><input type="checkbox" name="rec_id" value="{$vv.rec_id}" checked="checked" class="check"></label>
+                    </div>
+                    <div class="part part1">
+                        <div class="info">
+                            <div class="pic d_ib vm">
+                                <img class="lazybg" data-lazyload-img="{$webUrl}/{$vv.goods_thumb}">
+                            </div>
+                            <div class="txt d_ib vm">
+                                <h2>{$vv.goods_name}</h2>
+                                <span>限量：{$vv.goods_stock}/{$vv.goods_total}</span>
+                                <p>￥<em class="one_price">{$vv.goods_price}</em></p>
+                            </div>
+                            <div class="des d_ib vm">
+                                <div class="icon icon1" style="background-image: url({$webUrl}/{$vv.attr_icon});"></div>
+                                <div class="icon icon2" style="background-color: #{$vv.attr_color};border: 1px solid #eee;"></div>
+                                <div class="icon icon3">{$vv.attr_size}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part part2">
+                        <div class="ipd_type">
+                            <div class="num_box" data-max="40">
+                                <input type="button" value="-" class="btn_m">
+                                <input type="text" value="2" class="btn_input" readonly>
+                                <input type="button" value="+" class="btn_a">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="part part3">
+                        <div class="price d_ib">￥<em>{$vv['goods_price']*$vv['goods_number']}</em></div>
+                    </div>
+                    <div class="part part4">
+                        <a href="javascript:void(0);" class="favor">{if $vv.is_collected eq 1}已收藏{else}加入收藏{/if}</a>
+                    </div>
+                    <div class="part part5 dc_pr">
+                        <a href="javascript:void(0);" class="del"></a>
+                        <div class="dc_firm">
+                            <span class="dc_no">取 消</span>
+                            <span class="dc_yes" onclick="delOne({$vv.rec_id}, this)">确 定</span>
+                        </div>
+                    </div>
+                </li>
+                {/if}
+                {/volist}
+            </ul>
+            {/volist}
+            {/if}
+            <div class="bag_control">
+                <div class="bag_wrap">
+                    <div class="bag_box">
+                        <div class="bag_ctop">
+                            <div class="part part0">
+                                <label class="select_all"><i></i><span class="select_txt">全选</span><input type="checkbox" name="" class="check"></label>
+                            </div>
+                            <div class="right fr"><font>合计</font><span>￥<em class="total">0</em>（不含运费）</span></div>
+                        </div>
+                        <div class="bag_cbot clearfix">
+                            <div class="left fl">
+                                <a href="javascript:void(0);" class="delete_checked">删除所选</a>
+                                <a href="javascript:void(0);" class="favor_checked">加入收藏</a>
+                                <a href="javascript:void(0);" class="clear_none">清除失效</a>
+                            </div>
+                            <div class="right fr">
+                                <span class="bag_sub nb_t2" onclick="checkout()">结算（<em class="total_num">0</em>）</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script>
+    $(function(){
+        checkNone();
+        //删除单件
+        $('.bag_wrap .del').click(function() {
+            $('.dc_pr').removeClass('dc_show');
+            $(this).parents('.dc_pr').addClass('dc_show');
+        });
+
+        /*$('.dc_firm .dc_yes').click(function(event) {
+            $(this).parents('li').remove();
+            if(type == 1){
+                checkNone();
+                count_num();
+                count_goods_num();
+            }
+        });*/
+
+        //删除失效的
+        $('.clear_none').click(function() {
+            layer.confirm('确定要删除失效的商品吗？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                var index = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                //获取选中的值
+                var chk_value = new Array();
+                $('ul.bag_list_none').find("li input[name='rec_id']:checked").each(function(){
+                    chk_value.push($(this).val());
+                });
+                chk_value = chk_value.join(',');
+                $.ajax({
+                    type: "get",
+                    url: "{:url('Cart/deleteCart')}",
+                    dataType: 'json',
+                    data:{rec_id:chk_value},
+                    success: function(data){
+                        layer.close(index);
+                        if(data.code == 200){
+                            layer.msg('删除成功');
+                            $('.bag_list_none li').remove();
+                            checkNone();
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    }
+                });
+            });
+        });
+
+        //删除选中的
+        $('.delete_checked').click(function() {
+            layer.confirm('确定要删除选中的商品吗？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消','确 定'] //按钮
+            }, function(){
+                layer.closeAll();
+            }, function(){
+                $('.dc_pr').removeClass('dc_show');
+                var index = layer.load(0, {
+                    shade: [0.1,'#fff']
+                });
+                //获取选中的值
+                var chk_value = new Array();
+                $('.bag_list_one').find("li input[name='rec_id']:checked").each(function(){
+                    chk_value.push($(this).val());
+                });
+                chk_value = chk_value.join(',');
+                $.ajax({
+                    type: "get",
+                    url: "{:url('Cart/deleteCart')}",
+                    dataType: 'json',
+                    data:{rec_id:chk_value},
+                    success: function(data){
+                        layer.close(index);
+                        if(data.code == 200){
+                            $('.bag_list_one li.selected').remove();
+                            checkNone();
+                            count_num();
+                            count_goods_num();
+                            count_cart_num();
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    }
+                });
+            });
+        });
+
+        //编辑信息
+        /*$('.bag_list_one .edit').click(function() {
+            if($(this).hasClass('open')){
+                $(this).removeClass('open');
+            }else{
+                $('.bag_list_one .edit.open').removeClass('open');
+                $(this).addClass('open');
+            }
+        });*/
+
+        $(document).on("click",function(e){
+            if($(e.target).closest(".edit").length == 0){
+                $('.edit').removeClass('open');
+            }
+        });
+
+        $('.edit_wrap').click(function(e) {
+            e.stopPropagation();
+        });
+
+        $('.edit_sub').click(function() {
+            $(this).parents('.edit').removeClass('open');
+        });
+
+        //收藏选中的
+        $('.favor_checked').click(function() {
+            var sss = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var chk_value = new Array();
+            $('.bag_list_one').find("li input[name='goods_id']:checked").each(function(i){
+                var favorObj = $(this).parents('.part0').siblings('.part4').children('.favor');
+                if (favorObj.hasClass('active') == false) {
+                    chk_value.push($(this).val());
+                }
+            });
+            // 去除数组中重复的值
+            var goods_id_arr = new Array();
+            for(var i=0; i<chk_value.length; i++) {
+            　　var items=chk_value[i];
+            　　//判断元素是否存在于goods_id_arr中，如果不存在则插入到goods_id_arr的最后
+            　　if($.inArray(items, goods_id_arr) == -1) {
+                    goods_id_arr.push(items);
+            　　}
+            }
+            var len = goods_id_arr.length;
+            $.each(goods_id_arr,function(i,value){
+                $.ajax({
+                    type: "get",
+                    url: "/Goods/collectGoods",
+                    dataType: 'json',
+                    data:{goods_id:value},
+                    success: function(data){
+                        if(data.status == 200){
+                            if (i == len - 1) {
+                                layer.close(sss);
+                                layer.msg(data.message);
+                                location.reload();
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        //收藏单件
+        /*$('.bag_wrap .favor').click(function() {
+            if($(this).hasClass('disabled')){ return false; }
+            if($(this).hasClass('active')){
+                $(this).removeClass('active').text("加入收藏");
+            }else{
+                $(this).addClass('active').text("已收藏");
+            }
+        });*/
+
+        $('.bag_wrap .favor').hover(function() {
+            if($(this).hasClass('active')){
+                $(this).addClass('hover').text("取消收藏");
+            }
+        },function(){
+            if($(this).hasClass('active')){
+                $(this).removeClass('hover').text("已收藏");
+            }else{
+                $(this).removeClass('hover').text("加入收藏");
+            }
+        });
+
+        //详情右边改变款式
+        $(document).on('change', '.sex_box input', function(event) {
+            $(this).parents('label').css('background-image','url('+$(this).parents("label").attr("data-srcon")+')').addClass('on').siblings().removeClass('on').each(function(argument) {
+               $(this).css('background-image','url('+$(this).attr("data-src")+')');
+            });
+        });
+        //详情右边改变颜色
+        $(document).on('change', '.color_box input', function(event) {
+            $(this).parents('label').addClass('on').siblings().removeClass('on');
+        });
+        //详情右边改变尺码
+        $(document).on('change', '.size_box input', function(event) {
+            $(this).parents('label').addClass('on').siblings().removeClass('on');
+        });
+
+        //改变数量
+        /*$('.bag_list_one .btn_a').click(function() {
+            var num = parseInt($(this).parents('.num_box').find('.btn_input').val());
+            var max = parseInt($(this).parents('.num_box').attr("data-max"));
+            if (num >= max) { return false; }
+            num++;
+            console.log(num);
+            $(this).parents('.num_box').find('.btn_input').val(num);
+            count_num();
+            count_goods_num();
+        });*/
+        /*$('.bag_list_one .btn_m').click(function() {
+            var num = parseInt($(this).parents('.num_box').find('.btn_input').val());
+            if (parseInt(num) <= 1 || num == "") {
+                num = 1;
+            } else {
+                num--;
+            }
+            $(this).parents('.num_box').find('.btn_input').val(num);
+            count_num();
+            count_goods_num();
+        });*/
+        /*$('.bag_list_one .btn_input').blur(function() {
+            var number = parseInt($(this).val());
+            var max = parseInt($(this).parents('.num_box').attr("data-max"));
+            var re_num = /^[0-9]*$/;
+            if (!number) {
+                $(this).val("1");
+            } else if (!re_num.test(number)) {
+                $(this).val("1");
+            } else if (number <= 1) {
+                $(this).val("1");
+            } else if (number >= max) {
+                $(this).val(max);
+            }
+            count_num();
+            count_goods_num();
+        });*/
+
+        count_num();
+        count_goods_num();
+        //input改变的时候换icon图片
+        $('.bag_wrap .bag_list_one .part0 label input[type="checkbox"]').change(function() {
+            if($(this).prop("checked") == true){
+                $(this).parents('label').addClass('on');
+                $(this).parents('li').addClass('selected');
+            }else{
+                $(this).parents('label').removeClass('on');
+                $(this).parents('li').removeClass('selected');
+            }
+        });
+
+        $('.bag_wrap .bag_list_one .part0 .check').change(function() {
+            checkall();
+            count_num();
+            count_goods_num();
+        });
+
+        //所有商品全选
+        $(".select_all input").change(function() {
+            if($('.bag_wrap').hasClass('select')){
+                $('.bag_wrap .bag_list_one .part0 input').prop("checked",false);
+                $('.bag_wrap .bag_list_one .part0 label,.select_all').removeClass('on');
+                $('.bag_wrap').removeClass('select');
+                $('.bag_wrap .bag_list_one li').removeClass('selected');
+                $('.select_all .select_txt').text("全选");
+                $('input[name=goods_id]').prop("checked",false);//收藏选择
+            }else{
+                $('.bag_wrap .bag_list_one .part0 input').prop("checked",true);
+                $('.bag_wrap .bag_list_one .part0 label,.select_all').addClass('on');
+                $('.bag_wrap').addClass('select');
+                $('.bag_wrap .bag_list_one li').addClass('selected');
+                $('.select_all .select_txt').text("取消全选");
+                $('input[name=goods_id]').prop("checked",true);//收藏选择
+            }
+            checkall();
+            count_num();
+            count_goods_num();
+        });
+
+        //判断合计fixed
+        checkFixed();
+        $(window).scroll(function() {
+            checkFixed();
+        });
+
+        // 选择收藏商品
+        $('input[name=rec_id]').change(function(event) {
+            var goods_input = $(this).siblings('input[name=goods_id]');
+            if (goods_input.is(':checked')) {
+                goods_input.prop('checked', false);
+            } else {
+                goods_input.prop('checked', true);
+            }
+        });
+    });
+    function checkFixed(){
+        if($(window).scrollTop() + $(window).height() < $('.bag_control').offset().top){
+            $('.bag_control').addClass('fixed');
+        }else{
+            $('.bag_control').removeClass('fixed');
+        }
+    }
+    function checkall(){
+        for (var i = 0; i < $('.bag_list_one .check').length; i++) {
+            if($('.bag_list_one .check').eq(i).prop("checked") == false){
+                $(".select_all input").prop("checked",false);
+                $('.bag_wrap').removeClass('select');
+                $('.select_all').removeClass('on');
+                $('.select_all .select_txt').text("全选");
+                return false;
+            }else{
+                $(".select_all input").prop("checked",true);
+                $('.bag_wrap').addClass('select');
+                $('.select_all').addClass('on');
+                $('.select_all .select_txt').text("取消全选");
+            }
+        }
+    }
+    function count_num(){
+        var o_total = 0;
+        var n_total = 0;
+        var all_total = 0;
+        var tit_length = $('.bag_list_one li').length;
+        for(var i = 0; i < tit_length; i++){
+            var _this = $('.bag_list_one li').eq(i);
+            var tit_num = _this.find('.num_box .btn_input').val();
+            var tit_price = _this.find('.one_price').text();
+            var tit_total = tit_num * parseFloat(tit_price);
+            _this.find('.price em').text(formatNum(tit_total.toFixed(2)));
+            if(_this.hasClass('selected')){
+                all_total += tit_total;
+            }
+        }
+        $('.bag_ctop .right em').text(formatNum(all_total.toFixed(2)));
+    }
+
+    /*function count_goods_num(){
+        var o_total = 0;
+        var n_total = 0;
+        var all_total = 0;
+        var tit_length = $('.bag_list_one li').length;
+        for(var i = 0; i < tit_length; i++){
+            var _this = $('.bag_list_one li').eq(i);
+            var tit_num = parseInt(_this.find('.num_box .btn_input').val());
+            if(_this.hasClass('selected')){
+                all_total += tit_num;
+            }
+        }
+        $('.total_num').text(all_total);
+    }*/
+    function count_goods_num(){
+        var o_total = 0;
+        var n_total = 0;
+        var all_total = 0;
+        var tit_length = $('.bag_list_one li').length;
+        for(var i = 0; i < tit_length; i++){
+            var _this = $('.bag_list_one li').eq(i);
+            if(_this.hasClass('selected')){
+                all_total += 1;
+            }
+        }
+        $('.total_num').text(all_total);
+    }
+
+    // 购物车商品数量
+    function count_cart_num(){
+        var all_total = 0;
+        var tit_length = $('.bag_list_one li').length;
+        for(var i = 0; i < tit_length; i++){
+            var _this = $('.bag_list_one li').eq(i);
+            var tit_num = _this.find('.num_box .btn_input').val();
+            all_total += parseInt(tit_num);
+        }
+        $('.header .state .cart').text(all_total);
+    }
+
+    function checkNone(){
+        if($('.bag_list_none li').length == 0){
+            $('.bag_tit_none,.bag_list_none').hide();
+        }else{
+            $('.bag_tit_none,.bag_list_none').show();
+        }
+        if($('.bag_list_one li').length == 0){
+            $('.bag_list_text').show();
+        }else{
+            $('.bag_list_text').hide();
+        }
+    }
+
+    // 删除购物车一个商品
+    function delOne(rec_id, obj){
+        $('.dc_pr').removeClass('dc_show');
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        $.ajax({
+            type: "get",
+            url: "{:url('Cart/deleteCart')}",
+            dataType: 'json',
+            data:{rec_id:rec_id},
+            success: function(data){
+                layer.close(index);
+                if(data.code == 200){
+                    $(obj).parents('li').remove();
+                    checkNone();
+                    count_num();
+                    count_goods_num();
+                    count_cart_num();
+                } else {
+                    layer.msg(data.message);
+                }
+            }
+        });
+    }
+
+    //收藏一个商品
+    function collect(goods_id, obj){
+        if($(obj).hasClass('disabled')){ return false; }
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        $.ajax({
+            type: "get",
+            url: "/Goods/collectGoods",
+            dataType: 'json',
+            data:{goods_id:goods_id},
+            success: function(data){
+                if(data.status == 200){
+                    layer.close(index);
+                    if($(obj).hasClass('active')){
+                        $(obj).removeClass('active').text("加入收藏");
+                    } else {
+                        $(obj).addClass('active').text("已收藏");
+                    }
+                    layer.msg(data.message);
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    //添加商品数量
+    function add_num(rec_id,goods_id,supp_id,obj){
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        //获取选中的值
+        var sel_goods = new Array();
+        $('.bag_list_one').find("li input[name='rec_id']:checked").each(function(){
+            sel_goods.push($(this).val());
+        });
+
+        var number = parseInt($(obj).parents('.num_box').find('.btn_input').val());
+        number++;
+
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{sel_goods:sel_goods,rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                layer.close(index);
+                if(result.code == 200){
+                    $(obj).parents('.num_box').find('.btn_input').val(number);
+                    count_num();
+                    count_goods_num();
+                    count_cart_num();
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    //减少商品数量
+    function minus_num(rec_id,goods_id,supp_id,obj){
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        //获取选中的值
+        var sel_goods = new Array();
+        $('.bag_list_one').find("li input[name='rec_id']:checked").each(function(){
+            sel_goods.push($(this).val());
+        });
+
+        var number = parseInt($(obj).parents('.num_box').find('.btn_input').val());
+        if (parseInt(number) <= 1 || number == "") {
+            number = 1;
+        } else {
+            number--;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{sel_goods:sel_goods,rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                layer.close(index);
+                if(result.code == 200){
+                    $(obj).parents('.num_box').find('.btn_input').val(number);
+                    count_num();
+                    count_goods_num();
+                    count_cart_num();
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    //更新购物车
+    function change_price(rec_id,goods_id,supp_id,obj) {
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        var number = parseInt($(obj).val());
+        var re_num = /^[0-9]*$/;
+        if (!number || !re_num.test(number) || number <= 1) {
+            number = 1;
+        }
+        $(obj).val(number);
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                layer.close(index);
+                if(result.code == 200){
+                    count_num();
+                    count_goods_num();
+                    count_cart_num();
+                } else {
+                    layer.msg(result.message);
+                    location.reload();
+                }
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    // 显示属性编辑框
+    function show_attr_box(obj,goods_id,goods_attr_id,rec_id,supp_id) {
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        $.ajax({
+            url: "{:url('Cart/attrBox')}",
+            type: 'get',
+            dataType: 'html',
+            data: {goods_id: goods_id, goods_attr_id: goods_attr_id, rec_id: rec_id},
+            success: function(res) {
+                layer.close(index);
+                $('.edit_wrap').remove();
+                $(obj).after(res);
+                if($(obj).parent('div.edit').hasClass('open')){
+                    $(obj).parent('div.edit').removeClass('open');
+                }else{
+                    $('.bag_list_one .edit.open').removeClass('open');
+                    $(obj).parent('div.edit').addClass('open');
+                }
+            }
+        });
+    }
+
+    // 修改购物车商品属性
+    function edit_cart_attr(obj,rec_id,goods_id,supp_id) {
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        //获取选中的属性值
+        var chk_value = new Array();
+        $(obj).parents('.edit_wrap').find(".item input[type='radio']:checked").each(function(){
+            chk_value.push($(this).val());
+        });
+        chk_value = chk_value.join(',');
+
+        var number = $(obj).parents('.part1').siblings('.part2').find('.num_box .btn_input').val();
+        $.ajax({
+            type: "post",
+            url: "{:url('Cart/updateCart')}",
+            dataType: 'json',
+            data:{spec:chk_value,rec_id:rec_id,number:number,goods_id:goods_id,suppid:supp_id},
+            success: function(result){
+                layer.close(index);
+                if(result.code == 200){
+                    count_num();
+                    count_goods_num();
+                    location.reload();
+                } else {
+                    layer.msg(result.message);
+                    location.reload();
+                }
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    //提交结算
+    function checkout(){
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        //获取选中的值
+        var sel_goods = new Array();
+        $('.bag_list_one').find("li input[name='rec_id']:checked").each(function(){
+            sel_goods.push($(this).val());
+        });
+        if(sel_goods == ''){
+            layer.msg('请选择商品！');
+            layer.close(index);
+            return false;
+        }
+        location.href = "{:url('Goods/checkout')}"+'?sel_goods='+sel_goods;
+        layer.close(index);
+    }
+</script>

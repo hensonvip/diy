@@ -1,0 +1,57 @@
+<div class="state">
+    <div class="d_ib hcart_box"><a href="{:url('cart/index')}" class="cart">{if condition="isset($cart_info.total.goods_number)"}{$cart_info.total.goods_number}{else}0{/if}</a>
+        {if $cart_info.supplier_list}
+        <div class="hcart_con">
+            <dl>
+                {foreach $cart_info.supplier_list as $key => $vo}
+                    {foreach $vo.goods_list as $kk => $vv}
+                    <dd>
+                        <a href="{:url('Goods/details',array('goods_id'=>$vv.goods_id))}"><div class="box box1"><img src="{$webUrl}/{$vv.goods_thumb}"></div>
+                        <div class="box box2">
+                            <h2>{$vv.goods_name}</h2>
+                            <div class="icon_list">
+                                <div class="icon icon1" style="background-image: url({$webUrl}/{$vv.attr_icon});"></div>
+                                <div class="icon icon2" style="background-color: #{$vv.attr_color};border: 1px solid #eee;"></div>
+                                <div class="icon icon3">{$vv.attr_size}</div>
+                            </div>
+                        </div></a>
+                        <div class="box box3">x {$vv.goods_number}</div>
+                        <div class="box box4">￥{$vv.goods_price}</div>
+                        <div class="box box5 dc_pr">
+                            <i class="del"></i>
+                            <div class="dc_firm">
+                                <span class="dc_no">取 消</span>
+                                <span class="dc_yes" onclick="delCart({$vv.rec_id}, this)">确 定</span>
+                            </div>
+                        </div>
+                    </dd>
+                    {/foreach}
+                {/foreach}
+                <dd>
+                    <a href="{:url('cart/index')}"><i></i><span>查看购物袋</span></a>
+                </dd>
+            </dl>
+        </div>
+        {/if}
+    </div>
+     <div class="d_ib huser_box"><a href="{:url('User/index')}" class="user" style="background-image: url(/{$user.headimg});background-repeat:no-repeat; background-size:100% 100%;-moz-background-size:100% 100%;"><i></i></a>
+        <div class="huser_con">
+            <dl>
+                <dd><a href="{:url('User/index')}">用户中心</a></dd>
+                <dd class="new">
+                    <h2><a href=""><i></i>消息</a></h2>
+                    <div class="hmsg_con">
+                        <p class="new"><a href=""><i></i>通知</a></p>
+                        <p><a href=""><i></i>私信</a></p>
+                        <p><a href=""><i></i>互动</a></p>
+                    </div>
+                </dd>
+                <dd><a href="">账户设置</a></dd>
+                <dd><a href="{:url('Order/index')}">我的订单</a></dd>
+                <dd><a href="">我的OTEE</a></dd>
+                <dd><a href="">作品集</a></dd>
+                <dd><a href="">邀请有奖</a></dd>
+            </dl>
+        </div>
+     </div>
+</div>

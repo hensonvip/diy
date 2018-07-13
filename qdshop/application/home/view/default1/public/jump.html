@@ -1,0 +1,59 @@
+{include file="public/head" /}
+<body class="forget login-r">
+<div class="login-header">
+    <div class="w1200">
+        <div class="lh-l">
+            <a href="/" class="logo"><img src="__IMGPC__/logo.png" style="width:36px; height:36px;" alt=""></a>
+            <span class="welcome">跳转提示</span>
+        </div>
+        <!-- <div class="lh-r">
+            还没有账号？<a href="注册.html" class="link">注册</a>
+        </div> -->
+    </div>
+</div>
+<div class="main">
+    <div class="w1200">
+        <div class="fb">
+            <div class="attention-block">
+                <div class="sbc">
+                    <div class="sbc-row1">{$msg}！</div>
+                    <div class="sbc-row2">
+						温馨提示：<b id="wait">{$wait}</b>秒后页面自动 <a id="href" href="{$url}">跳转</a>
+					</div>
+                    <div class="sbc-row3">
+                        <a href="{$url}" class="btn btn-sure">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="public/footer" /}
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.zoombie.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="__JSPC__/js_otee.js"></script>
+<script src="__JSPC__/js_base.js"></script>
+<script>
+    $(function(){
+		var wait = document.getElementById('wait'),
+            href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    });
+</script>
+</body>
+</html>

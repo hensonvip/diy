@@ -1,0 +1,39 @@
+{if $data.list}
+	{foreach $data.list as $key =>$vo}
+    {if $vo.status eq 0}
+    <a href="{:url('Bargain/details',array('bargain_id'=>$vo.bargain_id))}">
+    {else}
+    <a href="javascript:;">
+    {/if}
+    <li>
+        <div class="pic fl">
+            <img src="{$webUrl}/{$vo.goods_thumb}" alt="">
+        </div>
+        <div class="text">
+            <h2 class="title">{$vo.goods_name}</h2>
+            <div class="spec" style="padding-bottom:0.2rem;">原价：{$vo.format_shop_price}　最低价：{$vo.format_low_price}</div>
+            <div class="price">
+                <span class="symbol" style="color:#666;">现价：</span>
+                <span class="number">{$vo.format_now_price}</span>
+                <span class="symbol fr" {if $vo.status eq 1}style="color:#666;padding-right:0.2rem;"{/if} style="padding-right:0.2rem;">{$vo.status_name}</span>
+             </div>
+        </div>  
+    </li>
+    </a>
+	{/foreach}
+{else}
+    {if $is_ajax eq 0}
+    <p align="center" style="margin-top:1rem;"><img src="__IMGWAP__/noresult.png"></p>
+    <p align="center" style="margin-top:0.3rem;">没有数据！</p>
+    {else}
+    <script type="text/javascript">
+        $(function(){
+            layer.open({
+                content: '没有数据了'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+        })
+    </script>
+    {/if}
+{/if}

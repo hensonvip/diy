@@ -1,0 +1,187 @@
+<div class="ipro_inner ipro_inner_{$goods_info.goods_id}" data-id="{$goods_info.goods_id}">
+    <div class="ipro_content">
+        <div class="mem_wrap top">
+            <div class="mem_rtit tc">我要出售</div>
+            <form class="mep_top clearfix form_{$goods_info.goods_id}">
+                <div class="mep_tleft fl">
+                    <img src="__IMGPC__/micon67.png">
+                </div>
+                <div class="mep_tright fr">
+                    <div class="item">
+                        <span>作品标题</span>
+                        <div class="r_box">
+                            <input type="text" name="goods_name" placeholder="限X个字符">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>类别</span>
+                        <div class="r_box">
+                            <select name="cat_id" class="select">
+                                {volist name="category_list" id="vo"}
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>售价</span>
+                        <div class="r_box">
+                            <!-- <select name="" class="select">
+                                <option value="">￥100.00</option>
+                                <option value="">￥250.00</option>
+                                <option value="">￥500.00</option>
+                            </select>
+                            <font>当前等级为1级，再售123可晋升一级</font> -->
+                            <span>￥{$goods_info.org_price}</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>可得佣金</span>
+                        <div class="r_box">
+                            <!-- <span>XXX    ￥X/件</span> -->
+                            <span>1-{$goods_info.subsection}件: {$goods_info.commision1}元/件；{$goods_info.subsection+1}-{$goods_info.goods_total}件: {$goods_info.commision2}元/件</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>设计描述</span>
+                        <div class="r_box">
+                            <textarea name="goods_design"></textarea>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>标签</span>
+                        <div class="r_box tag_box">
+                            <div class="tag_input">
+                                <i class="left_length">16</i>
+                                <input class="get_tag" type="text" placeholder="空格或回车添加标签">
+                                <font class="tag_txt">0/5 标签</font>
+                            </div>
+                            <dl class="n_tag_list"><!-- <dd>标签<i></i></dd> --></dl>
+                            <dl class="tag_hot clearfix"><dd>热门标签1</dd><dd>热门标签2</dd></dl>
+                        </div>
+                    </div>
+
+
+                    <div class="item">
+                        <span>可选款式</span>
+                        <div class="r_box sex_box">
+                            {foreach $goods_info.properties as $spec_key => $spec}
+                                {if $spec.name eq '款式'}
+                                    {foreach $spec.values as $attr_key => $attr}
+                                    <label {if $attr_key eq 0}class="on"{/if} style="background-image: url(__IMGPC__/icon47.png);">
+                                        <input type="checkbox" id="spec_value_{$attr.id}" name="goods_style[]" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                    </label>
+                                    {/foreach}
+                                {/if}
+                            {/foreach}
+                            <font class="select_all">全选</font>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span>可选颜色</span>
+                        <div class="r_box color_box">
+                            {foreach $goods_info.properties as $spec_key => $spec}
+                                {if $spec.name eq '颜色'}
+                                    {foreach $spec.values as $attr_key => $attr}
+                                    <label {if $attr_key eq 0}class="white on"{else}class="white"{/if} style="background-color: #{$attr.color_code};">
+                                        <input type="checkbox" id="spec_value_{$attr.id}" name="goods_color[]" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                    </label>
+                                    {/foreach}
+                                {/if}
+                            {/foreach}
+                            <font class="select_all">全选</font>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="item">
+                        <span>详情图片</span>
+                        <div class="r_box upload_box">
+                            <ul class="clearfix">
+                                <li class="add"><input type="file" name="goods_img[]" class="upload_img" id="upload_img" accept="image/gif,image/jpeg,image/jpg,image/png"></li>
+                            </ul>
+                            <p class="tips">可上传与此作品相关的图片内容（如T恤实拍）</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mep_tsub clear tc">
+                    <input type="hidden" name="goods_id" value="{$goods_info.goods_id}">
+                    <label><i></i><input type="checkbox" name="agreement">我已阅读并接受<a href="javascript:void(0);" class="show_xy">《XXXX协议》</a></label>
+                    <p><span class="mep_sbtn nb_t2 disabled" data-id="{$goods_info.goods_id}"><i></i>确认出售</span><a href="javascript:void(0);" class="know_more">了解更多</a></p>
+                </div>
+                <div class="mep_bot lazybg" data-lazyload-bg="images/mep_bg.jpg">
+                    <div class="mep_bot_img">
+                        <h2 class="bh2">拥有你的原创T恤  传播你的文化符号</h2>
+                        <h3 class="bh3">零风险，零成本，零压力，传播及售出你的创作，轻松获取佣金</h3>
+                        <div class="bline"></div>
+                        <ul class="act_rul clearfix">
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon20.png"></div>
+                                <h2>库存</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>无需个人存货，OTEE负责仓储，确保满足下单客户需求</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon21.png"></div>
+                                <h2>生产</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>我们只使用优质的印刷技术和材料，保证每一个产品都呈现完美的效果</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon22.png"></div>
+                                <h2>推广</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>由OTEE为你推广、传播</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon23.png"></div>
+                                <h2>销售</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>由OTEE为你销售，所有订单由客服跟进，并在系统中及时向你作出反馈</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon24.png"></div>
+                                <h2>配送</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>OTEE生产中心直接发货，面向全国各大城市提供服务，覆盖范围广泛</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon"><img src="__IMGPC__/aicon25.png"></div>
+                                <h2>客服</h2>
+                                <div class="line"></div>
+                                <div class="txt">
+                                    <p>专业客服团队，提供优质的客户服务</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <i class="s_float_right"></i>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        $('input, textarea').placeholder();
+        $('.select').selectOrDie();
+        $('.lazybg').lazyload({d:300,r:250});
+        $('.dot').dotdotdot({
+            wrap: 'letter',
+            watch: 'window'
+        });
+    })
+</script>

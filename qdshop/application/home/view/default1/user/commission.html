@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+	{include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">我的佣金</div>
+		<div class="mem_rcon myot_part56">
+			<div class="myot_p56_top tc">
+                <div class="record d_ib tl">
+                    <h2>我的出售记录</h2>
+                    <a href="我的OTEE出售记录.html" class="view nb_t2">查看</a>
+                </div>         
+            </div>
+            <div class="myot_p56_bot tc">
+                <div class="text_wrap">
+                    <div class="text d_ib tl">
+                        <h2>可提现佣金<b>￥{$user_info.avail_money}</b></h2>
+                        <p>尚未绑定银行卡！<br/>绑定成功后，当佣金金额达到{$sys_cfg.auto_tx_money}元（含）或以上，平台每月{$sys_cfg.auto_tx_date}日自动提交提现申请。<br/>请务必正确填写信息。</p>
+                    </div>
+                </div>
+                <div class="myot_p56_form d_ib">
+                    <div class="item card">
+                        <span>银行卡账号</span>
+                        <div class="r_box r_card_box">
+                            <input type="text" name="card_number" id="card_number">
+                            <i class="state"></i>
+                            <b id="bank_icon"></b>
+                        </div>
+                    </div>
+                    <div class="item name">
+                        <span>真实姓名</span>
+                        <div class="r_box">
+                            <input type="text" name="real_name" id="real_name">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item idcard">
+                        <span>身份证号</span>
+                        <div class="r_box">
+                            <input type="text" name="card" id="card">
+                            <i class="state"></i>
+                        </div>
+                    </div>
+                    <div class="item phone">
+                        <span>已绑定手机</span>
+                        <div class="r_box">
+                            <font>{$user_info.mask_mobile_phone}</font>
+                            <input type="hidden" name="mobile_phone" id="mobile_phone" value="{$user_info.mobile_phone}">
+                        </div>
+                    </div>
+                    <div class="item code">
+                        <span>验证码</span>
+                        <div class="r_box code_box">
+                            <input type="text" name="mobile_code" id="mobile_code">
+                            <i class="state"></i>
+                            <input type="button" value="获取验证码" class="get_code nb_t1" onclick="getCode(5, this)">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span></span>
+                        <div class="r_box">
+                            <input type="button" value="保 存" class="fg_b1_sub nb_t2">
+                        </div>
+                    </div>
+                    <input type="hidden" name="bank_name" id="bank_name" value="">
+                    <input type="hidden" name="card_name" id="card_name" value="">
+                    <input type="hidden" name="card_type" id="card_type" value="">
+                    <input type="hidden" name="bank_id" id="bank_id" value="">
+                    <input type="hidden" name="bank_logo" id="bank_logo" value="">
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+    /*$('.get_code').click(function() {
+        if($(this).hasClass('counting')){ return false; }
+        $('.get_code').val("60s").addClass('counting');
+        var second = 60;
+        var timer = null;
+        timer = setInterval(function(){
+            second -= 1;
+            if(second >0 ){
+                $('.get_code').val(second+"s")
+            }else{
+                clearInterval(timer);
+                $('.get_code').removeClass('counting');
+                $('.get_code').val("获取验证码")
+            }
+        },1000);
+    });*/
+    $('.myot_p56_form .item .r_box input').blur(function() {
+        checkCard();
+        checkName();
+        checkIdcard();
+        checkcode();
+    });
+    $('.myot_p56_form .item input.fg_b1_sub').click(function() {
+        checkRl();
+    });
+
+    // 检查银行卡是否合法
+    $("input[name='card_number']").blur(function(event) {
+        if ($('.myot_p56_form .item.card').hasClass('right')) {
+            var index = layer.load(0, {
+                shade: [0.1,'#fff']
+            });
+            var card_number = $(this).val();
+            $.ajax({
+                type: "post",
+                url: "{:url('User/get_bank_card')}",
+                dataType: 'json',
+                data:{card_number: card_number},
+                success: function(result){
+                    layer.close(index);
+                    if (result.code == 200) {
+                        $('#bank_icon').css('background-image', 'url(' + result.data.bank_logo + ')');
+                        $('#bank_name').val(result.data.bank_name);
+                        $('#card_type').val(result.data.card_type);
+                        $('#card_name').val(result.data.card_name);
+                        $('#bank_id').val(result.data.bank_id);
+                        $('#bank_logo').val(result.data.bank_logo);
+                    } else {
+                        layer.msg(result.message);
+                        $('.card.item').removeClass('right').addClass('wrong');
+                        $('#bank_icon').css('background-image', 'none');
+                        $('#bank_name').val('');
+                        $('#card_type').val('');
+                        $('#card_name').val('');
+                        $('#bank_id').val('');
+                        $('#bank_logo').val('');
+                    }
+                }
+            });
+        }
+    });    
+});
+function checkCard(index){
+    var card = $('.card input').val();
+    if(!card){ 
+        if(index == 999){
+            $('.card.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.card.item').removeClass('right wrong');
+        }
+    }else if(!(/^\d{16,19}$/.test(card))){
+        $('.card.item').removeClass('right').addClass('wrong');
+    }else{
+        $('.card.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkName(index){
+    var name = $('.name input').val();
+    if(!name){ 
+        if(index == 999){
+            $('.name.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.name.item').removeClass('right wrong');
+        }
+    }else{
+        $('.name.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkIdcard(index){
+    var idcard = $('.idcard input').val();
+    if(!idcard){ 
+        if(index == 999){
+            $('.idcard.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.idcard.item').removeClass('right wrong');
+        }
+    }else if(!(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(idcard))){ 
+        $('.idcard.item').removeClass('right').addClass('wrong');
+    }else{
+        $('.idcard.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkcode(index){
+    var code = $('.code input').val();
+    if(!code){ 
+        if(index == 999){
+            $('.code.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.code.item').removeClass('right wrong');
+        }
+    }else{
+        $('.code.item').removeClass('wrong').addClass('right');
+    }
+}
+
+function checkRl(){
+    checkCard(999);
+    checkName(999);
+    checkIdcard(999);
+    checkcode(999);
+    if($('.myot_p56_form .item.right').length == $('.myot_p56_form .item').length - 2){
+        var index = layer.load(0, {
+            shade: [0.1,'#fff']
+        });
+        var card_number = $('#card_number').val();//银行卡账号
+        var real_name = $('#real_name').val();//真实姓名
+        var card = $('#card').val();//身份证号码
+        var mobile_phone = $('#mobile_phone').val();//手机号
+        var mobile_code = $('#mobile_code').val();//验证码
+        // 第三方接口返回的数据
+        var bank_name = $('#bank_name').val();//开户行名称 
+        var card_type = $('#card_type').val();//卡类型
+        var card_name = $('#card_name').val();//卡名称 
+        var bank_id = $('#bank_id').val();//开户行编码 
+        var bank_logo = $('#bank_logo').val();//银行LOGO
+        $.ajax({
+            type: "post",
+            url: "{:url('User/do_bank_card_add')}",
+            dataType: 'json',
+            data:{
+                card_number: card_number,
+                real_name: real_name,
+                card: card,
+                mobile_phone: mobile_phone,
+                mobile_code: mobile_code,
+                bank_name: bank_name,
+                card_type: card_type,
+                card_name: card_name,
+                bank_id: bank_id,
+                bank_logo: bank_logo,
+            },
+            success: function(result){
+                layer.close(index);
+                if (result.code == 200) {
+                    layer.msg('添加银行卡成功');
+                    location.reload();
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        });
+        return false;
+    }else{
+        return false;
+    }
+}
+
+// 获取验证码
+function getCode(send_type, obj){
+    if($(obj).hasClass('counting')){ return false; }
+    var index = layer.load(0, {
+        shade: [0.1,'#fff']
+    });
+    var mobile = $("#mobile_phone").val();
+    $.ajax({
+        type: "get",
+        url: "/user/getCode",
+        dataType: 'json',
+        data:{send_type:send_type,mobile:mobile},
+        success: function(result){
+            layer.close(index);
+            if (result.code == 200) {
+                $('.get_code').val("60s").addClass('counting');
+                var second = 60;
+                var timer = null;
+                timer = setInterval(function(){
+                    second -= 1;
+                    if(second >0 ){
+                        $('.get_code').val(second+"s")
+                    }else{
+                        clearInterval(timer);
+                        $('.get_code').removeClass('counting');
+                        $('.get_code').val("获取验证码")
+                    }
+                },1000);
+            } else {
+                layer.msg(result.message);
+            }
+        }
+    });
+    //禁止页面刷新
+    return false;
+}
+</script>

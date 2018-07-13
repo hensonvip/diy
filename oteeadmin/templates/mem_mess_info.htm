@@ -1,0 +1,187 @@
+{include file="pageheader.htm"}
+{insert_scripts files="validator.js"}{insert_scripts files="../js/utils.js,listtable.js,placeholder.js"}
+<style>
+  .form-div, .affiliate-div {
+      padding-left: 27%;
+  }
+  .main-div {
+    border-top: none;
+    padding-top: none;
+    background-color: #fff;
+  }
+  .form-div, .affiliate-div {
+    border-bottom: none;
+    background-color: #fff;
+    margin-bottom: 0px;
+  }
+</style>
+<script type="text/javascript">
+$(function(){
+    $('.mem_sele').chosen();
+});
+</script>
+<div class="form-div">
+  <form action="javascript:searchUser()" name="searchForm">
+    <span style="color: #000; font-weight: bold;">{$lang.receiver_id}</span>
+    <select class="mem_sele">
+    <option value="1" selected="true">全部会员</option>
+    <option value="2">非全部会员</option>
+    </select>
+    <img src="images/icon_search.gif" width="26" height="22" border="0" alt="SEARCH" />
+        {$lang.label_user_name}&nbsp;
+    <span style="position:relative"><input type="text" name="keyword" placeholder="手机号/用户名" /></span>
+    <input type="submit" class="layui-btn  search_button" value="{$lang.button_search}" disabled />
+    <span  id="record_count"></span>
+  </form>
+</div>
+<div class="main-div">
+<form action="mem_mess.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+<table width="100%">
+{if $action eq "add"}
+  <tr>
+    <td class="label"></td>
+    <td>
+      <select name="receiver_id[]" size="5" multiple="true" style="width:40%" id="member">
+      <option value="all" selected="true">全部会员</option>
+      </select>
+    </td>
+  </tr>
+{/if}
+{if $action eq "reply"}
+<tr>
+  <td class="label">{$lang.receiver_id}</td>
+  <td>
+  <select name="receiver_id" style="width:30%">
+   <option value="{$msg_val.sender_id}">{$msg_val.user_name}</option>
+  </select>
+</td>
+</tr>
+{/if}
+  <tr>
+    <td class="label">消息类型</td>
+    <td>
+      <select name="msg_type" id="msg_type">
+        <option value="1">公告</option>
+        <option value="2">系统消息</option>
+        <option value="3">交易消息</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.title}</td>
+    <td>
+      <input type="text" name="title" maxlength="50" value="{$msg_arr.title}" size="40" />
+   </td>
+  </tr>
+  <tr>
+    <td class="label">{$lang.message}  </td>
+    <td>
+      <textarea name="message" cols="55" rows="8">{$msg_arr.message}</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td align="left">
+      <input type="submit" value="{$lang.button_submit}" class="layui-btn" />&nbsp;&nbsp;&nbsp;
+      <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-primary" />
+      <input type="hidden" name="act" value="{$form_act}" />
+      <input type="hidden" name="id" value="{$msg_arr.message_id}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+<script language="JavaScript">
+/**
+ * 搜索用户
+ */
+function searchUser()
+{
+    listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.query="user_query";
+    listTable.filter['page'] = 1;
+    listTable.loadList_mess();
+}
+
+/**
+ * 载入消息会员查询列表
+ */
+listTable.loadList_mess = function()
+{
+  var args = "act="+this.query+"" + this.compileFilter();
+
+
+
+  Ajax.call(this.url, args, this.listCallback_mess, "POST", "JSON");
+}
+
+listTable.listCallback_mess = function(result, txt)
+{
+  if (result.error > 0)
+  {
+    alert(result.message);
+  }
+  else
+  {
+    try
+    {
+      document.getElementById('member').innerHTML = result.user_option;
+      document.getElementById('record_count').innerHTML = result.record_count;
+
+      if (typeof result.filter == "object")
+      {
+        listTable.filter = result.filter;
+      }
+
+      listTable.pageCount = result.page_count;
+    }
+    catch (e)
+    {
+      alert(e.message);
+    }
+  }
+}
+
+
+
+
+<!--
+{literal}
+document.forms['theForm'].elements['title'].focus();
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("title",      title_empty);
+    validator.required("message",    message_empty);
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+{/literal}
+$('.mem_sele').change(function(){
+  var sele = $(this).val();
+  if(sele == 1){
+    $('.search_button').attr('disabled', true);
+    $('#member').html('<option value="all" selected>全部会员</option>');
+  }else{
+    $('.search_button').attr('disabled', false);
+    $('#member').html('<option value="">请从上面搜索需要发送的会员</option>');
+  }
+})
+
+$('input[name=keyword]').click(function(){
+  var but = $('.search_button').attr('disabled');
+  if(but){
+    alert('请取消全部会员选择后，才能时候搜索框！');
+  }
+})
+</script>
+{include file="pagefooter.htm"}

@@ -1,0 +1,204 @@
+{include file="public/header" /}
+<style type="text/css">
+    #region_box select{padding: 0.2rem;border: 1px solid #ccc;}
+</style>
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <div class="pa back on " onclick="history.go(-1)"></div>
+    <h1 class="tc col">新增收货地址</h1>
+</header>
+<div class="content">
+    <div class="address">
+        <form action="{:url('User/do_address_edit')}" method="post" id="address_edit_form">
+            <ul class="bgc">
+                <li class="clearfix">
+                    <span>姓名：</span>
+                    <input type="text" placeholder="你的姓名" name="consignee" id="consignee" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+                <li class="clearfix">
+                    <span>联系电话：</span>
+                    <input type="text" placeholder="请输入你的电话" name="mobile" id="mobile" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+                <li class="clearfix" id="region_box">
+                    <span>收货地址</span>
+                    <div style="float:left;width:76%;background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                        <input type="hidden" id="pkey" value="0">
+                        <select name="province" id="province" onChange="getRegionC()">
+                            <option value="0">请选择</option>
+                            {foreach $regionP as $key => $vo}
+                            <option value="{$vo.region_id}" key="{$vo.pkey}">{$vo.region_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="city" id="city" onChange="getRegionD()">
+                            <option value="0">请选择</option>
+                        </select>
+                        <select name="district" id="district">
+                            <option value="0">请选择</option>
+                        </select>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <span>详细地址：</span>
+                    <input type="text" placeholder="请填写详细地址" name="address" id="address" value="" style="background:url(__IMGWAP__/icon16.png) right no-repeat;">
+                </li>
+            </ul>
+            <div class="fp bgc clearfix">
+                <em class="icon"></em>
+                <span >默认地址</span>
+             </div>
+             <input type="hidden" name="is_default" id="is_default" value="0">
+             <input type="button" class="btn" value="确定" name="" onclick="checkForm()">
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script>
+    //单独页面上的js
+    $('.fp').click(function(){
+        if($('#is_default').val() == 1){
+            $('#is_default').val(0);
+        }else{
+            $('#is_default').val(1);
+        }
+        $(this).toggleClass('on');
+    });
+
+    function getRegionC(){
+        var options=$("#province option:selected"); //获取选中的项
+        var pkey = options.attr('key');
+        $('#pkey').val(pkey);
+        var province_id = options.val();
+        if(province_id == 0){
+            $('#city').html('<option value="0">请选择</option>');
+            $('#district').html('<option value="0">请选择</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionC')}",
+            dataType: 'json',
+            data:{pkey:pkey},
+            success: function(data){
+                var l = '<option value="0">请选择</option>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" key="'+data[i].ckey+'">'+data[i].region_name+'</option>';
+                 }
+                 $('#city').html(l);
+                 return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function getRegionD(){
+        var options=$("#city option:selected"); //获取选中的项
+        var ckey = options.attr('key');
+        var pkey = $('#pkey').val();
+        var city_id = options.val();
+        if(city_id == 0){
+            $('#district').html('<option value="0">请选择</option>');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: "{:url('User/jsonRegionD')}",
+            dataType: 'json',
+            data:{pkey:pkey,ckey:ckey},
+            success: function(data){
+                var l = '<option value="0">请选择</option>';
+                for(var i=0;i<data.length;i++){
+                    l += '<option value="'+data[i].region_id+'" >'+data[i].region_name+'</option>';
+                 }
+                 $('#district').html(l);
+                 return false;
+            }
+        });
+        //禁止页面刷新
+        return false;
+    }
+
+    function checkForm(){
+        var index = layer.open({type: 2,content: '加载中'});
+
+        if($('#consignee').val() == ''){
+            layer.open({
+                content: '新增失败，请填写姓名！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($('#mobile').val() == ''){
+            layer.open({
+                content: '新增失败，请填写联系电话！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($("#province option:selected").val() == 0 || $("#city option:selected").val() == 0 || $("#district option:selected").val() == 0){
+            layer.open({
+                content: '新增失败，请完善收货地址！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        if($('#address').val() == ''){
+            layer.open({
+                content: '新增失败，请填写详细地址！'
+                ,skin: 'msg'
+                ,time: 2 //2秒后自动关闭
+            });
+            layer.close(index);
+            return false;
+        }
+
+        $.ajax({
+           type: "post",
+           url: "{:url('User/do_address_add')}",
+           dataType: 'json',
+           data:$("#address_edit_form").serializeArray(),
+           success: function(data){
+                if(data.code == 200){
+                    layer.open({
+                        content: '新增成功！',
+                        btn: '确定',
+                        shadeClose: false,
+                        yes: function(){
+                            //location.href = "{:url('User/address')}";
+                            history.go(-1);//2017.10.17 与确认订单页兼容
+                            layer.close(index);
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: data.message
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    layer.close(index);
+                }
+           }
+        });
+        //禁止页面刷新
+        return false;
+    }
+</script>

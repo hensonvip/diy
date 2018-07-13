@@ -1,0 +1,103 @@
+{include file="public/header" /}
+
+<body data-psd-width="840">
+<header class="pr hg">
+    <a href="{:url('User/index')}"><div class="pa back on "></div></a>
+    <h1 class="tc col">文章资讯</h1>
+</header>   
+<div class="content">
+    <div class="con2">
+        <ul class="con2_list bgc clearfix">
+            {foreach $data.category as $key =>$vo}
+            <li {if $cat_id eq $vo['id']}class="on"{/if} ><a href="{:url('Article/news',array('cat_id'=>$vo['id']))}">{$vo.name}</a></li>
+            {/foreach}
+        </ul>
+        <div class="con2_wrap">
+            <div class="con2_con" style="display: block;">
+                <ul class="fe1 bgc" id="load_box">
+                    {include file="article/news_ajax" /}
+                </ul>
+            </div>
+        </div>
+        <input type="hidden" name="cat_id" id="cat_id" value="{$cat_id}">
+    </div>
+</div>
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>
+
+<script src="__JSWAP__/layer_mobile/layer.js"></script>
+<script src="__JSWAP__/dropload.min.js"></script>
+<script>
+    tab('.con2_list li','.con2_wrap>.con2_con');
+    function tab(a,b){
+        $(a).click(
+            function(){
+                var i = $(this).index();
+                if($(this).hasClass('on')){
+                }else{
+                    $(this).addClass('on').siblings().removeClass('on');
+                    $(b).hide();
+                    $(b).eq(i).fadeIn();
+                }
+                
+            }
+        )
+    }
+
+    $(function(){
+        var cat_id = $('#cat_id').val();// 当前分类
+        var page = 2;//翻页
+
+        // dropload
+        $('.con2_wrap').dropload({
+            scrollArea : window,
+            domUp : {
+                domClass   : 'dropload-up',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↓下拉刷新</div>',
+                domUpdate  : '<div class="dropload-update" style="text-align: center;color:#666;">↑释放更新</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>'
+            },
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh" style="text-align: center;color:#666;">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load" style="text-align: center;color:#666;"><span class="loading"></span>加载中...</div>',
+                domNoData  : '<div class="dropload-noData" style="height: 35px;line-height: 35px;text-align: center;color: #666;font-size: 16px;">没有数据了</div>'
+            },
+            loadUpFn : function(me){
+                setTimeout(function(){
+                   window.location.reload();
+                },100); 
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('Article/news')}",
+                    data:{is_ajax:1,cat_id:cat_id,page:page},
+                    dataType: 'html',
+                    success: function(result){
+                        page++;
+                        setTimeout(function(){
+                            $('#load_box').append(result);
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },500);
+                    },
+                    error: function(xhr, type){
+                        // alert('Ajax error!');
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        // me.noData();
+
+                    }
+                });
+            }
+
+        });
+    });
+</script>

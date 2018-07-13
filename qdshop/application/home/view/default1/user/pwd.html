@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no, email=no" />
+<link href="__CSSPC__/style.css" type="text/css" rel="stylesheet" />
+<link href="__CSSPC__/jquery.mCustomScrollbar.css" type="text/css" rel="stylesheet" />
+<title>{$site_title}</title>
+<meta name="keywords" content="{$site_keywords}">
+<meta name="description" content="{$site_description}">
+</head>
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+	<div class="mem_right">
+		<div class="mem_rtit">密码修改</div>
+		<div class="mem_rcon safe_mod_rcon">
+			<a href="账户安全.html" class="safe_mod_back">返回</a>
+			<div class="fg_b1 fg_b4">
+				<form action="{:url('User/do_pwd')}" method="post">
+					<div class="item old_pwd">
+						<span>输入旧密码</span>
+						<div class="r_box">
+							<input type="password" name="old_password" id="old_password">
+                            <i class="state"></i>
+						</div>
+					</div>
+					<div class="item new_pwd">
+						<span>输入新密码</span>
+						<div class="r_box">
+							<input type="password" name="new_password" id="new_password" placeholder="密码长度8-16位">
+                            <i class="state"></i>
+                            <div class="get_pwd"></div>
+						</div>
+					</div>
+					<div class="item new_pwd2">
+						<span>确认新密码</span>
+						<div class="r_box">
+							<input type="password" name="qr_password" id="qr_password">
+                            <i class="state"></i>
+						</div>
+					</div>
+					<div class="item sub_item">
+						<span></span>
+						<div class="r_box">
+							<input type="button" value="提交" class="fg_b1_sub nb_t2">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+<script src="__JSPC__/jquery.js"></script>
+<script src="__JSPC__/ifie8.js"></script>
+<script src="__JSPC__/lazybg.js"></script>
+<script src="__JSPC__/layer.js"></script>
+<script src="__JSPC__/js.js"></script>
+<script src="__JSPC__/slick.js"></script>
+<script src="__JSPC__/selectordie.min.js"></script>
+<script src="__JSPC__/jquery.placeholder.min.js"></script>
+<script src="__JSPC__/jquery.dotdotdot.min.js"></script>
+<script src="__JSPC__/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+$(function(){
+    $('.fg_b1 .item .r_box input').blur(function() {
+        checkopwd();
+        checkpwd();
+        checkpwd2();
+    });
+    $('.fg_b1_sub').click(function() {
+        checkRl();
+    });
+});
+function checkopwd(index){
+    var opwd = $('.old_pwd input').val();
+    if(!opwd){
+        if(index == 999){
+            $('.old_pwd.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.old_pwd.item').removeClass('right wrong');
+        }
+    }else if(!(/^\d{8,16}$/.test(opwd))){
+        layer.tips('密码必须大于8位小于16位', '#old_password', {
+          tips: 2,
+          time: 4000
+        });
+        $('.old_pwd.item').removeClass('right').addClass('wrong');
+    }else{
+        $('.old_pwd.item').removeClass('wrong').addClass('right');
+    }
+}
+function checkpwd(index){
+    var pwd = $('.new_pwd input').val();
+    var length = /^.{8,16}$/.test(pwd);
+    if(!pwd){
+        if(index == 999){
+            $('.new_pwd.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.new_pwd.item').removeClass('right wrong');
+        }
+        $('.get_pwd').removeClass('high middle low');
+    }else if(!length){
+        layer.tips('密码必须大于8位小于16位', '#new_password', {
+          tips: 2,
+          time: 4000
+        });
+        $('.new_pwd.item').removeClass('right').addClass('wrong');
+        $('.get_pwd').removeClass('high middle low');
+    }else{
+        var modes = 0;
+        var lowercase = /[a-z]/.test(pwd);
+        var number = /[0-9]/.test(pwd);
+        var letter = /[a-zA-Z]/.test(pwd);
+        var uppercase = /[A-Z]/.test(pwd);
+        var other = /[!#$%&'*+/=?<>^_`(){|}~-]/.test(pwd);
+        if(number || letter){
+            modes++;
+        }
+        if((letter && number) || (number && other) || (letter && other)){
+            modes++;
+        }
+        if(lowercase && uppercase && number && other){
+            modes++;
+        }
+        if(modes == 1){
+            $('.get_pwd').removeClass('high middle low').addClass('low');
+            layer.tips('密码不能为纯字母或数字', '#new_password', {
+              tips: 2,
+              time: 4000
+            });
+            $('.new_pwd.item').removeClass('right').addClass('wrong');
+        }else if(modes == 2){
+            $('.get_pwd').removeClass('high middle low').addClass('middle');
+            $('.new_pwd.item').removeClass('wrong').addClass('right');
+        }else if(modes == 3){
+            $('.get_pwd').removeClass('high middle low').addClass('high');
+            $('.new_pwd.item').removeClass('wrong').addClass('right');
+        }
+    }
+}
+function checkpwd2(index){
+    var pwd = $('.new_pwd input').val();
+    var pwd2 = $('.new_pwd2 input').val();
+    if(!pwd2){
+        if(index == 999){
+            $('.new_pwd2.item').removeClass('right').addClass('wrong');
+        }else{
+            $('.new_pwd2.item').removeClass('right wrong');
+        }
+    }else if(pwd != pwd2){
+        layer.tips('两次密码不一致', '#qr_password', {
+          tips: 2,
+          time: 4000
+        });
+        $('.new_pwd2.item').removeClass('right').addClass('wrong');
+    }else{
+        $('.new_pwd2.item').removeClass('wrong').addClass('right');
+    }
+}
+
+function checkRl(){
+    checkopwd(999);
+    checkpwd(999);
+    checkpwd2(999);
+    if($('.safe_mod_rcon .item.right').length == $('.safe_mod_rcon .item').length - 1){
+        $('.safe_mod_rcon form').submit();
+    }else{
+        return false;
+    }
+}
+</script>
+

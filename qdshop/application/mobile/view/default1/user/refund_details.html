@@ -1,0 +1,69 @@
+{include file="public/header" /}
+<body data-psd-width="840" >
+<header class="pr bt hg">
+    <div class="pa back on" onclick="history.go(-1)"></div>
+    <h1 class="tc col">退款/售后详情</h1>
+</header>   
+<div class="content ">
+    <div class="txq ">
+        <div class="bgc txq_bian">
+            <p>退款单号：<span>{$data.back_sn}</span></p>
+            <p>订单状态：<em class="hc">{$data.back_status} <font></em></p>
+            <p>退款时间：<span>{$data.refund_time} </span></p>
+        </div>
+
+        {if $data.goods_list}
+        <div class="ddx">
+            <h1>商品信息</h1>
+            <ul class="bgc">
+                {foreach $data.goods_list as $key => $vo}
+                <li class="clearfix">
+                    <a href="{:url('Goods/details',array('goods_id'=>$vo.goods_id))}"><div class="pic fl"><img src="{$webUrl}/{$vo.goods_thumb}"></div></a>
+                    <div class="fr tt1_r">
+                        <p>{$vo.goods_name}</p>
+                        <span>{$vo.goods_attr}</span>
+                        <div class="clearfix"><p class="fl hc">{$vo.format_back_goods_price}</p><em class="fr">x{$vo.back_goods_number}</em> </div>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        {/if}
+
+        <div class="bgc txq_bian">
+            <p>订单号：<span>{$data.order_sn}</span></p>
+            <p>下单时间：<span>{$data.add_time}</span></p>
+            <p>订单金额：<em class="hc">{$data.format_order_amount}</em></p>
+        </div>
+
+        <div class="tkx">
+            <h1>退款信息</h1>
+            <ul class="bgc">
+                <li class="clearfix"><span>退款类型：</span><em>{$data.refund_type}</em></li>
+                <li class="clearfix"><span>退款金额：</span><em>-{$data.format_refund_amount}</em></li>
+                <li class="clearfix"><span>退款原因：</span><em>{$data.refund_reason}</em></li>
+            </ul>
+        </div>
+        
+        {if $data.back_replay}
+        <div class="tkx">
+            <h1>商家回复</h1>
+            <ul class="bgc">
+                {foreach $data.back_replay as $key => $vo}
+                <li class="clearfix" style="height:100%;line-height:0.8rem;"><span>{$vo.add_time}：</span><em style="float: left;">{$vo.message}</em></li>
+                {/foreach}
+            </ul>
+        </div>
+        {/if}
+    </div>
+
+</div>
+
+
+</body>
+</html>
+<script src="__JSWAP__/jquery.js"></script>
+<script src="__JSWAP__/rem.js"></script>
+<script src="__JSWAP__/fastclick.js"></script>
+<script src="__JSWAP__/swiper-3.4.1.jquery.min.js"></script>
+<script src="__JSWAP__/js.js"></script>

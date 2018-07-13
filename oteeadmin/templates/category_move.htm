@@ -1,0 +1,57 @@
+{include file="pageheader.htm"}
+<style type="text/css">
+  .layui-input{height: 35px !important;}
+  .layui-table td{line-height: 40px !important;}
+</style>
+<div class="main-div">
+<form action="category.php" method="post" name="theForm" enctype="multipart/form-data" class="layui-form">
+<table width="100%" class="layui-table">
+  <tr>
+    <td>
+      <div style="font-weight:bold"><img src="images/notice.gif" width="16" height="16" border="0" /> {$lang.cat_move_desc}</div>
+       <ul>
+         <li>{$lang.cat_move_notic}</li>
+       </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <strong style="float:left;line-height:40px;">{$lang.source_cat}</strong>&nbsp;&nbsp;
+      <select name="cat_id" style="float:left;">
+       <option value="0">{$lang.select_please}</option>
+       {$cat_select}
+      </select>&nbsp;&nbsp;
+      <strong style="float:left;line-height:40px;">{$lang.target_cat}</strong>
+      <select name="target_cat_id" style="float:left;">
+       <option value="0">{$lang.select_please}</option>
+       {$cat_select}
+      </select>&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" name="move_cat" value="{$lang.start_move_cat}" class="layui-btn layui-btn-small layui-btn-normal">
+      <input type="reset" value="{$lang.button_reset}" class="layui-btn layui-btn-small layui-btn-primary" />
+      <input type="hidden" name="act" value="{$form_act}" />
+    </td>
+  </tr>
+</table>
+</form>
+</div>
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+    });
+</script>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+//-->
+</script>
+{/literal}
+{include file="pagefooter.htm"}

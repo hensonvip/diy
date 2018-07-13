@@ -1,0 +1,68 @@
+{if $full_page}
+{include file="pageheader.htm"}
+{insert_scripts files="../js/utils.js,listtable.js"}
+
+<form method="post" action="" name="listForm">
+
+<div class="list-div" id="listDiv">
+{/if}
+
+<table cellpadding="3" cellspacing="1" class="layui-table">
+  <tr>
+    <th>{$lang.id}</th>
+    <th>{$lang.bank_user_name}</th>
+    <th>{$lang.real_name}</th>
+    <th>{$lang.card_number}</th>
+    <th>{$lang.card_name}</th>
+    <th>{$lang.card_info}</th>
+    <th>{$lang.add_time}</th>
+  </tr>
+  {foreach from=$bank_card_list item=list}
+  <tr>
+    <td class="first-cell">{$list.id}</td>
+    <td class="first-cell">
+    {$list.bank_user_name|escape:html}
+    <td align="center">{$list.real_name}</td>
+    <td align="center">{$list.card_number}</td>
+    <td align="center">{$list.card_name}</td>
+    <td align="center">{$list.card_info}</td>
+    <td align="center">{$list.add_time}</td>
+  </tr>
+  {foreachelse}
+    <tr><td class="no-records" colspan="10">{$lang.no_position}</td></tr>
+  {/foreach}
+  <tr>
+    <td align="right" nowrap="true" colspan="10">{include file="page.htm"}</td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+
+    });
+</script>
+
+{if $full_page}
+</div>
+
+</form>
+
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    // &#64138;&#53036;&#10870;鵥
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+{include file="pagefooter.htm"}
+{/if}

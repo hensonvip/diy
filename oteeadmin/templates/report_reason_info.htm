@@ -1,0 +1,69 @@
+{include file="pageheader.htm"}
+
+<form method="post" action="report_reason.php" name="theForm"  onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--原因-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} 原因</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入原因" autocomplete="off" name="content" value="{$reason.content|escape}" style="width:500px" >
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入排序号" autocomplete="off" name="sort_order" {if $reason.sort_order}value='{$reason.sort_order}'{else} value="50"{/if} >
+            </div>
+        </div>
+        <!--是否显示-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否显示</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_show" value="1" {if $reason.is_show eq 1} checked="true"{/if} title="是" />
+                <input type="radio" name="is_show" value="0" {if $reason.is_show eq 0} checked="true"{/if} title="否" />
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="id" value="{$reason.reason_id}" />
+            <input type="hidden" name="old_content" value="{$reason.content}" />
+        </p>
+
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("content",  '没有输入原因');
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form(),layer = layui.layer,layedit = layui.layedit,laydate = layui.laydate;
+        form.render(); //更新全部
+    });
+</script>
+{include file="pagefooter.htm"}

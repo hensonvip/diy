@@ -1,0 +1,226 @@
+{include file="pageheader.htm"}
+<link href="styles/zTree/zTreeStyle.css" rel="stylesheet" type="text/css" />
+{insert_scripts files='jquery.ztree.all-3.5.min.js,category_selecter.js'}
+<form method="post" action="brand.php" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" class="layui-form layui-form-pane">
+<div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+        <!--品牌名称-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.require_field} {$lang.brand_name}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" placeholder="请输入品牌名称" autocomplete="off" name="brand_name" value="{$brand.brand_name}" >
+            </div>
+        </div>
+		<!--商品分类-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">{$lang.require_field} 品牌所属分类</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" id="cat_name" name="cat_name" nowvalue="{$goods_cat_id}" value="{$goods_cat_name}">
+					<input type="hidden" id="cat_id" name="cat_id" value="{$goods_cat_id}">
+					<script type="text/javascript">
+            		$().ready(function(){
+						// $("#cat_name")为获取分类名称的jQuery对象，可根据实际情况修改
+						// $("#cat_id")为获取分类ID的jQuery对象，可根据实际情况修改
+						// "{$goods_cat_id}"为被选中的商品分类编号，无则设置为null或者不写此参数或者为空字符串
+						$.ajaxCategorySelecter($("#cat_name"), $("#cat_id"), "{$goods_cat_id}");
+					});
+        			</script>
+				</div>
+			</div>
+        <!--品牌网址-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.site_url}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" autocomplete="off" name="site_url" value="{$brand.site_url}" >
+            </div>
+        </div>
+        <!--品牌LOGO-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a href="javascript:showNotice2('warn_brandlogo');" title="{$lang.form_notice}">
+                    <img src="images/notice.gif" width="16" height="16" border="0" alt="{$lang.form_notice}">
+                </a>
+                {$lang.brand_logo}
+            </label>
+            <div class="layui-input-block">
+                <input type="file" name="brand_logo" id="logo" size="45" style="margin-left:10px;margin-top:5px;"><font color="red" style="margin-right:50px;">图片尺寸：180px * 180px</font>
+                {if $brand.brand_logo neq ""}
+                    <img src="/data/brandlogo/{$brand.brand_logo}" style="max-height:40px;">
+                    <input type="button" value="{$lang.drop_brand_logo}" class="layui-btn layui-btn-small layui-btn-normal" onclick="if (confirm('{$lang.confirm_drop_logo}'))location.href='brand.php?act=drop_logo&id={$brand.brand_id}'">
+                {/if}
+                <span class="notice-span" {if $help_open}style="display:initial" {else} style="display:none" {/if} id="warn_brandlogo">
+                    {if $brand.brand_logo eq ''}
+                        {$lang.up_brandlogo}
+                    {else}
+                        {$lang.warn_brandlogo}
+                    {/if}
+                </span>
+            </div>
+        </div>
+        <!-- 品牌描述 -->
+        <div class="layui-form-item layui-form-text" id="goods_textarea_box">
+            <label class="layui-form-label" style="float:left;">{$lang.brand_desc}</label>
+            <div class="layui-input-initial">
+              <textarea class="layui-textarea" name="brand_desc" style="float:left;width:45%;">{$brand.brand_desc}</textarea>
+            </div>
+        </div>
+        <!--排序-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.sort_order}</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="sort_order" value="{$brand.sort_order}" >
+            </div>
+        </div>
+        <!--是否显示-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">{$lang.is_show}</label>
+            <div class="layui-input-block">
+                <input type="radio" name="is_show" value="1" {if $brand.is_show eq 1}checked="checked"{/if} title="{$lang.yes}" /> 
+                <input type="radio" name="is_show" value="0" {if $brand.is_show eq 0}checked="checked"{/if} title="{$lang.no}" /> 
+                ({$lang.visibility_notes})
+            </div>
+        </div>
+        <p class="btn_padding_left">
+            <input type="submit" class="layui-btn" value="{$lang.button_submit}" />
+            <input type="reset" class="layui-btn layui-btn-primary" value="{$lang.button_reset}" />
+            <input type="hidden" name="act" value="{$form_action}" />
+            <input type="hidden" name="old_brandname" value="{$brand.brand_name}" />
+            <input type="hidden" name="id" value="{$brand.brand_id}" />
+            <input type="hidden" name="old_brandlogo" value="{$brand.brand_logo}">
+        </p>
+    </div>
+</div>
+</form>
+
+{insert_scripts files="../js/utils.js,validator.js"}
+{literal}
+<script language="JavaScript">
+<!--
+document.forms['theForm'].elements['brand_name'].focus();
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("brand_name",  no_brandname);
+    validator.isNumber("sort_order", require_num, true);
+    return validator.passed();
+}
+//-->
+</script>
+{/literal}
+
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form();
+        form.render(); //更新全部
+    });
+	
+	 function addCatResponse(result)
+  {
+      if (result.error == '1' && result.message != '')
+      {
+          alert(result.message);
+          return;
+      }
+
+      var category_add_div = document.getElementById("category_add");
+      category_add_div.style.display = 'none';
+
+      var response = result.content;
+      
+      $("#cat_id").val(response.id);
+      $("#cat_name").val(response.cat);
+      $("#cat_name").attr("nowvalue", response.cat);
+      
+      $.ajaxCategorySelecter($("#cat_name"), $("#cat_id"), response.id);
+
+      return;
+      
+      var selCat = document.forms['theForm'].elements['cat_id'];
+      var opt = document.createElement("OPTION");
+      opt.value = response.id;
+      opt.selected = true;
+      opt.innerHTML = response.cat;
+
+      //获取子分类的空格数
+      var str = selCat.options[selCat.selectedIndex].text;
+      var temp = str.replace(/^\s+/g, '');
+      var lengOfSpace = str.length - temp.length;
+      if(response.parent_id != 0)
+      {
+          lengOfSpace += 4;
+      }
+      for (i = 0; i < lengOfSpace; i++)
+      {
+          opt.innerHTML = '&nbsp;' + opt.innerHTML;
+      }
+
+      for (i = 0; i < selCat.length; i++)
+      {
+          if(selCat.options[i].value == response.parent_id)
+          {
+              if(i == selCat.length)
+              {
+                  if (Browser.isIE)
+                  {
+                      selCat.add(opt);
+                  }
+                  else
+                  {
+                      selCat.appendChild(opt);
+                  }
+              }
+              else
+              {
+                  selCat.insertBefore(opt, selCat.options[i + 1]);
+              }
+              //opt.selected = true;
+              break;
+          }
+
+      }
+
+      return;
+  }
+  
+  function goCatPage()
+    {
+        if(confirm(go_category_page))
+        {
+            window.location.href='category.php?act=add';
+        }
+        else
+        {
+            return;
+        }
+    }
+	
+	function hideCatDiv()
+  {
+      var category_add_div = document.getElementById("category_add");
+      if(category_add_div.style.display != null)
+      {
+          category_add_div.style.display = 'none';
+      }
+  }
+  
+  function rapidCatAdd()
+  {
+      var cat_div = document.getElementById("category_add");
+
+      if(cat_div.style.display != '')
+      {
+          var cat =document.forms['theForm'].elements['addedCategoryName'];
+          cat.value = '';
+          cat_div.style.display = '';
+      }
+  }
+</script>
+{include file="pagefooter.htm"}
