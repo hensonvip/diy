@@ -30,6 +30,6 @@ if (local_date('d') == $_CFG['auto_tx_date']) {
 		}
 	}
 } else {
-	echo '系统设置的自动提现时间为每个月：' . $_CFG['auto_tx_date'] . '号';
+	echo '系统设置的自动提现时间为每个月：' . $_CFG['auto_tx_date'] . '号，请设置服务器定时任务时间';
 }
 ?>
