@@ -104,6 +104,8 @@ for(var fui=0;fui<canvasDraw.length;fui++){
 
 
 var mD={
+
+
         moveb:$('.moveC'),
         key:{up:false,down:false,left:false,right:false},
         cxData:[],
@@ -2229,6 +2231,7 @@ function changeT(srcObj,bH) {
         obj.h2=srcObj.attr('data-th')*b;
 
     mD.allData[0].source=$('.Timg .'+obj.src)[0];
+    mD.allData[0].className=obj.src;
     mD.allData[0].width=obj.w2;
     mD.allData[0].height=obj.h2;
     mD.allData[1].x=obj.x;
@@ -2914,20 +2917,101 @@ document.onkeydown=function(event){
             }
         }
 };
+function getAllData() {
+     var ary=[];   
+     for(var i=0;i<mD.allData.length;i++){
+        var newObject = $.extend(true, {}, mD.allData[i]);
+        if(newObject.mousedown){
+            delete  newObject.mousedown;
+        }
+        if(newObject.source){
+            delete  newObject.source;
+        }
+        if(newObject.imgSource){
+            delete  newObject.imgSource;
+        }
+        ary.push(newObject)
+     }
+     return ary;
+}
+$(window).load(function() {
+    if(diy_json != ''){
+        console.log(1)
+    }
 
-$('.pdNameText').on('blur',function () {
-    if($(this).val()==''){
-        $(this).val('未命名作品');
-        $(this).removeClass('on')
-    }
-}).focus(function (){
-    if($(this).val()=='未命名作品'){
-        $(this).val('');
-    }
-    $(this).addClass('on')
-});
+    $('.loads').animate({opacity:0},400,function () {
+        $('.loads').hide();
+        closeAnyAct();
+        firstOne();
+        initOne();
+        $('.sbr').mCustomScrollbar({
+            axis: "y",
+            scrollInertia: 100,
+            advanced:{updateOnContentResize:true},
+            scrollButtons: {
+                enable: true,
+                scrollSpeed: 20
+            },
+            theme: "3d"
+        });
+    });
+})
 
 $(window).load(function () {
+    function uuid(len, radix) {
+        var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+        var uuid = [], i;
+        radix = radix || chars.length;
+        if (len) {
+            // Compact form
+            for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+        } else {
+            // rfc4122, version 4 form
+            var r;
+
+            // rfc4122 requires these characters
+            uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+            uuid[14] = '4';
+
+            // Fill in random data. At i==19 set the high bits of clock sequence as
+            // per rfc4122, sec. 4.1.5
+            for (i = 0; i < 36; i++) {
+                if (!uuid[i]) {
+                    r = 0 | Math.random()*16;
+                    uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                }
+            }
+        }
+        return uuid.join('');
+    }
+
+    function print(obj){
+        try{
+            var seen = [];
+            json = JSON.stringify(obj, function(key, val) {
+                if (typeof val == "object") {
+                    if (seen.indexOf(val) >= 0) return;
+                    seen.push(val)
+                }
+                return val;
+            });
+            return json;
+        }catch(e){
+            return e;
+        }
+    }
+    $('.pdNameText').on('blur',function () {
+        if($(this).val()==''){
+            $(this).val('未命名作品');
+            $(this).removeClass('on')
+        }
+    }).focus(function (){
+        if($(this).val()=='未命名作品'){
+            $(this).val('');
+        }
+        $(this).addClass('on')
+    });
+
     // var cart_is = true;
     $(document).on('click', '.cart_abtn', function(event) {
         // 执行加入购物车
@@ -3170,7 +3254,7 @@ $(window).load(function () {
                 dataType: 'html',
                 data: {
                     "attr_img": JSON.stringify(ary),
-                    "diy_json": print(mD.allData),
+                    "diy_json": print(getAllData()),
                     "type_id": type_id,
                     "goods_name": $('.pdNameText').val(),
                     "design_img": sjt
@@ -3203,7 +3287,6 @@ $(window).load(function () {
     $(document).on('click', '.cart_wrap .del', function(event) {
         $('.cart_bg').fadeOut();
     });
-    $(window)
     function checkType(){
         if($('.cart_wrap .wrap .box2').hasClass('on') && $('.box2 .t2_wrap .cart_box').length == 1){
             $('.cart_wrap').addClass('type1').removeClass('type2');
@@ -3288,67 +3371,6 @@ $(window).load(function () {
         });
     },function(argument) {
     })
-    $('.loads').animate({opacity:0},400,function () {
-        $('.loads').hide();
-        closeAnyAct();
-        firstOne();
-        initOne();
-        // $(".sbr").mCustomScrollbar({
-        //     autoDraggerLength:false,
-        //     advanced:{updateOnContentResize:true}
-        // });
-        $('.sbr').mCustomScrollbar({
-            axis: "y",
-            scrollInertia: 100,
-            advanced:{updateOnContentResize:true},
-            scrollButtons: {
-                enable: true,
-                scrollSpeed: 20
-            },
-            theme: "3d"
-        });
-    });
+  
 });
 
-function uuid(len, radix) {
-    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-    var uuid = [], i;
-    radix = radix || chars.length;
-    if (len) {
-        // Compact form
-        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
-    } else {
-        // rfc4122, version 4 form
-        var r;
-
-        // rfc4122 requires these characters
-        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-        uuid[14] = '4';
-
-        // Fill in random data. At i==19 set the high bits of clock sequence as
-        // per rfc4122, sec. 4.1.5
-        for (i = 0; i < 36; i++) {
-            if (!uuid[i]) {
-                r = 0 | Math.random()*16;
-                uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
-            }
-        }
-    }
-    return uuid.join('');
-}
-
-function print(obj){
-    try{
-        var seen = [];
-        json = JSON.stringify(obj, function(key, val) {
-            if (typeof val == "object") {
-                if (seen.indexOf(val) >= 0) return;
-                seen.push(val)
-            }
-            return val;
-        });
-        return json;
-    }catch(e){
-        return e;
-    }
-}
