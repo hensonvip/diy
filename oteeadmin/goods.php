@@ -67,8 +67,8 @@ if ($_REQUEST['act'] == 'list' || $_REQUEST['act'] == 'trash')
 		$smarty->assign('supplier_status_list', $supplier_status_list);
     }else{
     	// 入驻商商品列表不显示添加新商品
-    	$action_link = ($_REQUEST['act'] == 'list') ? add_link($code) : array('href' => 'goods.php?act=list', 'text' => $_LANG['01_goods_list']);
-    	$smarty->assign('action_link',  $action_link);
+    	/*$action_link = ($_REQUEST['act'] == 'list') ? add_link($code) : array('href' => 'goods.php?act=list', 'text' => $_LANG['01_goods_list']);
+    	$smarty->assign('action_link',  $action_link);*/
     }
 
     /* 模板赋值 */
