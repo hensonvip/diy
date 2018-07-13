@@ -2287,4 +2287,10 @@ class User extends Common
         $result = json_decode($result);
         return $result;
     }
+
+    //我的级别
+    public function my_rank()
+    {
+        return $this->fetch();
+    }
 }
