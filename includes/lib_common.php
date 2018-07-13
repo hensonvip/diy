@@ -5661,7 +5661,7 @@ function number($k) {
 }
 
 /**
- * 订单确认收货后设计师佣金结算（未测试）
+ * 订单确认收货后设计师佣金结算，增加总销量（未测试）
  */
 function commission($order_id = 0) {
     if (!empty($order_id)) {
