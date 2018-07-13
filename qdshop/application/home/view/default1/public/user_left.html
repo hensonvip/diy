@@ -1,7 +1,7 @@
 <div class="mem_left">
 	<div class="head_box tc bg_white">
 		<div class="grade_box">
-            <i class="grade_i"></i>
+            <i class="grade_i" style="background: url({$webUrl}{$user.rank_icon}) center no-repeat;"></i>
             <div class="p_level">
                 {foreach $user.rank_list as $key =>$value}
                 <a href="javascript:void(0);" {if $user.rank_name eq $value.rank_name}class="on"{/if}>{$value.rank_name}</a>

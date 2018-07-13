@@ -3306,7 +3306,7 @@ table.p_tab2 td.p_txt p{font-size:14px;color:#999;line-height:23px;text-indent:0
 .fv_pl2 .fv_p10_blist .af_top .af_avatar{ width: 115px; height: 115px; margin: 40px auto 10px; }
 .grade_box:hover .p_level{ display: block; }
 .head_box .grade_box{ position: absolute; left: 26px; top: 17px; width: 65px; height: 37px; padding-right: 9px; }
-.head_box .grade_box i{ display: block; width: 65px; height: 37px; background: url(../images/level1.gif) center no-repeat; background-size: contain; }
+.head_box .grade_box i{ display: block; width: 65px; height: 37px; background-size: contain; }
 
 
 
