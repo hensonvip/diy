@@ -53,6 +53,10 @@ ALTER TABLE hunuo_order_info ADD `is_design` tinyint(3) unsigned NOT NULL DEFAUL
 ALTER TABLE hunuo_bank_card ADD `bank_icon` varchar(255) NOT NULL DEFAULT '' COMMENT '银行图标';
 ALTER TABLE hunuo_bank_card ADD `card` varchar(255) NOT NULL DEFAULT '' COMMENT '身份证号码';
 ALTER TABLE hunuo_user_account ADD `poundage` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '手续费';
+ALTER TABLE hunuo_users ADD `is_recommend` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否推荐';
+ALTER TABLE hunuo_back_order ADD COLUMN `back_shipping_name`  varchar(120) NULL COMMENT '退款订单,平台换回商品快递信息公司名称';
+ALTER TABLE hunuo_back_order ADD COLUMN `back_invoice_no`  varchar(50) NULL COMMENT '退款订单,平台换回商品快递信息快递单号';
+ALTER TABLE hunuo_users ADD `sale_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '销售额';
 
 -- diy商品属性图片
 CREATE TABLE `hunuo_attribute_img` (

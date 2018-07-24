@@ -1,0 +1,158 @@
+{if condition="isset($goods_data)"}
+    <div class="cart_bg">
+        <div class="cart_wrap">
+            <i class="del"></i>
+            <h2>请选择购买类别</h2>
+            <div class="wrap">
+                <div class="box box1 on" style="display:none;">
+                    <div class="bar">一件定制</div>
+                    <div class="t2_wrap">
+                        <div class="cart_box">
+                            <div class="cart_pic">
+                                <img src="__IMGPC__/icon61.png">
+                            </div>
+                            <div class="cart_type">
+                                <div class="mep_tright">
+                                    <div class="r_box">
+                                        <span>款式</span>
+                                        <div class="cr_b sex_box">
+                                            <label class="on" style="background-image: url(__IMGPC__/icon47.png);">
+                                                <input type="radio" name="sex" value="">
+                                            </label>
+                                            <label style="background-image: url(__IMGPC__/icon48.png);">
+                                                <input type="radio" name="sex" value="">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="r_box">
+                                        <span>颜色</span>
+                                        <div class="cr_b color_box">
+                                            <label class="white on" style="background-color: #fff;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #999;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #030000;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #7d0000;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #ec6941;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #fff45c;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #89c997;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #7ecef4;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #8f82bc;"><input type="radio" name="color" value=""></label>
+                                            <label style="background-color: #1d2088;"><input type="radio" name="color" value=""></label>
+                                        </div>
+                                    </div>
+                                    <div class="r_box">
+                                        <span>尺码</span>
+                                        <div class="cr_b size_box">
+                                            <label class="on"><input type="radio" name="size" value="">S</label>
+                                            <label><input type="radio" name="size" value="">M</label>
+                                            <label><input type="radio" name="size" value="">L</label>
+                                            <label><input type="radio" name="size" value="">XL</label>
+                                            <label><input type="radio" name="size" value="">XXL</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box2">
+                    <div class="bar" style="visibility:hidden;">多件定制</div>
+                    <div class="t2_wrap">
+                        <div class="cart_box">
+                            <div class="cart_pic">
+                                <img src="{$webUrl}{$goods_data.goods_img}" style="width:132px;height:125px;">
+                            </div>
+                            <div class="cart_type">
+                                <div class="mep_tright">
+                                    <div class="r_box">
+                                        <span>款式</span>
+                                        <div class="cr_b sex_box">
+                                            {foreach $goods_data.properties as $spec_key => $spec}
+                                                {if $spec.name eq '款式'}
+                                                    {foreach $spec.values as $attr_key => $attr}
+                                                        <label {if $attr_key eq 0}class="on"{/if} data-src='{$webUrl}{$attr.default_icon}' data-srcon='{$webUrl}{$attr.select_icon}' {if $attr_key eq 0}style="background-image: url({$webUrl}{$attr.select_icon});"{else /}style="background-image: url({$webUrl}{$attr.default_icon});"{/if}>
+                                                            <input type="radio" id="spec_value_{$attr.id}" name="spec_d_0" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                                        </label>
+                                                    {/foreach}
+                                                {/if}
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div class="r_box">
+                                        <span>颜色</span>
+                                        <div class="cr_b color_box">
+                                            {foreach $goods_data.properties as $spec_key => $spec}
+                                                {if $spec.name eq '颜色'}
+                                                    {foreach $spec.values as $attr_key => $attr}
+                                                        <label {if $attr_key eq 0}class="white on"{else}class="white"{/if} style="background-color: #{$attr.color_code};">
+                                                            <input type="radio" id="spec_value_{$attr.id}" name="spec_d_1" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>
+                                                        </label>
+                                                    {/foreach}
+                                                {/if}
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div class="r_box">
+                                        <span>尺码</span>
+                                        <div class="cr_b size_box">
+                                            {foreach $goods_data.properties as $spec_key => $spec}
+                                                {if $spec.name eq '尺码'}
+                                                    {foreach $spec.values as $attr_key => $attr}
+                                                        <label {if $attr_key eq 0}class="on"{/if}>
+                                                            <input type="radio" id="spec_value_{$attr.id}" name="spec_d_2" value="{$attr.id}" {if $attr_key eq 0}checked="checked"{/if}>{$attr.label}
+                                                        </label>
+                                                    {/foreach}
+                                                {/if}
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div class="r_box">
+                                        <span>数量</span>
+                                        <div class="cr_b ipd_type">
+                                            <div class="num_box" data-max="20">
+                                                <input type="button" value="-" class="btn_m">
+                                                <input type="text" name="number" value="1" class="btn_input">
+                                                <input type="button" value="+" class="btn_a">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="a_btn"></i>
+                            <i class="m_btn"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn">
+                <div class="cart_abtn nb_t2">
+                    <b></b>加入购物袋<i class="aicon"></i>
+                </div>
+                <input type="hidden" name="goods_id" id="goods_id" value="{$goods_data.goods_id}">
+            </div>
+        </div>
+        <script>
+            //添加多件
+            var base_html = "<div class='cart_box'>" + $('.box2 .t2_wrap .cart_box:first-child').html() + "</div>";
+            $(document).on('click', '.t2_wrap .a_btn', function() {
+                $('.cart_wrap.type2 .t2_wrap').mCustomScrollbar("destroy");
+                $('.box2 .t2_wrap').append(base_html);
+                checkType();
+            });
+
+            //删除多件
+            $(document).on('click', '.t2_wrap .m_btn', function() {
+                var _this = $(this);
+                layer.confirm('确定要删除定制好的T恤？', {
+                    title: false,
+                    closeBtn: 0,
+                    btn: ['取 消','确 定'] //按钮
+                }, function(){
+                    layer.closeAll();
+                }, function(){
+                    _this.parents('.cart_box').remove();
+                    checkType();
+                });
+            });
+        </script>
+    </div>
+{/if}

@@ -542,8 +542,7 @@ class OrderController extends ApiController
 	 * @author lwp
 	 * @wiki http://wiki.corp.mama.cn/pages/viewpage.action?pageId=65078667
 	 */
-	public function query()
-	{
+	public function query(){
 		$params = json_decode(stripslashes($this->input('data')), true);
 
 		$cls_order = cls_order::getInstance();
@@ -1195,31 +1194,65 @@ class OrderController extends ApiController
 	//订单列表
 	public function getOrderList(){
 		$user_id = $this->input('user_id',0);
+		$state = $this->input('state',0);//状态
+
 		if(!$user_id){
 			$this->error('请先登录！');exit;
 		}
 		$page = $this->input('page',1);
 		$page_size = $this->input('page_size',8);
 		$start = ($page-1)*$page_size;
-		$screen = $this->input('screen',1);//筛选时间
-		$where = "";
-		if($screen != 1){
+		//$screen = $this->input('screen',0);//筛选时间
+		/*$where = "";
+		if($screen){
 			$where = " AND add_time >= $screen ";
+		}*/
+
+
+		//筛选
+		$screen_state = "";
+		switch($state){
+			case CS_UNPAY://待付款100
+				$screen_state = " AND pay_status = 0 AND order_status = 1";
+				break;
+			case CS_CHECKED://已付款/待发货 102
+				$screen_state = " AND pay_status = 2 ";
+				break;
+			case CS_SHIPPED://已发货/待收获 106
+				$screen_state = " AND shipping_status = 1";
+				break;
+			case CS_RECEIVED://已收货/待评价 108
+				$screen_state = " AND shipping_status = 2 AND comment_state = 0";
+				break;
+			case CS_FINISHED://已评价/已完成 109
+				$screen_state = " AND shipping_status = 2 AND comment_state = 1";
+				break;
+			case CS_SERVICE:// 售后中 退货退款 117
+				$screen_state = " AND shipping_status = 2 AND comment_state = 1";
+				break;
 		}
 
 		/*$order_sql = "SELECT oi.order_id as id,oi.order_sn as order_sn,og.goods_name as goods_name,oi.add_time as add_time,og.goods_sn as goods_sn,og.goods_number as goods_number,og.goods_price as goods_price,oi.order_status as order_status FROM ".$GLOBALS['ecs']->table('order_info')." oi LEFT JOIN ".$GLOBALS['ecs']->table('order_goods')." og ON oi.order_id = og.order_id WHERE ".
 	 			"user_id = $user_id group by oi.order_id order by oi.add_time";*/
 		//db_create_in
-		$order_sql = "SELECT order_id,order_sn,add_time,order_status,pay_status,shipping_fee FROM ".$GLOBALS['ecs']->table('order_info')." WHERE ".
-	 			"user_id = 159 $where order by add_time DESC LIMIT $start,$page_size";
+		$order_sql = "SELECT info.order_id,info.shipping_status as shipping_status,info.pay_status as pay_status,goods.comment_state as comment_state,info.order_sn,info.add_time as add_time,info.order_status as order_status,info.shipping_fee,info.order_amount,delivery.invoice_no,info.shipping_name FROM ".
+			$GLOBALS['ecs']->table('order_info')." info LEFT JOIN ".$GLOBALS['ecs']->table('delivery_order')." delivery ON delivery.order_id = info.order_id  LEFT JOIN ".$GLOBALS['ecs']->table('order_goods')."goods ON goods.order_id = info.order_id WHERE ".
+	 		"info.user_id = $user_id $screen_state group by info.order_id order by add_time DESC LIMIT $start,$page_size";
+		//var_dump($order_sql);exit;
 		$order_data = $GLOBALS['db']->getAll($order_sql);
-		$count = $GLOBALS['db']->getOne("SELECT COUNT(`order_id`) FROM ".$GLOBALS['ecs']->table('order_info')." WHERE  user_id = 159 $where");
+		$count = $GLOBALS['db']->getOne("SELECT COUNT(`order_id`) FROM ".$GLOBALS['ecs']->table('order_info')." WHERE  user_id = $user_id $screen_state");
 		$pege_count = ceil($count/$page_size);
 		foreach($order_data as $key=>$value){
+			//订单状态 未付款 待发货 已发货 收货/完成 待评价/完成
+			$states = $this->order_state($value);
+			$order_data[$key]['status'] = $states['status'];
+			if($states['status_code']){
+				$order_data[$key]['status_code'] = $states['status_code'];
+			}
 
-			$sql = 'SELECT og.goods_name as goods_name,og.goods_sn,sum(og.goods_number) as total,og.goods_attr as goods_attr,og.goods_attr_id,g.goods_thumb,g.goods_sn,g.goods_id as goods_id FROM '.$GLOBALS['ecs']->table('order_goods').'og LEFT JOIN '.$GLOBALS['ecs']->table('goods').' g ON g.goods_id = og.goods_id WHERE og.order_id = '.$value['order_id'] .' group by goods_id,goods_attr' ;
+			$sql = 'SELECT og.goods_name as goods_name,og.goods_sn,sum(og.goods_number) as total,og.goods_attr as goods_attr,og.goods_attr_id,g.goods_thumb,g.goods_sn,g.goods_id as goods_id,og.goods_price,og.market_price FROM '.$GLOBALS['ecs']->table('order_goods').'og LEFT JOIN '.$GLOBALS['ecs']->table('goods').' g ON g.goods_id = og.goods_id WHERE og.order_id = '.$value['order_id'] .' group by goods_id,goods_attr' ;
 			$order_data[$key]['goods_info'] = $GLOBALS['db']->getAll($sql);
-			$total = "";
+			//$total = "";
 			//var_dump($order_data[$key]['goods_info']);exit;
 			foreach($order_data[$key]['goods_info'] as $k=>$v){
 				$id_str = db_create_in($v['goods_attr_id']);
@@ -1235,11 +1268,13 @@ class OrderController extends ApiController
 				$order_data[$key]['goods_info'][$k]['attr_size'] = $GLOBALS['db']->getOne("SELECT attr_value FROM " .$GLOBALS['ecs']->table('goods_attr'). " WHERE goods_attr_id = ".$attr[2]['goods_attr_id']." AND goods_id =" .$v['goods_id']);
 
 				//单价
-				$order_data[$key]['goods_info'][$k]['unit_price'] = $this->cart->get_final_price_api($v['goods_id']);
+				//$order_data[$key]['goods_info'][$k]['unit_price'] = $this->cart->get_final_price_api($v['goods_id']);
+				$order_data[$key]['goods_info'][$k]['unit_price'] = $v['goods_price'];
 
 
 				//价格get_final_price_api
-				$order_data[$key]['price']+=$this->cart->get_final_price_api($v['goods_id'],$v['total']);
+				//$order_data[$key]['price']+=$this->cart->get_final_price_api($v['goods_id'],$v['total']);
+				$order_data[$key]['price']+=$v['goods_price']*$v['total'];
 
 			}
 
@@ -1255,5 +1290,208 @@ class OrderController extends ApiController
 
 		$this->success($data);
 	}
+
+
+	//订单详情
+	function order_details(){
+		$user_id = $this->input('user_id',0);
+		$order_id = $this->input('order_id',0);
+		if(!$user_id){
+			$this->error('请先登录！');exit;
+		}
+		if(!$order_id){
+			$this->error('参数错误');exit;
+		}
+
+		$info_sql = "SELECT *,info.order_sn as order_sn,info.consignee as consignee,info.mobile as mobile,info.address as address FROM ".$GLOBALS['ecs']->table('order_info')." info LEFT JOIN ".$GLOBALS['ecs']->table('delivery_order')." delivery ON delivery.order_id = info.order_id   WHERE info.order_id =$order_id AND info.user_id = $user_id ";
+		$info_result = $GLOBALS['db']->getRow($info_sql);
+
+		//订单状态 order_status,pay_status,shipping_status
+		$states = $this->order_state($info_result);
+		$info_result['status'] = $states['status'];
+		if($states['status_code']){
+			$info_result['status_code'] = $states['status_code'];
+		}
+
+		$info_result['address'] = $info_result['province_name'].$info_result['city_name'].$info_result['district_name'].$info_result['address'];//收货人地址
+		$info_result['add_time'] = local_date("Y-m-d H:i", $info_result['add_time']);//下单时间
+
+		//发票！
+		$invoice=array();
+		$invoice['inv_type'] =  $info_result['inv_type'];//发票类型
+		$invoice['inv_type_name'] =  $info_result['inv_type']?($info_result['inv_type']=='normal_invoice'?'普通发票':'增值税发票'):'';//发票类型名称
+		$invoice['inv_payee_type'] =  $info_result['inv_payee_type'];//发票抬头类型
+		$invoice['inv_payee_type_name'] =  $info_result['inv_payee_type']?($info_result['inv_payee_type']=='individual'?'个人':'企业'):'';//发票抬头类型名称
+		$invoice['inv_payee'] =  $info_result['inv_payee'];//发票抬头
+		$invoice['inv_content'] =  $info_result['inv_content'];//发票内容
+
+		$invoice['vat_inv_taxpayer_id'] =  $info_result['vat_inv_taxpayer_id'];//纳税人识别码
+		$invoice['vat_inv_company_name'] =  $info_result['vat_inv_company_name'];//单位名称
+		$invoice['vat_inv_registration_address'] =  $info_result['vat_inv_registration_address'];//注册地址
+		$invoice['vat_inv_registration_phone'] =  $info_result['vat_inv_registration_phone'];//注册电话
+		$invoice['vat_inv_deposit_bank'] =  $info_result['vat_inv_deposit_bank'];//开户银行
+		$invoice['vat_inv_bank_account'] =  $info_result['vat_inv_bank_account'];//银行账户
+		$info_result['invoice'] = $invoice;
+
+		//$attr = $GLOBALS['db']->getAll('SELECT * FROM '.$GLOBALS['ecs']->table('goods_attr').' WHERE goods_attr_id '.$id_str .' group by goods_attr_id' );
+
+		//商品
+		$goods_sql = "SELECT og.goods_name as goods_name,og.goods_sn,sum(og.goods_number) as total,og.goods_attr as goods_attr,og.goods_attr_id,g.goods_thumb,g.goods_sn,g.goods_id as goods_id,og.goods_price,og.market_price FROM ".$GLOBALS['ecs']->table('order_goods')." og LEFT JOIN ".$GLOBALS['ecs']->table('goods')." g ON og.goods_id = g.goods_id WHERE og.order_id =$order_id group by og.goods_id,og.goods_attr";
+		$info_result['goods'] = $GLOBALS['db']->getAll($goods_sql);
+
+		foreach($info_result['goods'] as $k=>$v){
+			$id_str = db_create_in($v['goods_attr_id']);
+			$attr = $GLOBALS['db']->getAll('SELECT * FROM '.$GLOBALS['ecs']->table('goods_attr').' WHERE goods_attr_id '.$id_str .' group by goods_attr_id' );
+
+			//款式图
+			$icon_sql = "SELECT `default_icon` FROM ".$GLOBALS['ecs']->table('attribute_icon')." WHERE attr_id = ".$attr[0]["attr_id"]." AND attr_value_name = '".$attr[0]["attr_value"]."'";
+			$info_result['goods'][$k]['attr_icon'] = $GLOBALS['db']->getOne($icon_sql);
+			//颜色编码
+			$color_sql = "SELECT `color_code` FROM " . $GLOBALS['ecs']->table('attribute_color') ." WHERE attr_id = ".$attr[1]["attr_id"]." AND color_name = '".$attr[1]["attr_value"]."'";
+			$info_result['goods'][$k]['attr_color'] = $GLOBALS['db']->getOne($color_sql);
+			//获取尺码
+			$info_result['goods'][$k]['attr_size'] = $GLOBALS['db']->getOne("SELECT attr_value FROM " .$GLOBALS['ecs']->table('goods_attr'). " WHERE goods_attr_id = ".$attr[2]['goods_attr_id']." AND goods_id =" .$v['goods_id']);
+
+			//单价
+			//$order_data['goods_info'][$k]['unit_price'] = $this->cart->get_final_price_api($v['goods_id']);
+			$info_result['goods'][$k]['unit_price'] = $v['goods_price']*$v['total'];
+
+			//订单商品总数
+			$info_result['totals']+=$v['total'];
+
+			//价格get_final_price_api
+			//$order_data['price']+=$this->cart->get_final_price_api($v['goods_id'],$v['total']);
+			$info_result['price']+=$v['goods_price']*$v['total'];
+		}
+
+		//qq、旺旺客服信息
+		$info_result['chat'] = $GLOBALS['db']->getAll("SELECT cus_name,cus_no,cus_type FROM " . $GLOBALS['ecs']->table('chat_third_customer') . " WHERE supplier_id = ".$info_result['supplier_id']." order by is_master DESC");
+
+
+		$this->success($info_result);
+	}
+
+
+	/**
+	 * 获取订单状态
+	 * @param $state 订单状态数组
+	 */
+	function order_state($state){
+		//订单状态 未付款 待发货 已发货 收货/完成 待评价/完成
+		if($state['order_status'] == OS_CONFIRMED || $state['order_status'] == OS_SPLITED){
+			if($state['pay_status'] == PS_UNPAYED){
+				$data['status'] = '待付款';
+				$data['status_code'] = '1';//立即支付
+			}else if($state['pay_status'] == PS_PAYING ){
+				$data['status'] = '付款中';
+			}else{
+				$data['status'] = '待发货';
+				$data['status_code'] = '5';
+				if($state['shipping_status'] == SS_SHIPPED){
+					$data['status'] = '已发货';
+					$data['status_code'] = '2';//待收货    待补充是否可退货
+				}else if($state['shipping_status'] == SS_RECEIVED){
+					$data['status'] = '已收货';
+					if($state['comment_state'] == 0 ){
+						$data['status'] = '待评价';
+						$data['status_code'] = '3';//待评价
+					}else{
+						$data['status'] = '已完成';
+						$data['status_code'] = '4';//再次购买
+					}
+				}
+			}
+		}else if($state['order_status'] == OS_UNCONFIRMED){
+			$data['status'] = '订单未确认';
+		}else if($state['order_status'] == OS_INVALID){
+			$data['status'] = '无效订单';
+		}else if($state['order_status'] == OS_RETURNED){
+			$data['status'] = '退货';
+		}else if($state['order_status'] == OS_CANCELED){
+			$data['status'] = '已取消';
+		}
+
+		return $data;
+	}
+
+	//订单商品评价
+	function order_goods_appraise(){
+		$user_id = $this->input('user_id',0);
+		$data = $this->input('goods_arr',0);
+		$order_sn = $this->input('order_sn',0);
+		//$this->success($data);exit;
+
+
+		if(!$user_id){
+			$this->error('请先登录！');exit;
+		}
+		if(!$order_sn||$data){
+			$code['code'] = 500;$this->success($code);exit;
+		}
+
+		$sql = "SELECT `order_id` FROM ".$GLOBALS['ecs']->table('order_info')." WHERE order_sn = $order_sn AND user_id = $user_id";
+		$order_id = $GLOBALS['db']->getOne($sql);
+		//var_dump($order_id);exit;
+		if($order_id){
+			$add_time = time();
+			foreach($data as $k=>$v){
+				$in_sql ="INSERT INTO ".$GLOBALS['ecs']->table('comment')." (`user_id`,`content`,`id_value`,`comment_rank`,`add_time`,`order_id`) value ('$user_id','".$v['content']."','".$v['goods_id']."','".$v['score']."','$add_time','$order_id')";
+				$GLOBALS['db']->query($in_sql);
+				//var_dump($GLOBALS['db']->query($in_sql));exit;
+				$goods_id[] = $v['goods_id'];
+			}
+			$id = db_create_in($goods_id);
+			if((string)$GLOBALS['db']->query('UPDATE '.$GLOBALS['ecs']->table('order_goods').' SET comment_state = 1 WHERE goods_id '.$id.' AND order_id = '.$order_id)){
+				$code['code'] = 200;//成功
+			}else{
+				$code['code'] = 500;//失败
+			}
+		}else{
+			$code['code'] = 500;//失败
+		}
+		$this->success($code);
+	}
+
+
+/*	//确认收货
+	function confirm_arrived(){
+		$order_id = $this->input('order_id');
+		$user_id = $this->input('user_id');
+		if(!$user_id){
+			$this->error('请先登录！');exit;
+		}
+		$result = $this->order->arrived_order($order_id,$user_id);
+		return $result;
+	}
+
+	//取消订单
+	function cancel_order(){
+
+	}*/
+
+
+	/*//时间计算 6  所有时间（默认）近六个月订单 今年内 2017年以前订单
+	public function timeScreen(){
+		$thisTime = time();
+		$year = date('Y',$thisTime);
+		$month = date('m',$thisTime);
+		$day = date('t',$thisTime);
+	}*/
+
+
+/*	//订单筛选的状态类型
+	function orderTypeScreen(){
+		$data=array(
+			array('name'=>'待付款','code'=>CS_UNPAY),
+			array('name'=>'待发货','code'=>CS_CHECKED),
+			array('name'=>'待收货','code'=>CS_SHIPPED),
+			array('name'=>'待评价','code'=>''),
+			array('name'=>'已完成','code'=>''),
+			array('name'=>'售后中','code'=>''),
+		);
+
+		return $data;
+	}*/
+
 
 }

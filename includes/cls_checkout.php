@@ -974,7 +974,8 @@ class cls_checkout
                 'shipping_status' => SS_UNSHIPPED,
                 'pay_status'      => PS_UNPAYED,
                 'agency_id'       => get_agency_by_regions(array($consignee['country'], $consignee['province'], $consignee['city'], $consignee['district'])),
-                'supplier_id'     => $ckey
+                'supplier_id'     => $ckey,
+                'is_design'         => $is_design,
 
             );
             $order['defaultbank'] = isset($_POST['hunuo_bank']) ? trim($_POST['hunuo_bank']) : "";

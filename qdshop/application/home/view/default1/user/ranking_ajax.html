@@ -1,0 +1,59 @@
+{if $data.list}
+    {foreach $data.list as $key => $vo}
+    <li class="fix">
+        <div class="p_acl fix fl">
+            <div class="p_num fl">{$vo.rank}</div>
+
+            <div class="p_ws fix fl">
+                <div class="p_img fl">
+                    <a href="{:url('user/designer_page', array('designer_id'=>$vo['user_id']))}"><img class="lazybg" data-lazyload-img="{$webUrl}{$vo.headimg}" style="width:114px;height:114px;border-radius:50%;"></a>
+                </div>
+                <div class="p_word fl">
+                    <h4><a href="{:url('user/designer_page', array('designer_id'=>$vo['user_id']))}">{$vo.user_name}</a> <i><img src="{$webUrl}{$vo.rank_icon}" style="width:40px;"></i></h4>
+                    <p>
+                        <span><a href="">粉丝<br/><em>{$vo.be_follow_number}</em></a></span>
+                        <span><a href="">T恤<br/><em>{$vo.goods_number}</em></a></span>
+                        <!-- <span><a href="">作品<br/><em>233</em></a></span> -->
+                        <span>销量<br/><em>{$vo.rank_sale_number}</em></span>
+                        <!-- <span><a href="">话题<br/><em>423</em></a></span> -->
+                    </p>
+                    <a href="javascript:void(0)" class="p_gz nb_t1 guanzhu {if $vo.follow_status gt 0}follow followed{else}follow{/if}" user_id="{$vo.user_id}">{if $vo.follow_status eq 1}已关注{elseif $vo.follow_status eq 2 }互相关注{else}关注{/if}</a>
+                </div>
+            </div>
+        </div>
+        <div class="a_acm fl fix">
+            {if $vo.goods_list}
+                {foreach $vo.goods_list as $k => $v}
+                <div class="fl i_pli_{$v.goods_id}" data-id="{$v.goods_id}">
+                    <div class="i_plist">
+                        <div class="i_pli in-view">
+                            <div class="before">
+                                <div class="clo">
+                                    <a href="">
+                                        <img class="lazybg" data-lazyload-img="{$webUrl}{$v.goods_thumb}">
+                                    </a>
+                                </div>
+                                <div class="info">
+                                    <span class="view">{$v.click_count}</span>
+                                    <span class="zan">{$v.zan}</span>
+                                </div>
+                            </div>
+
+                            <div class="after">
+                                <div class="af_bot tc">
+                                    <h4>{$v.goods_name}</h4>
+                                    <p>￥<em>{$v.shop_price}</em></p>
+                                    <div class="af_bar"><i style="width: {$v.number_per}%;"></i></div>
+                                    <p>限量 {$v.goods_number}/{$v.goods_total}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            {/if}
+        </div>
+        <a href="{:url('user/designer_page', array('designer_id'=>$vo['user_id']))}" class="a_acr fl"></a>
+    </li>
+    {/foreach}
+{/if}

@@ -65,30 +65,9 @@
                 </ul>
             </div>
             <div class="ipro_com_bot">
-                <div class="ipro_com_bot_pf">评论(88)<span class="fr"><font>4.0</font><i class="i_pro_pf i_pro_pf4"></i></span></div>
+                <div class="ipro_com_bot_pf">评论({$comment_data.pager.record_count})<span class="fr"><font>{$comment_data.comment_rank_avg}</font><i class="i_pro_pf i_pro_pf{$comment_data.comment_rank_avg}"></i></span></div>
                 <ul class="ipro_com_bot_ul">
-                    <li class="clearfix">
-                        <div class="ipro_com_icon">
-                            <i class="zan">23</i>
-                            <i class="favor"></i>
-                        </div>
-                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar2.jpg"></div></a>
-                        <div class="ipro_com_txt">
-                            <h3><a href=""><b>Adam</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3>
-                            <p>设计很时尚！</p>
-                        </div>
-                    </li>
-                    <li class="clearfix">
-                        <div class="ipro_com_icon">
-                            <i class="zan">23</i>
-                            <i class="favor"></i>
-                        </div>
-                        <a href=""><div class="ipro_com_avatar lazybg" data-lazyload-bg="__IMGPC__/avatar3.jpg"></div></a>
-                        <div class="ipro_com_txt">
-                            <h3><a href=""><b>Brian</b></a><span>2017-08-24 19:03:01</span><i class="i_pro_pf i_pro_pf4"></i></h3>
-                            <p>Nice work！</p>
-                        </div>
-                    </li>
+                    {include file="goods/comment_list_ajax" /}
                 </ul>
                 <i class="base-load"></i>
             </div>
@@ -99,14 +78,14 @@
             <div class="ipd_rtop">
                 <div class="ipd_user clearfix">
                     <div class="avatar">
-                        <a href=""><span class="lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></span></a>
+                        <a href="{:url('user/designer_page', array('designer_id'=>$data['diy_user_id']))}"><span class="lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></span></a>
                         <div class="avatar_box">
                             <div class="avatar_wrap">
                                 <div class="ava_top clearfix">
-                                    <a href=""><div class="ava_pic lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></div></a>
+                                    <a href="{:url('user/designer_page', array('designer_id'=>$data['diy_user_id']))}"><div class="ava_pic lazybg" data-lazyload-bg="{$webUrl}{$data.headimg}"></div></a>
                                     <div class="ava_txt">
                                         <a href=""><h2>{if $data.nickname}{$data.nickname}{else}{$data.user_name}{/if}</h2></a>
-                                        <p>设计师</p>
+                                        <p>{$data.fields}</p>
                                     </div>
                                     <a href="javascript:void(0);" class="d_ava_talk nb_t1">私 信</a>
                                 </div>
@@ -234,6 +213,7 @@
     <input type="hidden" name="goods_id" value="{$data.goods_id}">
     <script>
         $(function(){
+            $('.ipro_popup').scroll();
             $('.lazybg').lazyload({d:300,r:250});
             $('.dot').dotdotdot({
                 wrap: 'letter',
@@ -252,7 +232,7 @@
                     $('.ipro_main').addClass('hover');
                 }
             });
-            socialShare(".social-share, .share-component");
+            // socialShare(".social-share, .share-component");
 
             // 收藏
             $('.ipd_favar').hover(function() {
@@ -273,6 +253,37 @@
                     $(this).html("<i></i>加入收藏").css({
                         background: '#df3853',
                         color: '#fff'
+                    });
+                }
+            });
+
+            var c_load = false;
+            var record_count = parseInt("{$comment_data.pager.record_count}");
+            var page = 2;//翻页
+            var goods_id = $("input[name='goods_id']").val();
+            $('.ipro_popup').scroll(function() {
+                var iHeight = $('.ipro_popup .ipro_inner').height();
+                var iscrollTop = $('.ipro_popup').scrollTop();
+                // 如果滚动条到达底部就获取新数据追加到容器
+                // console.log(iscrollTop);
+                // console.log(iHeight);
+                // console.log(iHeight - $(window).height());
+                if (iscrollTop >= iHeight - $(window).height() * 1.2) {
+                    if ($('.ipro_com_bot_ul li').length >= record_count || c_load == true) { return false; }
+                    $('.ipro_com_bot .base-load').addClass('show');
+                    c_load = true;
+                    $.ajax({
+                        type: 'GET',
+                        url: "{:url('Goods/details')}",
+                        data:{is_ajax:1,goods_id:goods_id,page:page},
+                        dataType: 'html',
+                        success: function(result){
+                            page++;
+                            $('.ipro_com_bot_ul').append(result);
+                            $('.lazybg').lazyload({d:300,r:250});
+                            $('.ipro_com_bot .base-load').removeClass('show');
+                            c_load = false;
+                        }
                     });
                 }
             });

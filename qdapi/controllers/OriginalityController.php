@@ -40,7 +40,7 @@ class OriginalityController extends ApiController
         $collect_end_time =  $data['time_data']['collect_end_time'];
         //投票期时间
         $vote_start_time =  $data['time_data']['vote_start_time'];
-        $vote_end_time =  $data['time_data']['vote_start_time'];
+        $vote_end_time =  $data['time_data']['vote_end_time'];
         //公示期时间
         $publicity_start_time =  $data['time_data']['publicity_start_time'];
         //导航栏nav定向
@@ -265,10 +265,13 @@ class OriginalityController extends ApiController
 
         $select=$this->voteData($record_id,$user_id,$time);
 
+        $addtime =time();
+
         if(!empty($select)){
             $data = '0';//已投票
+        }elseif($vote_end_time < $addtime) {
+            $data = '3';//已过投票期
         }else{
-            $addtime =time();
             $sql = "INSERT INTO".$GLOBALS['ecs']->table('diy_vote')." (`record_id`,`user_id`,`add_time`) VALUES ('$record_id','$user_id','$addtime')";
             $insert = $GLOBALS['db']->query($sql);
             if($insert){

@@ -115,6 +115,7 @@ define('CS_RECEIVED_PART',        107); // 部分签收
 define('CS_RECEIVED',             108); // 已签收
 define('CS_FINISHED',             109); // 已完成
 define('CS_CANCEL',               110); // 已取消
+define('CS_SERVICE',              117); // 售后中 退货退款
 define('CS_RETURNING',            111); // 退货中
 define('CS_PAY_RETURNING',        112); // 退款中
 define('CS_PAY_RETURNED',         113); // 已退款

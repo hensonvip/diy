@@ -48,15 +48,27 @@ class Common extends Controller
       	$this->seo();
       	$this->head();
 
-  	  	$this->user_id = session('user_id') ? session('user_id') : 0;
+      	$this->designer_id = input('designer_id','0','intval');//设计师用户ID
+      	$this->user_id = session('user_id') ? session('user_id') : 0;
+      	
   	  	//个人信息
       	$url = "user/getUserInfo";
       	$data = array();
-      	$data['user_id'] = $this->user_id;
+      	$data['user_id'] = $this->designer_id ? $this->designer_id : $this->user_id;
+      	$data['login_user_id'] = $this->user_id;
       	$result = $this->curlGet($url,$data);
       	$result = json_decode($result,true);//json转数组
     	// print_r($result);die;
       	$this->assign('user',$result['data']);
+
+	  	//推荐设计师
+    	$url = "user/getRecommendUsers";
+    	$data = array();
+    	$data['login_user_id'] = $this->user_id;
+    	$result = $this->curlGet($url,$data);
+    	$result = json_decode($result,true);//json转数组
+  		// print_r($result);die;
+    	$this->assign('recommend_users',$result['data']);
 
       	//系统设置
       	$url = "global/getSysCfg";

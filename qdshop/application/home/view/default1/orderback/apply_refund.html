@@ -1,0 +1,295 @@
+﻿{include file="public/user_head" /}
+<body>
+<!--header start-->
+<div class="header first second fixed">
+    {include file="public/nav" /}
+    {include file="public/user_right" /}
+</div>
+<div class="float_right"></div>
+<!--header end-->
+<!--main start-->
+<div class="mem_main bg_f5f5f5 clearfix">
+    {include file="public/user_left" /}
+    <div class="mem_right">
+        <div class="mem_rtit">{volist name="data.back_type" id="vo"}{if $i!=1}/{/if}{$vo.type_name}{/volist}申请</div>
+        <div class="mem_rcon">
+            <form action="{:url('orderback/do_refund')}" method="post" id="do_refund" enctype="multipart/form-data">
+                <input type="hidden" name="order_id" value="{$order_id}">
+                <input type="hidden" name="goods_id" value="{$goods_id}">
+                <input type="hidden" name="product_id" value="{$product_id}">
+                <input type="hidden" name="rec_id" value="{$rec_id}">
+                <div class="p_con3">
+                    <div class="p_desc7">
+                        <h4>{volist name="data.back_type" id="vo"}{if $i!=1}/{/if}{$vo.type_name}{/volist}申请</h4>
+                        <p>等待系统确认后，3个工作日内原路退还</p>
+                    </div>
+
+                    <div class="p_desc5 p_mt38">
+                        <p>原订单号 {$data.order_sn} <span></span></p>
+                    </div>
+                    <div class="p_desc2 ">
+                        <table class="p_tab2">
+                            <thead>
+                            <th>商品</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>金额</th>
+                            </thead>
+                            <tbody>
+                            {volist name="data.goods_list" id="vo"}
+                            <tr>
+                                <input type="hidden" name="_goods_price" value="{$vo.goods_price}">
+                                <td class="p_check">
+                                    <div class="box box1"><img class="lazybg"
+                                                               data-lazyload-img="{$webUrl}{$vo.goods_thumb}">
+                                    </div>
+                                    <div class="box box2">
+                                        <h2>{$vo.goods_name}</h2>
+                                        <div class="icon_list">
+                                            {if $vo.goods_attr_id}
+                                            <div class="icon icon1"
+                                                 style="background-image: url({$webUrl}{$vo.spec[0]['select_icon']});"></div>
+                                            <div class="icon icon2"
+                                                 style="background-color: {$vo.spec[1]['color_code']};border:1px solid #989da2;"></div>
+                                            <div class="icon icon3">{$vo.spec[2]['label']}</div>
+                                            {else}
+                                            <div class="icon icon3">{$vo.goods_attr}</div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{$vo.format_goods_price}</td>
+                                <td class="price">
+                                    <div class="ipd_type d_ib">
+                                        <div class="num_box" data-max="50">
+                                            <input type="button" value="-" class="btn_m">
+                                            <input type="number" value="{$vo.back_goods_number}" data-max="{$vo.back_goods_number}"
+                                                   data-price="{$vo.goods_price}" class="btn_input"
+                                                   name="tui_goods_number" min="1" max="{$vo.back_goods_number}">
+                                            <input type="button" value="+" class="btn_a">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{$vo.format_subtotal}</td>
+                            </tr>
+                            {/volist}
+                            <tr>
+                                <td colspan="4" class="p_money">
+                                    <p class="fix">
+                                        <em class="fl">如有使用优惠券，优惠券将退还到账户中，有效期不变。</em>退款总额
+                                        <span>{$data.format_tui_goods_subtotal}</span>
+                                        <input type="hidden" name="tui_goods_price" id="tui_goods_price"
+                                               value="{$data.tui_goods_subtotal}">
+                                    </p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p_desc9 p_mat31">
+                        <p>
+                            退款类型
+                            {foreach $data.back_type as $key => $vo}
+                            <span class="back_type {if $vo.selected eq 'checked'} on{/if}" data-id="{$vo.type_id}">{$vo.type_name}</span>
+                            {if $vo.selected eq 'checked'}
+                            <input name="back_type" id="back_type" type="hidden" value="{$vo.type_id}">
+                            {/if}
+                            {/foreach}
+                        </p>
+                    </div>
+                    <div class="p_desc8 p_mat31">
+                        <h4>请填写原因</h4>
+                        <select name="reason_id" class="sod_select" style="background-image: url('');">
+                            {foreach $data.reason_list as $key => $vo}
+                            <option value="{$vo.reason_id}" {if $vo.selected eq 'checked'}selected{/if} >{$vo.reason_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+
+
+                    <div class="p_desc8 p_mat31">
+                        <h4>备注</h4>
+                        <textarea name="back_postscript"></textarea>
+
+                        <div class="r_box upload_box">
+                            <ul class="clearfix">
+                                <li class="add">
+                                    <input type="file" class="upload_img" id="upload_img"
+                                           accept="image/gif,image/jpeg,image/jpg,image/png">
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ul class="p_vbtn">
+                            <a href="#">取消申请</a>
+                            <a href="javascript:void(0);" onclick="submit_from()">提交申请</a>
+                        </ul>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--main end-->
+<!--footer start-->
+{include file="public/footer" /}
+<!--footer end-->
+</body>
+</html>
+{include file="public/footer_js" /}
+<script>
+    $(function () {
+        $('.p_tab2 td.p_check .p_int label input').change(function () {
+            if ($(this).prop("checked") == true) {
+                $(this).parents('label').addClass('on');
+            } else {
+                $(this).parents('label').removeClass('on');
+            }
+        });
+        autototal();
+    });
+
+    function submit_from() {
+        $('#do_refund').submit();
+    }
+
+    function autototal() {
+        var count = $(".price").length;
+        var totalAll = 0;
+        for (var i = 0; i < count; i++) {
+            var obj = $(".price").find('.btn_input').eq(i);
+            var total = obj.attr('data-price') * obj.val();
+            $(".price").eq(i).next().html('¥' + total.toFixed(2));
+            totalAll += total;
+        }
+        $(".fix").children('span').html('¥' + totalAll.toFixed(2));
+        $("#tui_goods_price").val(totalAll);
+    }
+
+    $('.btn_m').click(function () {
+        var num = $(this).next().val();
+        num--;
+        if (num < 1) {
+            return false;
+        }
+        console.log('-' + num);
+        $(this).next().val(num);
+        autototal();
+    });
+
+    $('.btn_a').click(function () {
+        var num = $(this).prev().val();
+        var max_num = parseInt($(this).prev().attr('data-max'));
+        num++;
+        if (num > max_num) {
+            return false;
+        }
+        console.log('+' + num);
+        $(this).prev().val(num);
+        autototal();
+    });
+
+    $('.back_type').on('click', function () {
+        $("#back_type").val($(this).attr('data-id'));
+    });
+</script>
+<script>
+    function abc(obj){
+        var obj=$(obj);
+        if (obj.val()) {
+            loadImageFile();
+            obj.attr('class', 'upload_img_1');
+            obj.attr('name', 'upload_img[]');
+            obj.hide();
+            obj.attr('id', '');
+            var html = '<input type="file" class="upload_img" id="upload_img"  onchange="abc(this)" accept="image/gif,image/jpeg,image/jpg,image/png">';
+            $('.add').append(html);
+            setTimeout(function () {
+                $('.upload_box li.uploading b').css({'background-image': 'url(' + $('.upload_box li.uploading').css("background-image") + ')'});
+                $('.upload_box li.uploading').removeClass('uploading').addClass('uploaded');
+            }, 1000);
+        }
+    }
+    $(function () {
+        $('.p_desc9 p span').click(function () {
+            $(this).addClass('on').siblings('span').removeClass('on')
+        })
+
+        $('#upload_img').on('change', function () {
+            console.log(2);
+            if ($(this).val()) {
+                loadImageFile();//实时预览
+                //异步上传图片,传完返回图片链接src
+                // $('.upload_box li.uploading b').css({'background-image':'url('+ src +')'});
+                //模拟2秒上传完
+                setTimeout(function () {
+                    $('.upload_box li.uploading b').css({'background-image': 'url(' + $('.upload_box li.uploading').css("background-image") + ')'});
+                    $('.upload_box li.uploading').removeClass('uploading').addClass('uploaded');
+                }, 1000);
+                $(this).attr('class', 'upload_img_1');
+                $(this).attr('name', 'upload_img[]');
+                $(this).hide();
+                $(this).attr('id', '');
+                var html = '<input type="file" class="upload_img" id="upload_img"  onchange="abc(this)" accept="image/gif,image/jpeg,image/jpg,image/png">';
+                $('.add').append(html);
+            }
+        });
+
+        //上传图片
+        $('.upload_img').click(function () {
+            if ($('.upload_box li.uploading').length != 0) {
+                layer.msg("还有图片在上传中，请稍等！")
+                return false;
+            }
+        });
+        //删除上传图片
+        $(document).on('click', '.upload_box li.uploaded em', function (event) {
+            event.preventDefault();
+            var _this = $(this);
+            layer.confirm('确定删除该图片？', {
+                title: false,
+                closeBtn: 0,
+                btn: ['取 消', '确 定'] //按钮
+            }, function () {
+                layer.closeAll();
+            }, function () {
+                _this.parents('li').remove();
+                //异步删图片
+            });
+        });
+
+        $('.p_tab2 td.p_check .p_int label input').change(function () {
+            if ($(this).prop("checked") == true) {
+                $(this).parents('label').addClass('on');
+            } else {
+                $(this).parents('label').removeClass('on');
+            }
+        });
+
+    });
+</script>
+<script>
+    oFReader = new FileReader(),
+        rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+
+    oFReader.onload = function (oFREvent) {
+        // console.log(oFREvent.target.result);
+        $('.upload_box ul').prepend('<li class="uploading" style="background-image: url(' + oFREvent.target.result + ')"><i></i><em></em><b></b></li>')
+    };
+
+    function loadImageFile() {
+        if (document.getElementById("upload_img").files && document.getElementById("upload_img").files.length) {
+            var oFile = document.getElementById("upload_img").files[0];
+            if (!rFilter.test(oFile.type)) {
+                alert("You must select a valid image file!");
+                return;
+            }
+            oFReader.readAsDataURL(oFile);
+        } else {
+            $('.upload_box ul').prepend('<li class="uploading"><i></i><em></em><b></b></li>');
+
+            return;
+        }
+    }
+</script>

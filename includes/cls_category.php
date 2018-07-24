@@ -236,5 +236,13 @@ class cls_category
 			$fimg_list[$row_fimg['img_id']]['img_desc']=trim($row_fimg['img_desc']); 
 		} 
 		return array_values($fimg_list); 
-	} 
+	}
+
+	// 获取指定用户商品分类
+	function get_User_Cat($designer_id) 
+	{ 
+		$sql="SELECT distinct a.cat_id, b.cat_name FROM " . $GLOBALS['ecs']->table("goods") . " a LEFT JOIN " . $GLOBALS['ecs']->table("category") . " b ON a.cat_id = b.cat_id WHERE user_id = '$designer_id' AND goods_status = 4"; 
+		$category_list = $GLOBALS['db']->getAll($sql); 
+		return $category_list; 
+	}
 }

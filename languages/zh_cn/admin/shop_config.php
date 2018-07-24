@@ -501,6 +501,12 @@ $_LANG['normal_invoice'] = '普通发票';
 $_LANG['vat_invoice'] = '增值税发票';
 $_LANG['myname'] = 'wo de ming zi';
 
+$_LANG['cfg_name']['back_address_name']  = '寄回收件人名称';
+$_LANG['cfg_name']['back_address_mobile']  = '寄回收件人手机号';
+$_LANG['cfg_name']['back_address_address']  = '寄回收件人地址';
+$_LANG['cfg_name']['back_remark_0']  = '寄回提示';
+$_LANG['cfg_name']['back_remark_5']  = '审核提示';
+$_LANG['cfg_name']['back_remark_6']  = '退货提示';
 
 $_LANG['cfg_name']['sms'] = '短信设置';
 

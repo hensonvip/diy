@@ -50,6 +50,7 @@
 					<?php echo $this->_var['sort_reg_time']; ?>
 				</th>
 				<th>实名认证</th>
+				<th><a href="javascript:listTable.sort('is_recommend'); ">是否推荐</a><?php echo $this->_var['sort_is_recommend']; ?></th>
 				<th><?php echo $this->_var['lang']['handler']; ?></th>
 			<tr><?php $_from = $this->_var['user_list']; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array'); }; $this->push_vars('', 'user');if (count($_from)):
     foreach ($_from AS $this->_var['user']):
@@ -96,6 +97,8 @@
 				<td><?php echo $this->_var['user']['pay_points']; ?></td>
 				<td align="center"><?php echo $this->_var['user']['reg_time']; ?></td>
 				<td><?php if ($this->_var['user']['status'] == 1): ?>审核通过<?php elseif ($this->_var['user']['status'] == 2): ?>审核中<?php elseif ($this->_var['user']['status'] == 3): ?>审核不通过<?php else: ?>未审核<?php endif; ?></td>
+				<td align="center"><span>
+				<img src="images/<?php if ($this->_var['user']['is_recommend'] == 1): ?>yes<?php else: ?>no<?php endif; ?>.gif" onclick="listTable.toggle(this, 'toggle_is_recommend', <?php echo $this->_var['user']['user_id']; ?>)" /></span></td>
 				<td align="center">
 					<a href="users.php?act=edit&id=<?php echo $this->_var['user']['user_id']; ?>" title="<?php echo $this->_var['lang']['edit']; ?>">
 						<img src="images/icon_edit.gif" border="0" height="16" width="16" />

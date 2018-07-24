@@ -18,6 +18,9 @@ require (dirname(__FILE__) . '/includes/init.php');
 include_once (ROOT_PATH . '/includes/cls_image.php');
 $image = new cls_image($_CFG['bgcolor']);
 
+/*初始化数据交换对象 */
+$exc = new exchange($ecs->table("users"), $db, 'user_id', 'user_name');
+
 $action = isset($_REQUEST['act']) ? trim($_REQUEST['act']) : 'list';
 
 /* 路由 */
@@ -188,6 +191,7 @@ function action_insert ()
 	$district = $_POST['district'];
 	$address = empty($_POST['address']) ? '' : trim($_POST['address']);
 	$status = $_POST['status'];
+	$is_recommend = $_POST['is_recommend'];
 	$users = & init_users();
 	
 	if(! $users->add_user($username, $password, $email))
@@ -285,7 +289,8 @@ function action_insert ()
 		}
 	}
 	
-	$sql = "update " . $ecs->table('users') . " set  mobile_phone='$mobile_phone' , `real_name`='$real_name',`card`='$card',`country`='$country',`province`='$province',`city`='$city',`district`='$district',`address`='$address',`status`='$status' where user_name = '" . $username . "'";
+	$sql = "update " . $ecs->table('users') . " set  mobile_phone='$mobile_phone' , `real_name`='$real_name',`card`='$card',`country`='$country',`province`='$province',`city`='$city',`district`='$district',`address`='$address',`status`='$status',`is_recommend`='$is_recommend' where user_name = '" . $username . "'";
+	$sql = "update " . $ecs->table('users') . " set  mobile_phone='$mobile_phone' , `real_name`='$real_name',`card`='$card',`country`='$country',`province`='$province',`city`='$city',`district`='$district',`address`='$address',`status`='$status',`is_recommend`='$is_recommend' where user_name = '" . $username . "'";
 	$db->query($sql);
 	
 	if($face_card != '')
@@ -325,14 +330,14 @@ function action_edit ()
 	/* 检查权限 */
 	admin_priv('users_manage');
 	
-	$sql = "SELECT u.user_name, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn, u.office_phone, u.home_phone, u.mobile_phone" . " FROM " . $ecs->table('users') . " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
+	$sql = "SELECT u.user_name, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn, u.office_phone, u.home_phone, u.mobile_phone, u.is_recommend" . " FROM " . $ecs->table('users') . " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
 	
 	$row = $db->GetRow($sql);
 	$row['user_name'] = addslashes($row['user_name']);
 	$users = & init_users();
 	$user = $users->get_user_info($row['user_name']);
 	$sql = "SELECT u.user_id, u.sex, u.birthday, u.pay_points, u.rank_points, u.user_rank , u.user_money, u.frozen_money, u.credit_line, u.parent_id, u2.user_name as parent_username, u.qq, u.msn,
-    u.office_phone, u.home_phone, u.mobile_phone,u.real_name,u.card,u.face_card,u.back_card,u.country,u.province,u.city,u.district,u.address,u.status " . " FROM " . $ecs->table('users') . " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
+    u.office_phone, u.home_phone, u.mobile_phone,u.real_name,u.card,u.face_card,u.back_card,u.country,u.province,u.city,u.district,u.address,u.status,u.is_recommend " . " FROM " . $ecs->table('users') . " u LEFT JOIN " . $ecs->table('users') . " u2 ON u.parent_id = u2.user_id WHERE u.user_id='$_GET[id]'";
 
 	$row = $db->GetRow($sql);
 	
@@ -366,6 +371,7 @@ function action_edit ()
 		$user['district'] = $row['district'];
 		$user['address'] = $row['address'];
 		$user['status'] = $row['status'];
+		$user['is_recommend'] = $row['is_recommend'];
 	}
 	else
 	{
@@ -511,6 +517,7 @@ function action_update ()
 	$district = $_POST['district'];
 	$address = empty($_POST['address']) ? '' : trim($_POST['address']);
 	$status = $_POST['status'];
+	$is_recommend = $_POST['is_recommend'];
 
 	$users = & init_users();
 	
@@ -577,7 +584,7 @@ function action_update ()
 		}
 	}
 	
-	$sql = "update " . $ecs->table('users') . " set `real_name`='$real_name',`card`='$card',`country`='$country',`province`='$province',`city`='$city',`district`='$district',`address`='$address',`status`='$status' where user_name = '" . $username . "'";
+	$sql = "update " . $ecs->table('users') . " set `real_name`='$real_name',`card`='$card',`country`='$country',`province`='$province',`city`='$city',`district`='$district',`address`='$address',`status`='$status',`is_recommend`='$is_recommend' where user_name = '" . $username . "'";
 	$db->query($sql);
 	
 	if($face_card != '')
@@ -882,6 +889,33 @@ function action_remove ()
 	}
 }
 
+/*------------------------------------------------------ */
+//-- 切换是否显示
+/*------------------------------------------------------ */
+function action_toggle_is_recommend ()
+{
+	// 全局变量
+	$user = $GLOBALS['user'];
+	$_CFG = $GLOBALS['_CFG'];
+	$_LANG = $GLOBALS['_LANG'];
+	$smarty = $GLOBALS['smarty'];
+	$db = $GLOBALS['db'];
+	$ecs = $GLOBALS['ecs'];
+	$exc = $GLOBALS['exc'];
+	$user_id = $_SESSION['user_id'];
+	
+	/* 检查权限 */
+	check_authz_json('users_manage');
+
+	$id = intval($_POST['id']);
+	$val = intval($_POST['val']);
+
+	$exc->edit("is_recommend = '$val'", $id);
+	clear_cache_files();
+
+	make_json_result($val);
+}
+
 /* ------------------------------------------------------ */
 // -- 收货地址查看
 /* ------------------------------------------------------ */
@@ -1072,7 +1106,7 @@ function user_list ()
 		// $sql = "SELECT user_id, user_name, email, is_validated,
 		// validated,status,user_money, frozen_money, rank_points, pay_points,
 		// reg_time ".
-		$sql = "SELECT user_id, user_name, email, mobile_phone, is_validated, validated, user_money, frozen_money, rank_points, pay_points, status, reg_time, froms ".
+		$sql = "SELECT user_id, user_name, email, mobile_phone, is_validated, validated, user_money, frozen_money, rank_points, pay_points, status, reg_time, froms, is_recommend ".
                 " FROM " . $GLOBALS['ecs']->table('users') . $ex_where . " ORDER by " . $filter['sort_by'] . ' ' . $filter['sort_order'] . " LIMIT " . $filter['start'] . ',' . $filter['page_size'];
 		
 		$filter['keywords'] = stripslashes($filter['keywords']);

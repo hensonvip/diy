@@ -19,7 +19,7 @@ class User extends Common
         //Session::delete('user_id');//清除登录状态
 
         //不需要登录的操作
-        $no_login_action = array('login','third_login','callback','do_login','do_login_mobile','logout','register','do_register','forget','forget_one','forget_two','forget_third','getCode','jsonRegionC','jsonRegionD','send_email_code');
+        $no_login_action = array('login','third_login','callback','do_login','do_login_mobile','logout','register','do_register','forget','forget_one','forget_two','forget_third','getCode','jsonRegionC','jsonRegionD','send_email_code','designer_page','send_letter_ajax', 'my_ranking', 'ranking_list');
         //未登录处理
 
         //print_r(session('user_id'));die;
@@ -28,7 +28,7 @@ class User extends Common
                 header("Location:".url('User/login'));exit;
             }
         }else{
-			if(in_array(strtolower($action),array_map('strtolower',$no_login_action)) && strtolower($action)!='logout' && strtolower($action)!='jsonregionc' && strtolower($action)!='jsonregiond' && strtolower($action)!='getcode'){
+			if(in_array(strtolower($action),array_map('strtolower',$no_login_action)) && strtolower($action)!='logout' && strtolower($action)!='jsonregionc' && strtolower($action)!='jsonregiond' && strtolower($action)!='getcode' && strtolower($action)!='designer_page' && strtolower($action)!='send_letter_ajax' && strtolower($action)!='my_ranking' && strtolower($action)!='ranking_list'){
                 header("Location:".url('User/index'));exit;
             }
 		}
@@ -65,7 +65,7 @@ class User extends Common
     //会员中心主页
     public function index()
     {
-		//我的订单
+		/*//我的订单
 		$url = "user/getUserOrder";
         $data = array();
         $data['user_id'] = $this->user_id;
@@ -86,7 +86,16 @@ class User extends Common
 			}
 		}
 		//print_r($result);
-		$this->assign('order',$order);
+		$this->assign('order',$order);*/
+
+        //我的订单
+        $api = "User/myOrder";
+        $myorder['user_id'] = $this->user_id;
+        $result = $this->curlGet($api,$myorder);
+        $result = json_decode($result,true);
+        //print_r($result);exit;
+
+        $this->assign('order_data',$result['data']);
 
 		//我的收藏
 		$url = "user/getUserCollect";
@@ -200,6 +209,8 @@ class User extends Common
         $result = $this->curlGet($api);
         $result = json_decode($result,true);
         $this->assign('match_cycle',$result['data']['code']);
+
+
 
     	return $this->fetch();
     }
@@ -717,7 +728,7 @@ class User extends Common
         $data['birthday'] = $birthday_year . '-' . $birthday_month . '-' . $birthday_day;
         $data['province'] = input('province','0','intval');//省
         $data['city'] = input('city','0','intval');//市
-        $data['district'] = input('district','0','intval');//市
+        $data['district'] = input('district','0','intval');//区
         $data['sh_province'] = input('sh_province','0','intval');//学校 - 省
         $data['sh_city'] = input('sh_city','0','intval');//学校 - 市
         $data['sh_school'] = input('sh_school','0','intval');//学校
@@ -731,7 +742,6 @@ class User extends Common
         $data['facebook'] = rtrim(input('facebook','','trim,strip_tags,htmlspecialchars'), ',');//facebook
         $data['instagram'] = rtrim(input('instagram','','trim,strip_tags,htmlspecialchars'), ',');//instagram
         $data['website'] = rtrim(input('website','','trim,strip_tags,htmlspecialchars'), ',');//个人网站
-
         $result = $this->curlPost($url,$data);
         $result = json_decode($result,true);//json转数组
         if($result['code'] == 500){
@@ -1262,51 +1272,53 @@ class User extends Common
         }
     }
 
-    //我的收藏 - 商品
+
+    /************************************/
+    // group:  我的OTEE
+    // menu:   我的收藏 - T恤收藏
+    /************************************/
     public function collect_goods()
     {
+        // $api = "category/getSubCat";
+        // $data = ['cat_id' => 85];
+        // $result = $this->curlGet($api, $data);
+        // $result = json_decode($result, true);
+        // $this->assign('category_list', $result['data']);
+
+        $type = input('type', 1, 'intval');
         $url = "user/getUserCollect";
         $data = array();
         $data['user_id'] = $this->user_id;
+        $data['cat_id'] = input('cat_id', 0, 'intval');
+        $data['type'] = $type;
         $data['page_size'] = 12;//显示数据数量
-        $data['page'] = input('p','','intval') ? input('p','','intval') : 1;
-        $result = $this->curlGet($url,$data);
-        $result = json_decode($result,true);//json转数组
-        //print_r($result);die;
-        $this->assign('data',$result['data']);
+        $data['page'] = input('p', '', 'intval') ? input('p', '', 'intval') : 1;
+        $result = $this->curlGet($url, $data);
+        $result = json_decode($result, true);//json转数组
+        $this->assign('data', $result['data']);
 
-
-		$this->assign('class','mc collection');
-		$this->assign('left','我的收藏');
-
-		$pageHtml = '';
-		if($result['data']['pager']){
-			//组装分页
-			$prePage = $this->getPage($result['data']['pager']['page'],$result['data']['pager']['page_count']);
-			$pageHtml = '  <div class="h-page"><a class="pn-first" href="'.url('user/order_list',array('p'=>1)).'">首页</a>';
-			if($prePage['page']>1){
-			   $pageHtml .= '<a class="pn-prev" title="上一页" href="'.url('user/order_list',array('p'=>$prePage['page']-1)).'">上一页</a>';
-			 }
-			for ($i = $prePage['start']; $i <= $prePage['end']; $i++) {
-				if($i == $prePage['page']){
-				$pageHtml .= '<a class="pn-num selected">'.$i.'</a>';
-				}else{
-					$pageHtml .= '<a class="pn-num" href="'.url('user/order_list',array('p'=>$i)).'">'.$i.'</a>';
-				}
-			}
-
-			if($prePage['page']<$prePage['end']){
-			   $pageHtml .= '<a class="pn-next"  title="下一页" href="'.url('user/order_list',array('p'=>$prePage['page']+1)).'">下一页</a>';
-			 }
-			$pageHtml .= '<a class="pn-last" href="'.url('user/order_list',array('p'=>$prePage['pages'])).'">尾页</a><span class="page-num">共'.$prePage['pages'].'页</span></div>';
-		}
-		$this->assign('toPage',$pageHtml);
-
+        $this->assign('type', $type);
+        $this->assign('left', '我的收藏');
 
         return $this->fetch();
     }
 
-    //我的收藏 - 商品 - 删除一个
+    /************************************/
+    // group:  我的OTEE
+    // menu:   我的收藏 - 取消收藏
+    /************************************/
+    public function unfavor()
+    {
+        $url = "user/dropUserCollect";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['id'] = input('id');
+        $data['type'] = input('type');
+        $result = $this->curlGet($url,$data);
+        $result = json_decode($result);
+        return $result;
+    }
+
     public function collect_goods_delOne()
     {
         $url = "user/dropUserCollect";
@@ -1578,6 +1590,15 @@ class User extends Common
 
     // 互动
     public function my_hudong() {
+        $api = 'user/getInteract';
+        $data = array();
+        $data['type'] = input('type', 0, 'intval');  // 0 所有  1 关注  2 点赞  3 评论
+        $result = $this->curlPost($api, $data);
+print_r('<pre>');
+var_dump($result);
+exit();
+        $result = json_decode($result,true);
+
         return $this->fetch();
     }
 
@@ -2217,19 +2238,54 @@ class User extends Common
     // group:  我的OTEE
     // menu:   待审核
     /************************************/
-    public function check_pending()
+    public function my_goods_list()
     {
         $api = 'user/getGoodsList';
         $data = [];
         $data['user_id'] = $this->user_id;
-        $data['status'] = 2;
+        $data['status'] = input('status', 2, 'intval');
+        $data['sell_out'] = input('sell_out', 0, 'intval');
         $data['page_size'] = 15;
         $data['page'] = input('page', 1, 'intval');
         $result = $this->curlGet($api, $data);
         $result = json_decode($result, true);//json转数组
         $this->assign('goods_list', $result['data']['list']);
 
+        $this->assign('status', $data['status']);
+        $this->assign('sell_out', $data['sell_out']);
         return $this->fetch();
+    }
+
+    /************************************/
+    // group:  我的OTEE
+    // menu:   我的设计库
+    /************************************/
+    public function design_library()
+    {
+        $is_ajax = input('is_ajax', 0, 'intval');
+        $api = 'user/getDiyList';
+        $data = [];
+        $data['user_id'] = $this->user_id;
+        $data['status'] = input('status', -1, 'intval');
+        $data['type'] = input('type', 0, 'intval');
+        $data['page'] = input('page', 1, 'intval');
+        if($data['page'] == 1){
+            $data['page_size'] = 14;
+        }else{
+            $data['page_size'] = 15;
+        }
+        $result = $this->curlGet($api, $data);
+        $result = json_decode($result, true);//json转数组
+        $this->assign('diy_list', $result['data']);
+        
+        if($is_ajax){
+            $html = $this->fetch('design_library_ajax');
+            return array('html' => $html);
+        }else{
+            $this->assign('type', $data['type']);
+            $this->assign('status', $data['status']);
+            return $this->fetch();
+        }
     }
 
     //我的佣金
@@ -2288,9 +2344,138 @@ class User extends Common
         return $result;
     }
 
-    //我的级别
-    public function my_rank()
+
+    /************************************/
+    // group:  我的OTEE
+    // menu:   获取商品属性列表
+    /************************************/
+    public function get_goods_attr()
     {
+        $api = "goods/getGoodsInfo";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['goods_id'] = input('goods_id', 0, 'intval');//商品ID，必填
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result,true);
+        $this->assign('goods_data', $result['data']);
+
+        return $this->fetch('user/attr_box_ajax');
+    }
+
+    //设计师主页
+    public function designer_page()
+    {
+        // 指定设计师已出售的商品
+        $api = "goods/query";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['cat_id'] = input('cat_id',0,'intval');
+        $data['brand'] = input('brand',0,'intval');
+        $data['size'] = 16;
+        $data['page'] = input('page',1,'intval');
+        $data['shop_price'] = input('shop_price',0,'intval');//价格
+        $data['sex'] = input('sex','','trim');//款式（男，女）
+        $data['order'] = input('order','desc','trim');//按字段排序
+        $data['sort'] = input('sort','sort_order','trim');//按字段排序
+        $data['filter'] = input('filter','0','trim');//类型
+        $data['keywords'] = input('keywords','','trim');//关键字搜索
+        $data['is_real'] = input('is_real',3,'intval');//0虚拟商品 1真实商品
+        $data['designer_id'] = $this->designer_id;
+        if(!empty($data['keywords'])){
+            cookie('keywords', cookie('keywords').','.$data['keywords'], 3600*24*7);
+        }
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result,true);
+        // print_r($result['data']);die;
+        $this->assign('data',$result['data']);
+        $this->assign('cat_id',$data['cat_id']);//分类
+        $this->assign('brand',$data['brand']);//品牌
+        $this->assign('filter',$data['filter']);
+        $this->assign('keywords',$data['keywords']);//关键字
+        $this->assign('order',$data['order']);
+        $this->assign('order_opposite',$data['order'] == 'desc' ? 'asc' : 'desc');
+        $this->assign('sort',$data['sort']);
+        $this->assign('sex',$data['sex']);
+        $this->assign('shop_price',$data['shop_price']);
+        $this->assign('is_real',$data['is_real']);
+        $this->assign('designer_id',$data['designer_id']);
+        //异步加载分页数据
+        $is_ajax = input('is_ajax','','intval') ? input('is_ajax','','intval') : 0;
+        $this->assign('is_ajax',$is_ajax);
+        if($is_ajax){
+            echo $this->fetch('goods/designer_goods_list_ajax');exit();
+        }
+
+        // 获取指定用户商品分类
+        $api = "category/getUserCat";
+        $data['designer_id'] = $this->designer_id;
+        $result = $this->curlGet($api, $data);
+        $result = json_decode($result, true);
+        $this->assign('category_list', $result['data']);
+
+        //用户商品价格列表
+        $api = "user/getUserPrice";
+        $data['designer_id'] = $this->designer_id;
+        $result = $this->curlGet($api, $data);
+        $result = json_decode($result,true);
+        // print_r($result);die;
+        $this->assign('price_list',$result['data']);
+
+        // 私信举报原因
+        $url = "user/getReportReason";
+        $data = array();
+        $result = $this->curlGet($url);
+        $result = json_decode($result,true);//json转数组
+        $this->assign('reason_list', $result['data']);
+
+        return $this->fetch();
+    }
+
+    /************************************/
+    // group:  我的OTEE
+    // menu:   出售我的OTEE
+    /************************************/
+    public function sell_my_otee()
+    {
+        $api = 'user/getDiyList';
+        $data = [];
+        $data['user_id'] = $this->user_id;
+        $data['status'] = 5;
+        $data['page'] = input('page', 1, 'intval');
+        $data['page_size'] = input('page_size', 15, 'intval');
+        $result = $this->curlGet($api, $data);
+        $result = json_decode($result, true);//json转数组
+        $this->assign('diy_list', $result['data']);
+
+        return $this->fetch();   
+    }
+
+    //排行榜
+    public function ranking_list()
+    {
+        $api = "user/rankingList";
+        $data = array();
+        $data['page_size'] = 5;
+        $data['page'] = input('page',1,'intval');
+        $data['user_id'] = $this->user_id;
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result,true);
+        // print_r($result);die;
+        $this->assign('data',$result['data']);
+        //异步加载分页数据
+        $is_ajax = input('is_ajax','','intval') ? input('is_ajax','','intval') : 0;
+        $this->assign('is_ajax',$is_ajax);
+        if($is_ajax){
+            echo $this->fetch('user/ranking_ajax');exit();
+        }
+
+        // 私信举报原因
+        $url = "user/getReportReason";
+        $data = array();
+        $result = $this->curlGet($url);
+        $result = json_decode($result,true);//json转数组
+        $this->assign('reason_list', $result['data']);
+        
         return $this->fetch();
     }
 }

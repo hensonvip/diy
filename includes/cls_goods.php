@@ -23,6 +23,7 @@ class cls_goods
     protected $_tb_goods_description          = null;
     protected $_tb_goods_attr     = null;
     protected $_tb_goods_zan      = null;
+    protected $_tb_report_comment = null;
     protected $_price_decimal     = 1;
     protected $_now_time          = 0;
     protected $_mc_time           = 0;
@@ -58,6 +59,7 @@ class cls_goods
         $this->_tb_diy           = $GLOBALS['ecs']->table('diy');
         $this->_tb_goods_attr    = $GLOBALS['ecs']->table('goods_attr');
         $this->_tb_goods_zan     = $GLOBALS['ecs']->table('goods_zan');
+        $this->_tb_report_comment     = $GLOBALS['ecs']->table('report_comment');
         $this->_tb_category = $GLOBALS['ecs']->table('category');
         $this->_tb_goods_description    = $GLOBALS['ecs']->table('goods_description');
         $this->_tb_member_price  = $GLOBALS['ecs']->table('member_price');
@@ -161,10 +163,12 @@ class cls_goods
                 $row['headimg'] = $user_info['headimg'];//头像
                 $row['user_name'] = $user_info['user_name'];//用户名
                 $row['nickname'] = $user_info['nickname'];//昵称
+                $row['fields'] = trim($user_info['fields'], ',');//领域
             } else {
                 $row['headimg'] = '';
                 $row['user_name'] = '';
                 $row['nickname'] = '';
+                $row['fields'] = '';
             }
 
             $row['follow_status'] = get_follow_status($user_id, $row['user_id']);
@@ -258,7 +262,7 @@ class cls_goods
             }*/
             $row['goods_number'] = $row['goods_number'];
             $row['goods_total'] = $row['goods_total'];
-            $row['number_per'] = ($row['goods_total'] - $row['goods_number']) / $row['goods_total'] * 100;
+            $row['number_per'] = $row['goods_number'] / $row['goods_total'] * 100;
             $row['click_count'] = $row['click_count'];
             $row['zan'] = $this->_db->getOne("SELECT COUNT(*) FROM " . $this->_tb_goods_zan . " WHERE goods_id = '$row[goods_id]'");
             $row['has_zan'] = $this->_db->getOne("SELECT COUNT(*) FROM " . $this->_tb_goods_zan . " WHERE goods_id = '$row[goods_id]' AND user_id = '$user_id'");
@@ -851,7 +855,7 @@ class cls_goods
      * @param   integer  $is_stock
      * @return  array
      */
-    public function category_get_goods($user_rank_info, $children, $get_keywords = '', $supplier_id, $brand = 0, $min = 0, $max = 0, $ext = '', $size = 0, $page = 0, $order = 'desc', $sort = 'sort_order', $filter="", $is_stock = 0, $shop_price = 0, $sex = '')
+    public function category_get_goods($user_rank_info, $children, $get_keywords = '', $supplier_id, $brand = 0, $min = 0, $max = 0, $ext = '', $size = 0, $page = 0, $order = 'desc', $sort = 'sort_order', $filter="", $is_stock = 0, $shop_price = 0, $sex = '', $designer_id = 0)
     {
 
         //$filter = (isset($_REQUEST['filter'])) ? intval($_REQUEST['filter']) : 0;
@@ -908,6 +912,11 @@ class cls_goods
         if (!empty($sex))
         {
             $where .= " AND ga.attr_value = '$sex' AND ga.is_sale = 1 ";
+        }
+
+        if (!empty($designer_id))
+        {
+            $where .= " AND g.user_id = '$designer_id' ";
         }
 
         if($sort == 'goods_number')
@@ -1004,7 +1013,7 @@ class cls_goods
             " AND g.promote_start_date < " . $this->_now_time .
             " AND g.promote_end_date > " . $this->_now_time . ", g.promote_price, shop_price) " .
             " AS shop_p, g.goods_type, " .
-            " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img " .
+            " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img, g.user_id " .
             " FROM " . $this->_tb_goods .
             " AS g " .
             " LEFT JOIN " . $this->_tb_member_price .
@@ -1024,7 +1033,7 @@ class cls_goods
                 " AND g.promote_start_date < " . $this->_now_time .
                 " AND g.promote_end_date > " . $this->_now_time . ", g.promote_price, shop_price) " .
                 " AS shop_p, g.goods_type, " .
-                " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img " .
+                " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img, g.user_id " .
                 " FROM " . $this->_tb_goods .
                 " AS g " .
                 " LEFT JOIN " . $this->_tb_member_price .
@@ -1046,7 +1055,7 @@ class cls_goods
                 " AND g.promote_start_date < " . $this->_now_time .
                 " AND g.promote_end_date > " . $this->_now_time . ", g.promote_price, shop_price) " .
                 " AS shop_p, g.goods_type, " .
-                " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img " .
+                " g.promote_start_date, g.promote_end_date, g.goods_brief, g.goods_thumb, g.goods_img, g.best_img, g.user_id " .
                 " FROM " . $this->_tb_goods .
                 " AS g " .
                 " LEFT JOIN " . $this->_tb_member_price .
@@ -1094,7 +1103,7 @@ class cls_goods
             $arr[$row['goods_id']]['goods_name']       = $row['goods_name'];
             $arr[$row['goods_id']]['goods_number']     = $row['goods_number'];
             $arr[$row['goods_id']]['goods_total']      = $row['goods_total'];
-            $arr[$row['goods_id']]['number_per']       = ($row['goods_total'] - $row['goods_number']) / $row['goods_total'] * 100;
+            $arr[$row['goods_id']]['number_per']       = $row['goods_number'] / $row['goods_total'] * 100;
             $arr[$row['goods_id']]['is_promote']       = $row['is_promote'];
             $arr[$row['goods_id']]['is_new']           = $row['is_new'];
             $arr[$row['goods_id']]['is_hot']           = $row['is_hot'];
@@ -1168,7 +1177,7 @@ class cls_goods
     }
 
     //获取商品数量
-    function category_get_goods_count($user_rank_info, $children, $get_keywords = '', $supplier_id, $brand = 0, $min = 0, $max = 0, $ext = '', $size = 0, $page = 0, $order = 'desc', $sort = 'sort_order', $filter, $is_stock = 0, $shop_price = 0, $sex = '')
+    function category_get_goods_count($user_rank_info, $children, $get_keywords = '', $supplier_id, $brand = 0, $min = 0, $max = 0, $ext = '', $size = 0, $page = 0, $order = 'desc', $sort = 'sort_order', $filter, $is_stock = 0, $shop_price = 0, $sex = '', $designer_id = 0)
     {
 
         //$filter = (isset($_REQUEST['filter'])) ? intval($_REQUEST['filter']) : 0;
@@ -1188,7 +1197,7 @@ class cls_goods
         }
 */
 
-	$where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND "."g.is_delete = 0  ";
+	$where = "g.is_on_sale = 1 AND g.is_alone_sale = 1 AND "."g.is_delete = 0 AND goods_status IN (0,4)  ";
 	if($children){
 
 		$where .= " AND ($children OR " . get_extension_goods($children) . ')';
@@ -1242,6 +1251,11 @@ class cls_goods
         if (!empty($sex))
         {
             $where .= " AND ga.attr_value = '$sex' AND ga.is_sale = 1 ";
+        }
+
+        if (!empty($designer_id))
+        {
+            $where .= " AND g.user_id = '$designer_id' ";
         }
 
         if($sort == 'goods_number')
@@ -1618,6 +1632,25 @@ class cls_goods
             $info = $this->_db->getRow($sql);
             $sql = "INSERT INTO " . $this->_tb_goods_report . " (goods_id, goods_name, user_id, designer_id, report_reason, report_time)".
                     "VALUES ('$goods_id', '$info[goods_name]', '$user_id', '$info[designer_id]', '$reason', $this->_now_time)";
+            $this->_db->query($sql);
+            return true;
+        }
+    }
+
+    /**
+     * 商品评论举报
+     */
+    public function do_Comment_Report($user_id = 0, $comment_id = 0, $reason = '', $type = 0, $goods_id = 0, $be_user_id = 0, $content = '')
+    {
+        // 是否已举报过
+        $sql = "SELECT COUNT(*) FROM " . $this->_tb_report_comment . " WHERE comment_id = '$comment_id' AND user_id = '$user_id'";
+        $has_report = $this->_db->getOne($sql);
+        if ($has_report > 0) {
+            return false;
+        } else {
+            // 写入数据
+            $sql = "INSERT INTO " . $this->_tb_report_comment . " (type, id, user_id, be_user_id, report_reason, comment, add_time, comment_id)".
+                    "VALUES ('$type', '$goods_id', '$user_id', '$be_user_id', '$reason', '$content', $this->_now_time, '$comment_id')";
             $this->_db->query($sql);
             return true;
         }

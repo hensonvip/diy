@@ -199,9 +199,10 @@ $(document).ready(function() {
      */
     $('body').on('click','.guanzhu',function() {
         var be_user_id = $(this).attr("user_id");
-        var user_id    = $("#user_id").val();
+        var user_id    = $('#user_id').val();
         var _this      = $(this);
-        var _fansi     = $(this).parent().parent().find(".fansi");
+        // var _fansi     = $(this).parent().parent().find(".fansi");
+        var _fansi     = $('.fansi');
         var url = "/qdapi/?act=user/add_user_attention&debug=1&version=1&user_id="+user_id+"&be_user_id="+be_user_id;
         $.get(url, function(result){
             layer.msg(result.data.message);

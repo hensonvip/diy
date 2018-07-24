@@ -1,0 +1,14 @@
+data/config.php
+temp/
+admin/images/
+.idea
+/supplier.png
+/qrcode.png
+.tags
+.tags_sorted_by_file
+/qdshop/application/home/view/default1_bak
+/qdshop/public/static/home/default1_bak
+/qdshop/application/config.php
+/mobile/admin/includes/jpush/vendor/monolog
+/mobile/admin/includes/jpush/vendor/nategood
+/mobile/admin/includes/jpush/vendor/psr

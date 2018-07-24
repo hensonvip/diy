@@ -40,6 +40,7 @@ class UserController extends ApiController
 
 		$this->logger = new Logger($config);
 		$this->user_id = isset($this->data['user_id'])? $this->data['user_id'] : 0;
+		$this->login_user_id = isset($this->data['login_user_id'])? $this->data['login_user_id'] : 0;
 		// if(empty($this->user_id) || !isset($this->user_id)){
 			// $this->error("缺失必选参数 (user_id)，请参考API文档");
 		// }
@@ -89,6 +90,8 @@ class UserController extends ApiController
 
 		$user_info['account_rank'] = $account_rank;
 		$user_info['score'] = $score;
+
+		$user_info['follow_status'] = get_follow_status($this->login_user_id, $this->user_id);
 
         $this->success($user_info);
 	}
@@ -443,31 +446,50 @@ class UserController extends ApiController
 	 */
 	public function getUserCollect(){
 
-		$page      = !empty($this->data['page'])?intval($this->data['page']):1;
-		$page_size = !empty($this->data['page_size'])?intval($this->data['page_size']):10;
-		$is_real = isset($this->data['is_real'])?intval($this->data['is_real']):1;//0虚拟商品 1真实商品 3虚拟商品和真实商品共存在
-		if($is_real == 0){
-			$ext = ' and g.is_real = 0';
-		}
-		if($is_real == 1){
-			$ext = ' and g.is_real = 1';
-		}
-		if($is_real == 3){//虚拟商品和真实商品
-			$ext = ' and (g.is_real = 0 or g.is_real =1) ';
+		$page = !empty($this->data['page']) ? intval($this->data['page']) : 1;
+		$page_size = !empty($this->data['page_size']) ? intval($this->data['page_size']) : 10;
+		$is_real = isset($this->data['is_real']) ? intval($this->data['is_real']) : 1;//0虚拟商品 1真实商品 3虚拟商品和真实商品共存在
+		$cat_id = intval($this->data['cat_id']) ? intval($this->data['cat_id']) : 0;
+		$type = intval($this->data['type']) ? intval($this->data['type']) : 1;
+		$ext = '';
+		switch ($type) {
+			case 1:
+				if($is_real == 0){
+					$ext .= ' AND g.is_real = 0';
+				}
+				if($is_real == 1){
+					$ext .= ' AND g.is_real = 1';
+				}
+				if($is_real == 3){//虚拟商品和真实商品
+					$ext .= ' AND (g.is_real = 0 or g.is_real =1) ';
+				}
+				if($cat_id){
+					$ext .= ' AND g.cat_id = ' . $cat_id;
+				}
+				break;
+			case 2:
+				$ext .= ' AND di.info_id IS NOT NULL';
+				if($cat_id){
+					$ext .= ' AND di.type = ' . $cat_id;
+				}
+				break;
 		}
 
 		$page_start = $page_size*($page-1);
-		$collect = $this->user->get_collection_goods($this->user_rank_info, $page_size, $page_start,$ext);
-		$count = $this->user->get_collection_count($this->user_rank_info,$ext);
+		$collect = $this->user->get_collection_goods($this->user_rank_info, $page_size, $page_start, $ext, $type);
+		$count = $this->user->get_collection_count($this->user_rank_info, $ext, $type);
 		//分页
-        $pager = array();
-        $pager['page']         = $page;
-        $pager['page_size']    = $page_size;
-        $pager['record_count'] = $count;
-        $pager['page_count']   = $page_count = ($count > 0) ? intval(ceil($count / $page_size)) : 1;
+    $pager = array();
+    $pager['page']         = $page;
+    $pager['page_size']    = $page_size;
+    $pager['record_count'] = $count;
+    $pager['page_count']   = $page_count = ($count > 0) ? intval(ceil($count / $page_size)) : 1;
 
-        $collect_data['list'] = $collect;
-        $collect_data['pager'] = $pager;
+    $collect_data['list'] = $collect;
+    $collect_data['cat_list'] = $this->user->get_collection_cat($this->user_rank_info, $ext, $type);
+    $collect_data['pager'] = $pager;
+    $collect_data['count']['goods_count'] = $this->user->get_collection_count($this->user_rank_info, ' AND g.is_real = 1', 1);
+    $collect_data['count']['diy_count'] = $this->user->get_collection_count($this->user_rank_info, ' AND di.info_id IS NOT NULL', 2);
 		$this->success($collect_data);
 	}
 
@@ -479,7 +501,7 @@ class UserController extends ApiController
 	 */
 	public function addCollect(){
 		$goods_id = !empty($this->data['goods_id'])?intval($this->data['goods_id']):0;
-		$str = $this->data['str'];
+		$str = !empty($this->data['str']) ? trim($this->data['str']) : 'goods_id';
 		if(!$this->user_id){
 			$this->error('请先登录！');
 		}
@@ -502,8 +524,8 @@ class UserController extends ApiController
 	 * @param string collection_id 收藏ID
 	 */
 	public function dropUserCollect(){
-		$collection_id = !empty($this->data['collection_id'])?trim($this->data['collection_id']):0;
-		if($this->user->delete_collection($collection_id,$this->user_id)){
+		$id = !empty($this->data['id']) ? json_decode($this->data['id']) : array();
+		if($this->user->delete_collection($id, $this->user_id)){
 			$this->success('删除成功');
 		}else{
 			$this->error('删除失败');
@@ -1480,6 +1502,28 @@ class UserController extends ApiController
 	}
 
 
+	//myOrder 用户中心首页 我的订单
+	public function myOrder(){
+		$user_id = $this->input('user_id',0);
+		if(!$user_id){
+			$this->error('请先登录');
+		}
+		//待付款
+		$data['unpay'] = $GLOBALS['db']->getOne("SELECT COUNT(`order_id`) FROM ".$GLOBALS['ecs']->table('order_info')." WHERE user_id = $user_id AND pay_status = 0 ");
+		//已付款/待发货
+		$data['chcked'] = $GLOBALS['db']->getOne("SELECT COUNT(`order_id`) FROM ".$GLOBALS['ecs']->table('order_info')." WHERE user_id = $user_id AND pay_status = 2 ");
+		//已发货/待收货
+		$data['shipped'] = $GLOBALS['db']->getOne("SELECT COUNT(`order_id`) FROM ".$GLOBALS['ecs']->table('order_info')." WHERE user_id = $user_id AND shipping_status = 1 ");
+		//已收货/待评价
+		$data['received'] = $GLOBALS['db']->getOne("SELECT COUNT(info.order_sn) FROM ".$GLOBALS['ecs']->table('order_info')." info LEFT JOIN ".$GLOBALS['ecs']->table('order_goods')." goods ON info.order_id = goods.order_id  WHERE user_id = $user_id AND info.shipping_status = 2 AND goods.comment_state = 0");
+		//退货退款  售后中
+		$data['service'] = 0;
+
+		//print_r($data);exit;
+		$this->success($data);
+	}
+
+
 	/**
 	 * @description 收货地址列表
 	 * @param integer user_id 用户ID
@@ -1711,6 +1755,16 @@ class UserController extends ApiController
 		$this->success($result);
 	}
 
+	public function getInteract()
+	{
+		$type      = intval($this->data['type']) ? intval($this->data['type']) : 0;
+		$page      = !empty($this->data['page']) ? intval($this->data['page']) : 1;
+		$page_size = !empty($this->data['page_size']) ? intval($this->data['page_size']) : 10;
+		$page_start = $page_size*($page-1);
+		$result = $this->user->get_user_hudong($this->user_id, $type, $page_start, $page);
+		$this->success($result);
+	}
+
 	/**
 	 * 我的私信聊天用户列表
 	 */
@@ -1725,6 +1779,9 @@ class UserController extends ApiController
 	 */
 	public function sendLetter()
 	{
+		if(empty($this->user_id) || !isset($this->user_id)){
+			$this->error("请先登录");
+		}
 		if (empty($this->data['receive_user_id'])) {
 		    $this->error('非法操作');
 		}
@@ -3090,8 +3147,10 @@ class UserController extends ApiController
 	/************************************/
 	// 获取商品列表
 	/************************************/
-	public function getGoodsList(){
+	public function getGoodsList()
+	{
 		$status = $this->input('status', 0);
+		$sell_out = $this->input('sell_out', 0);
 		$user_id = $this->input('user_id', '');
 		$page = $this->input('page', 1);
 		$num = $this->input('num', 15);
@@ -3100,12 +3159,15 @@ class UserController extends ApiController
 		{
 			$this->error("非法操作！");die;
 		}
-		$where = '1';
-		/*$where = "user_id = $user_id";
+		// $where = '1';
+		$where = "user_id = $user_id";
 		if ($status != 0)
 		{
 			$where .= " AND goods_status = $status";
-		}*/
+		}
+		if($sell_out){
+			$where .= " AND goods_number = 0";
+		}
 
 		$field = "*";
 		$sql = "SELECT * FROM ".$GLOBALS['ecs']->table('goods')." WHERE $where";
@@ -3129,7 +3191,62 @@ class UserController extends ApiController
     $list_data['pager'] = $pager;
 
 		$this->success($list_data);
+	}
 
+	/************************************/
+	// 获取设计库列表
+	/************************************/
+	public function getDiyList()
+	{
+		$status = $this->input('status', -1);
+		$type = $this->input('type', 0);
+		$user_id = $this->input('user_id', '');
+		$page = $this->input('page', 1);
+		if($page == 1){
+			$num = $this->input('num', 14);
+			$start = ($page - 1) * $num;
+		}else{
+			$num = $this->input('num', 15);
+			$start = (($page - 1) * $num) - 1;
+		}
+
+		if (!$user_id)
+		{
+			$this->error("非法操作！");die;
+		}
+		$where = "d.user_id = $user_id";
+		if($status > -1){
+			$where .= ' AND g.goods_status = ' . $status;
+		}
+		if($type){
+			$where .= ' AND d.type = ' . $type;
+		}
+		$sql = "SELECT * FROM " . $GLOBALS['ecs']->table('diy') . " d LEFT JOIN " . $GLOBALS['ecs']->table('goods') . " g ON d.goods_id = g.goods_id WHERE $where";
+		$res = $GLOBALS['db']->selectLimit($sql, $num, $start);
+		while ($row = $GLOBALS['db']->fetchRow($res))
+    {
+      $result[] = $row;
+    }
+
+		$sql = "SELECT count(d.diy_id) FROM " . $GLOBALS['ecs']->table('diy') . " d LEFT JOIN " . $GLOBALS['ecs']->table('goods') . " g ON d.goods_id = g.goods_id WHERE $where";
+		$count = $GLOBALS['db']->getOne($sql);
+
+		//分页
+    $pager = array();
+    $pager['page']         = $page;
+    $pager['page_size']    = $num;
+    $pager['record_count'] = $count;
+    if($page == 1){
+    	$page_count = ($count > 0) ? (($count - $num) / 15) + 1 : 1;
+    }else{
+    	$page_count = ($count > 0) ? (($count - 14) / $num) + 1 : 1;
+    }
+    $pager['page_count']   = $page_count;
+
+    $list_data['list'] = $result;
+    $list_data['pager'] = $pager;
+
+		$this->success($list_data);
 	}
 
 	/**
@@ -3164,5 +3281,86 @@ class UserController extends ApiController
 		} else {
 			$this->error('第三方验证接口失败');
 		}
+	}
+
+	/**
+	 * 获取推荐设计师
+	 */
+	public function getRecommendUsers(){
+  		$recommend_users = $this->user->get_Recommend_Users($this->login_user_id);
+  		$this->success($recommend_users);
+	}
+
+	/**
+	 * 搜索用户商品价格列表
+	 */
+	public function getUserPrice(){
+		$designer_id = $this->input('designer_id');
+		$sql = "SELECT distinct shop_price FROM " . $GLOBALS['ecs']->table('goods') . " WHERE user_id = '$designer_id' AND goods_status = 4";
+		$list = $GLOBALS['db']->getCol($sql);
+		$this->success($list);
+	}
+
+	//排行榜
+	public function rankingList()
+	{
+		$user_id = $this->user_id;
+		$page      = !empty($this->data['page']) ? intval($this->data['page']) : 1;
+		$page_size = !empty($this->data['page_size']) ? intval($this->data['page_size']) : 10;
+		// $status = !empty($this->data['status']) ? intval($this->data['status']) : 0;
+
+		$page_start = $page_size*($page-1);
+
+		$sql_w = ' WHERE b.user_id IS NOT NULL ';
+		/*if($type != ''){
+			$sql_w .= " AND type = '$type' ";
+		}
+		switch($status){
+			case 1:
+				$sql_w .= ' AND status_back = 5  ';
+				break;
+			case 2:
+				$sql_w .= ' AND status_back = 3 AND status_refund = 1 ';
+				break;
+		}*/
+		/* 取得用户列表 */
+		$arr = array();
+
+		$sql = "SELECT DISTINCT a.user_id, a.* FROM " . $GLOBALS['ecs']->table('users') . " a INNER JOIN " . $GLOBALS['ecs']->table('goods') . " b ON a.user_id = b.user_id AND b.goods_status = 4 " . $sql_w . " ORDER BY rank_sale_number DESC, sale_amount DESC, reg_time DESC";
+		$res = $GLOBALS['db']->SelectLimit($sql, $page_size, $page_start);
+
+		while($row = $GLOBALS['db']->fetchRow($res))
+		{
+			$arr[] = $row;
+		}
+		foreach ($arr as $key => $value) {
+			$arr[$key]['rank'] = $page_start + $key +1;
+			$arr[$key]['headimg'] = !empty($value['headimg']) ? str_replace("./../","",$value['headimg']) : 'data/default/sex'.$value['sex'].'.png';//
+			$user_rank_arr = $this->user->get_user_rank($value['user_id']);//会员等级信息
+			$arr[$key]['rank_name'] = $user_rank_arr['rank_name'];
+			$arr[$key]['rank_icon'] = $user_rank_arr['rank_icon'];
+			$arr[$key]['be_follow_number'] = $GLOBALS['db']->GetOne("SELECT COUNT(*) AS be_follow_number FROM " . $GLOBALS['ecs']->table('user_attention') . " WHERE be_user_id = '$value[user_id]'");//被关注数量(粉丝数)
+			$arr[$key]['goods_number'] = $GLOBALS['db']->GetOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('goods') . " WHERE user_id = '$value[user_id]' AND goods_status = 4");//设计商品数量（已出售）
+			$arr[$key]['follow_status'] = get_follow_status($user_id, $value['user_id']);
+			$goods_list = $GLOBALS['db']->GetAll("SELECT goods_id, goods_name, goods_thumb, shop_price, goods_number, goods_total, click_count, user_id FROM " . $GLOBALS['ecs']->table('goods') . " WHERE user_id = '$value[user_id]' AND goods_status = 4 ORDER BY click_count DESC LIMIT 3");//设计商品数量（已出售）
+			if ($goods_list) {
+				foreach ($goods_list as $key2 => $value2) {
+					$goods_list[$key2]['zan'] = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('goods_zan') . " WHERE goods_id = '$value2[goods_id]'");
+					$goods_list[$key2]['number_per'] = $value2['goods_number'] / $value2['goods_total'] * 100;
+				}
+			}
+			$arr[$key]['goods_list'] = $goods_list;
+		}
+		$count = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('users') . " a INNER JOIN " . $GLOBALS['ecs']->table('goods') . " b ON a.user_id = b.user_id " . $sql_w);
+		//分页
+        $pager = array();
+        $pager['page']         = $page;
+        $pager['page_size']    = $page_size;
+        $pager['record_count'] = $count;
+        $pager['page_count']   = $page_count = ($count > 0) ? intval(ceil($count / $page_size)) : 1;
+
+        $ranking_data['list'] = $arr;
+        $ranking_data['pager'] = $pager;
+		$this->success($ranking_data);
 	}
 }

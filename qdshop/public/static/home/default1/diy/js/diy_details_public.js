@@ -26,6 +26,9 @@
                     _tihs.addClass('tp_ed disabled').html("已投票");
                     layer.msg("投票成功");
                     return false;
+                }else if(result['message'] == '3'){
+                    layer.msg("本赛期投票已结束，无法再进行投票");
+                    return false;
                 }
                 _tihs.addClass('tp_ed disabled').html("已投票");
                 $('.ipd_user .price.ps').addClass('tp_ed');
@@ -267,34 +270,37 @@
         }
     });
 
-    //收藏参赛作品  与收藏商品公用一个接口
-    function collect(diy_id, obj,str){
-        // if($(obj).hasClass('disabled')){ return false; }
-        var index = layer.load(0, {
-            shade: [0.1,'#fff']
-        });
-        $.ajax({
-            type: "get",
-            url: "/Goods/collectGoods",
-            dataType: 'json',
-            data:{goods_id:diy_id,str:str},
-            success: function(data){
-                if(data.status == 200){
-                    layer.close(index);
-                    if($(obj).hasClass('active')){
-                        $(obj).removeClass('active').html("<i></i>收藏").css({
-                            color: '#fff'
-                        });
-                    } else {
-                        $(obj).addClass('active').html("<i></i>已收藏").css({
-                            color: '#fff'
-                        });
-                    }
-                    layer.msg(data.message);
-                    // location.reload();
-                }
-            }
-        });
-    }
+
+
  })
-    
+
+ //收藏参赛作品  与收藏商品公用一个接口
+ function collect(diy_id, obj,str) {
+     // if($(obj).hasClass('disabled')){ return false; }
+     var index = layer.load(0, {
+         shade: [0.1, '#fff']
+     });
+     $.ajax({
+         type: "get",
+         url: "/Goods/collectGoods",
+         dataType: 'json',
+         data: {goods_id: diy_id, str: str},
+         success: function (data) {
+             console.log(data);
+             if (data.status == 200) {
+                 layer.close(index);
+                 if ($(obj).hasClass('active')) {
+                     $(obj).removeClass('active').html("<i></i>收藏").css({
+                         color: '#fff'
+                     });
+                 } else {
+                     $(obj).addClass('active').html("<i></i>已收藏").css({
+                         color: '#fff'
+                     });
+                 }
+                 layer.msg(data.message);
+                 // location.reload();
+             }
+         }
+     })
+ }

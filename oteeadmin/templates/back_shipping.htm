@@ -1,0 +1,68 @@
+{include file="pageheader.htm"}
+{insert_scripts files="topbar.js,../js/utils.js,listtable.js,selectzone.js,../js/common.js"}
+
+<form name="theForm" method="get" action="back.php" onsubmit="return check()">
+    <div class="list-div">
+        <table>
+            <tr>
+                <th width="120">操作备注：</th>
+                <td><textarea name="action_note" cols="60" rows="3"></textarea>
+                    <span class="require-field">*</span></td>
+            </tr>
+            <tr>
+                <th>快递公司：</th>
+                <td>
+                    <select name="back_shipping_name">
+                        {foreach from=$shipping_list item=shipping}
+                        <option value="{$shipping.shipping_name}">{$shipping.shipping_name}</option>
+                        {/foreach}
+                    </select>
+                    <span class="require-field">*</span></td>
+                </td>
+            </tr>
+            <tr>
+                <th>快递单号：</th>
+                <td>
+                    <input name="back_invoice_no" value="">
+                    <span class="require-field">*</span></td>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div align="center">
+                        <input type="submit" name="submit" value=" 确定 " class="layui-btn"/>
+                        <input type="button" name="back" value="返回" class="layui-btn layui-btn-primary"
+                               onclick="history.back()"/>
+                        <input type="hidden" name="back_id" value="{$back_id}"/>
+                        <input type="hidden" name="act" value="operate_back_shipping"/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+<script language="JavaScript">
+    function check() {
+        if (confirm('您确定要提交该物流信息')){
+            if (document.forms['theForm'].elements['action_note'].value == '') {
+                alert('请输入操作备注');
+                return false;
+            }
+            if (document.forms['theForm'].elements['back_shipping_name'].value == '') {
+                alert('请选择换出商品寄出的快递公司');
+                return false;
+            }
+            if (document.forms['theForm'].elements['back_invoice_no'].value == '') {
+                alert('请输入换出商品寄出的快递单号');
+                return false;
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+</script>
+
+
+{include file="pagefooter.htm"}

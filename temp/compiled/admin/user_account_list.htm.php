@@ -24,6 +24,7 @@
         <option value="2"><?php echo $this->_var['lang']['cancel']; ?></option>
       </select>
       <input type="submit" value="<?php echo $this->_var['lang']['button_search']; ?>" class="layui-btn" style="margin-top:5px;" />
+      <input type="button" value="批量导出" class="layui-btn" onclick="batch_export()" />
   </form>
 </div>
 
@@ -110,6 +111,16 @@ function searchUser()
     listTable.filter['is_paid'] = document.forms['searchForm'].elements['is_paid'].value;
     listTable.filter['page'] = 1;
     listTable.loadList();
+}
+/**
+ * 批量导出
+ */
+function batch_export()
+{
+    // 搜索关键字
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    var is_paid = Utils.trim(document.forms['searchForm'].elements['is_paid'].value);
+    return location.href='user_account.php?act=export&is_paid='+is_paid+'&keyword='+keyword;
 }
 //-->
 </script>

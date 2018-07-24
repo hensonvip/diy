@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$site_title}</title>
+    <meta name="keywords" content="{$site_keywords}">
+    <meta name="description" content="{$site_description}">
+    <meta name="author" content="互诺科技 - http://www.hunuo.com">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link href="__CSSPC__/slick.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/m-style.css" type="text/css" rel="stylesheet" />
+    <link href="__CSSPC__/c-style.css" type="text/css" rel="stylesheet" />
+    <script src="__JSPC__/jquery.js"></script>
+    <script src="__JSPC__/layer/layer.js"></script>
+    <!--[if IE 8]>
+    <script src="__JSPC__/html5shiv.js"></script>
+    <![endif]-->
+</head>
+    <div class="main">
+        <div class="w1200">
+
+            <div class="c-right">
+                <div class="title-bar">
+                    <a class="title-tab selected">退款/退货列表</a>
+                    <div class="r-form">
+                        <form action="" method="post">
+                            <div class="select-w">
+                                <span class="cur"></span>
+                                <select name="status">
+                                    <option {if condition="$status eq 0"}selected="selected"{/if} value="0">订单状态</option>
+                                    <option {if condition="$status eq 1"}selected="selected"{/if} value="1">审核中</option>
+                                    <option {if condition="$status eq 2"}selected="selected"{/if} value="2">已完成</option>
+                                </select>
+                            </div>
+                            <div class="select-w date-box">
+                                <!-- <input type="text" class="date-input" placeholder="申请时间"> -->
+                                <span class="cur"></span>
+                                <select name="date">
+                                    <option {if condition="$date eq 0"}selected="selected"{/if} value="0" selected="selected">申请时间</option>
+                                    <option {if condition="$date eq 1"}selected="selected"{/if} value="1">7天内</option>
+                                    <option {if condition="$date eq 2"}selected="selected"{/if} value="2">15天内</option>
+                                    <option {if condition="$date eq 3"}selected="selected"{/if} value="3">1个月内</option>
+                                    <option {if condition="$date eq 4"}selected="selected"{/if} value="4">3个月内</option>
+                                </select>
+                            </div>
+                            <input type="text" class="r-input" name="order_id" value="{$order_id}" placeholder="订单编号">
+                            <input type="submit" class="btn btn-submit" value="">
+                        </form>
+                    </div>
+                </div>
+                <div class="r-block">
+                    <div class="r-table">
+                        <div class="r-th">
+                            <div class="r-td r-td1">退款/退货单号</div>
+                            <div class="r-td r-td2">订单编号</div>
+                            <div class="r-td r-td3">商品</div>
+                            <div class="r-td r-td4">应退金额</div>
+                            <div class="r-td r-td5">售后状态</div>
+                            <div class="r-td r-td6">申请时间</div>
+                            <div class="r-td r-td7">操作</div>
+                        </div>
+                        {foreach name="data['list']" item="vo"}
+                        <div class="r-tr">
+                            <div class="r-td r-td1">
+                                {$vo.back_sn}
+                            </div>
+                            <div class="r-td r-td2">
+                                {$vo.order_sn}
+                            </div>
+                            {foreach $vo.goods_list as $kk =>$vv}
+                                <div class="r-td r-td3">
+                                    <a href="{:url('Goods/details',array('goods_id'=>$vv['goods_id']))}" target="_blank">{$vv.goods_name}{$vv.goods_attr}</a>
+                                </div>
+                                <div class="r-td r-td4">
+                                    {$vv.format_back_goods_price}
+                                </div>
+                            {/foreach}
+                            <div class="r-td r-td5 state2"><!-- 加类state1显示审核中，加类state2显示已完成 -->
+                                {if $vo.status eq 3}<font>{$vo.status_back}</font>{else}<em>{$vo.status_back}</em>{/if}
+                                <!-- <a class="a1" style="display:none">审核中</a>
+                                <a class="a2" style="display:none">已完成</a> -->
+                            </div>
+                            <div class="r-td r-td6">
+                                <span class="date">{$vo.refund_time}</span>
+                                <span class="time" style="display: none;">15:22:21</span>
+                            </div>
+                            <div class="r-td r-td7 done"><!-- 加类done隐藏取消，只显示查看 -->
+                                <a class="cancel">取消</a>
+                                <a class="see" href="{:url('orderback/refund_details',array('back_id'=>$vo.back_id))}">查看</a>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                <style type="text/css">
+                    .h-page{background-color: #fff;padding-bottom: 30px;}
+                </style>
+
+            </div>
+        </div>
+    </div>
+    {include file="public/footer" /}
+    <script>
+        $(function(){
+            //支付方式的切换
+            $(".pay-tab").click(function(){
+                $(this).addClass("selected").siblings().removeClass("selected");
+                $(".row-payarea").removeClass("show").eq($(this).index()).addClass("show");
+                if($(this).attr('data-id') == 5){
+                    $('.btn-submit').val('重新生成');
+                    var  pay_id = $(this).attr('data-id');
+                    var  amount = $('#amount').val();
+                    var  user_note = 1;
+                    $.post("{:url('user/do_recharge')}",{pay_id:pay_id,amount:amount,user_note:user_note},function(result){
+                        //console.log(result);
+                        if(result.code=='500'){
+                            alert(result.message);
+                        }
+                        
+                        $(".btn-submit").click(function(){
+                            var  pay_id = 5;
+                            var  amount = $('#amount').val();
+                            var  user_note = 1;
+                            $.post("{:url('user/do_recharge')}",{pay_id:pay_id,amount:amount,user_note:user_note},function(result){
+                                if(result.code=='500'){
+                                    alert(result.message);
+                                }
+                                $('#wxcode').attr('src',result.code);
+                            })
+                            return false;
+                            
+                        })
+                                    
+                        $('#wxcode').attr('src',result.code);
+                    });
+                }else{
+                    $('.btn-submit').val('立即支付');
+                    $(".btn-submit").click(function(){
+                        $('#form').submit();
+                    })
+                }
+            })
+            
+            
+            
+            
+            //点击发送验证码
+            $("#getcode").click(function(){
+                if(!$(this).hasClass("gray")){
+                    //ajax请求写这里
+                    $("#sendtip").addClass("show");
+                    afs();
+                }
+            })
+            //60秒后可重新发送
+            function afs(){
+                $("#getcode").addClass("gray");
+                var n = 60;
+                var txt = "秒后可重新发送";
+                $("#getcode").text(n+txt);
+                var s = setInterval(function(){
+                    n -= 1;
+                    if(n>0){
+                        $("#getcode").text(n+txt);
+                    }else{
+                        $("#getcode").removeClass("gray").text("获取验证码");
+                        $("#sendtip").removeClass("show");
+                        clearInterval(s);
+                    }
+                },1000)
+            }
+            //模仿select
+            $(".select-w select").change(function(){
+                var op = $(this).find("option:checked")
+                var text = op.text();
+                $(this).siblings(".cur").text(text);
+                var src = "url("+op.attr("icon-src")+")";
+                $(".select-w .icon-bank").css("background-image",src);
+            })
+            $(".select-w .cur").each(function(){
+                var op = $(this).siblings("select").find("option:checked");
+                var txt = op.text();
+                $(this).text(txt);
+                var src = "url("+op.attr("icon-src")+")";
+                $(".select-w .icon-bank").css("background-image",src);
+            })
+        });
+    </script>
+</body>
+</html>

@@ -181,42 +181,24 @@ class Goods extends Common
         $data['goods_id'] = $goods_id;
         $this->curlGet($api,$data);
 
-         //评论
+        //评论
         $api = "goods/getGoodsComment";
         $data = array();
         $data['goods_id'] = $goods_id;
-        $data['page_size'] = 20;
+        $data['user_id'] = $this->user_id;
+        $data['page_size'] = 10;
         $data['page'] = input('page','','intval') ? input('page','','intval') : 1;
         $data['type'] = input('type','','intval') ? input('type','','intval') : 0;//0所有评价 1好评 2中评 3差评 4晒单
         $result = $this->curlGet($api,$data);
         $result = json_decode($result,true);
+        // print_r($result);die;
         $this->assign('comment_data',$result['data']);
-
-
-        /*$pageHtml = '';
-        if($result['data']['pager']){
-            //组装分页
-            $prePage = $this->getPage($result['data']['pager']['page'],$result['data']['pager']['page_count']);
-            $pageHtml = '  <div class="h-page"><a class="pn-first" href="'.url('goods/index',array('p'=>1)).'">首页</a>';
-            if($prePage['page']>1){
-               $pageHtml .= '<a class="pn-prev" title="上一页" href="'.url('goods/index',array('p'=>$prePage['page']-1)).'">上一页</a>';
-             }
-            for ($i = $prePage['start']; $i <= $prePage['end']; $i++) {
-                if($i == $prePage['page']){
-                $pageHtml .= '<a class="pn-num selected">'.$i.'</a>';
-                }else{
-                    $pageHtml .= '<a class="pn-num" href="'.url('goods/index',array('p'=>$i)).'">'.$i.'</a>';
-                }
-            }
-
-            if($prePage['page']<$prePage['end']){
-               $pageHtml .= '<a class="pn-next"  title="下一页" href="'.url('goods/index',array('p'=>$prePage['page']+1)).'">下一页</a>';
-             }
-            $pageHtml .= '<a class="pn-last" href="'.url('goods/index',array('p'=>$prePage['pages'])).'">尾页</a><span class="page-num">共'.$prePage['pages'].'页</span></div>';
+        //异步加载分页数据
+        $is_ajax = input('is_ajax','','intval') ? input('is_ajax','','intval') : 0;
+        $this->assign('is_ajax',$is_ajax);
+        if($is_ajax){
+            echo $this->fetch('goods/comment_list_ajax');exit();
         }
-        $this->assign('toPage',$pageHtml);*/
-
-        //print_r($result['data']);die;
 
         //获取推荐商品
         $api = "goods/query";
@@ -285,12 +267,20 @@ class Goods extends Common
         $api = "goods/getGoodsComment";
         $data = array();
         $data['goods_id'] = $goods_id;
-        $data['page_size'] = 20;
+        $data['user_id'] = $this->user_id;
+        $data['page_size'] = 10;
         $data['page'] = input('page','','intval') ? input('page','','intval') : 1;
         $data['type'] = input('type','','intval') ? input('type','','intval') : 0;//0所有评价 1好评 2中评 3差评 4晒单
         $result = $this->curlGet($api,$data);
         $result = json_decode($result,true);
+        // print_r($result);die;
         $this->assign('comment_data',$result['data']);
+        //异步加载分页数据
+        $is_ajax = input('is_ajax','','intval') ? input('is_ajax','','intval') : 0;
+        $this->assign('is_ajax',$is_ajax);
+        if($is_ajax){
+            echo $this->fetch('goods/comment_list_ajax');exit();
+        }
 
 		//print_r($result['data']);die;
 
@@ -838,6 +828,29 @@ class Goods extends Common
         $result = json_decode($result);
         return $result;
     }
+
+    //商品评论点赞
+    public function c_like(){
+        $api = "goods/c_like";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['comment_id'] = input('comment_id',0,'intval');
+        $data['source'] = input('source',2,'intval');
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result);
+        return $result;
+    }
+
+    //商品评论取消点赞
+    public function c_unlike(){
+        $api = "goods/c_unlike";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['comment_id'] = input('comment_id',0,'intval');
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result);
+        return $result;
+    }
     
 	// 商品举报
     public function do_goods_report() {
@@ -845,6 +858,19 @@ class Goods extends Common
         $data = array();
         $data['user_id'] = $this->user_id;//举报人
         $data['goods_id'] = input('goods_id', 0, 'intval');
+        $data['reason'] = input('reason','','trim,strip_tags,htmlspecialchars');
+        $result = $this->curlPost($url,$data);
+        $result = json_decode($result,true);
+        return $result;
+    }
+
+    // 商品评论举报
+    public function do_comment_report() {
+        $url = "goods/doCommentReport";
+        $data = array();
+        $data['user_id'] = $this->user_id;//举报人
+        $data['comment_id'] = input('comment_id', 0, 'intval');
+        $data['type'] = input('type', 0, 'intval');//0为参赛作品评论 1为商品评论
         $data['reason'] = input('reason','','trim,strip_tags,htmlspecialchars');
         $result = $this->curlPost($url,$data);
         $result = json_decode($result,true);

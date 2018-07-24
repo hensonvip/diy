@@ -149,7 +149,7 @@ class CheckoutController extends ApiController
 			unset($result['supplier']);
 
 			$return['data']['supplier_list'][] = $result;
-
+			//var_dump()
 			// foreach($result as $v){
 			// 	$result['shipping_list'] = $v['shipping_list'];
 			// 	$result['goods_list'] = $v['goods_list'];

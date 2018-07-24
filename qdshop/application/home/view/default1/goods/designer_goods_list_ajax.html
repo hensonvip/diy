@@ -1,0 +1,28 @@
+{if $data.list}
+    {foreach $data.list as $key => $vo}
+    <li class="i_pli i_pli_{$vo.goods_id}" data-id="{$vo.goods_id}">
+        <div class="before">
+            <div class="clo"><a href="">
+                <img class="lazybg" data-lazyload-img="{$webUrl}{$vo.goods_thumb}">
+            </a></div>
+            <div class="line"></div>
+            <div class="info">
+                <span class="view">{$vo.click_count}</span>
+                <span class="zan">{$vo.zan}</span>
+            </div>
+        </div>
+        <div class="after" style="display: block;">
+            <div class="af_top tc">
+                <h2 class="dot">{$vo.goods_name}</h2>
+            </div>
+            <div class="af_bot tc">
+                <h2>￥<em>{$vo.shop_price}</em></h2>
+                <div class="af_bar"><i style="width: {$vo.number_per}%;"></i></div>
+                <div class="info">
+                    <p>限量 {$vo.goods_number}/{$vo.goods_total}</p>
+                </div>
+            </div>
+        </div>
+    </li>
+    {/foreach}
+{/if}

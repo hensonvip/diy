@@ -50,6 +50,7 @@
 					{$sort_reg_time}
 				</th>
 				<th>实名认证</th>
+				<th><a href="javascript:listTable.sort('is_recommend'); ">是否推荐</a>{$sort_is_recommend}</th>
 				<th>{$lang.handler}</th>
 			<tr>{foreach from=$user_list item=user}
 			<tr>
@@ -94,6 +95,8 @@
 				<td>{$user.pay_points}</td>
 				<td align="center">{$user.reg_time}</td>
 				<td>{if $user.status eq 1}审核通过{elseif $user.status eq 2}审核中{elseif $user.status eq 3}审核不通过{else}未审核{/if}</td>
+				<td align="center"><span>
+				<img src="images/{if $user.is_recommend eq 1}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_is_recommend', {$user.user_id})" /></span></td>
 				<td align="center">
 					<a href="users.php?act=edit&id={$user.user_id}" title="{$lang.edit}">
 						<img src="images/icon_edit.gif" border="0" height="16" width="16" />

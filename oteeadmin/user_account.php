@@ -447,6 +447,112 @@ elseif ($_REQUEST['act'] == 'remove')
 }
 
 /*------------------------------------------------------ */
+//-- 批量导出
+/*------------------------------------------------------ */
+elseif ($_REQUEST['act'] == 'export')
+{
+    $day = getdate();
+    $today = local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
+    $where = "WHERE process_type = 1";
+
+    // 到款状态
+    if (isset($_REQUEST['is_paid']) && $_REQUEST['is_paid'] != '-1')
+    {
+        $where .= " AND ua.is_paid = " . $_REQUEST['is_paid'];
+    }
+    // 关键字
+    if (isset($_REQUEST['keyword']) && !empty($_REQUEST['keyword']))
+    {
+        $where .= " AND u.user_name LIKE '%" . mysql_like_quote($_REQUEST['keyword']) . "%'";
+    }
+
+    /* 查询数据 */
+    $sql = "SELECT ua.add_time, ua.amount, ua.poundage, ua.admin_user, ua.is_paid, u.user_name FROM " . $GLOBALS['ecs']->table('user_account') . " AS ua LEFT JOIN " . $GLOBALS['ecs']->table('users') . " AS u ON ua.user_id = u.user_id " . $where . " ORDER BY add_time DESC";
+    $res = $GLOBALS['db']->getAll($sql);
+    foreach ($res as $key => $value) {
+        $res[$key]['amount'] = price_format(abs($value['amount']), false);
+        $res[$key]['poundage'] = price_format($value['poundage'], false);
+        $res[$key]['add_time'] = local_date('Y-m-d H:i:s', $val['add_time']);
+        if ($value['is_paid'] == 1) {
+            $res[$key]['is_paid'] = '已转账';
+        } else {
+            $res[$key]['is_paid'] = '待转账';
+        }
+        
+    }
+
+    // 引入phpexcel核心类文件
+    require_once ROOT_PATH . '/includes/phpexcel/Classes/PHPExcel.php';
+    // 实例化excel类
+    $objPHPExcel = new PHPExcel();
+    // 操作第一个工作表
+    $objPHPExcel->setActiveSheetIndex(0);
+    // 设置sheet名
+    $objPHPExcel->getActiveSheet()->setTitle('提现转账记录');
+
+    // 设置表格宽度
+    $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(40);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(10);
+
+    // 列名表头文字加粗
+    $objPHPExcel->getActiveSheet()->getStyle('A1:J1')->getFont()->setBold(true);
+    // 列表头文字居中
+    $objPHPExcel->getActiveSheet()->getStyle('A1:J1')->getAlignment()
+        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    // 列名赋值
+    $objPHPExcel->getActiveSheet()->setCellValue('A1', '会员名称');
+    $objPHPExcel->getActiveSheet()->setCellValue('B1', '操作时间');
+    $objPHPExcel->getActiveSheet()->setCellValue('C1', '金额');
+    $objPHPExcel->getActiveSheet()->setCellValue('D1', '手续费');
+    $objPHPExcel->getActiveSheet()->setCellValue('E1', '到款状态');
+    $objPHPExcel->getActiveSheet()->setCellValue('F1', '操作员');
+
+    // 数据起始行
+    $row_num = 2;
+    // 向每行单元格插入数据
+    foreach($res as $value)
+    {
+        // 设置所有垂直居中
+        $objPHPExcel->getActiveSheet()->getStyle('A' . $row_num . ':' . 'J' . $row_num)->getAlignment()
+            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        // 设置价格为数字格式
+        $objPHPExcel->getActiveSheet()->getStyle('D' . $row_num)->getNumberFormat()
+            ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
+        // 居中
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $row_num . ':' . 'H' . $row_num)->getAlignment()
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        // 设置单元格数值
+        $objPHPExcel->getActiveSheet()->setCellValue('A' . $row_num, $value['user_name']);
+        $objPHPExcel->getActiveSheet()->setCellValue('B' . $row_num, $value['add_time']);
+        $objPHPExcel->getActiveSheet()->setCellValue('C' . $row_num, $value['amount']);
+        $objPHPExcel->getActiveSheet()->setCellValue('D' . $row_num, $value['poundage']);
+        $objPHPExcel->getActiveSheet()->setCellValue('E' . $row_num, $value['is_paid']);
+        $objPHPExcel->getActiveSheet()->setCellValue('F' . $row_num, $value['admin_user']);
+        $row_num++;
+    }
+
+    $outputFileName = 'withdraw_' . time() . '.xls';
+    $xlsWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
+    header("Content-Type: application/force-download");
+    header("Content-Type: application/octet-stream");
+    header("Content-Type: application/download");
+    header('Content-Disposition:inline;filename="' . $outputFileName . '"');
+    header("Content-Transfer-Encoding: binary");
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("Pragma: no-cache");
+    $xlsWriter->save("php://output");
+    echo file_get_contents($outputFileName);
+}
+
+/*------------------------------------------------------ */
 //-- 会员余额函数部分
 /*------------------------------------------------------ */
 /**

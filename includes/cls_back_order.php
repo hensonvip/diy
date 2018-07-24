@@ -189,20 +189,21 @@ class cls_back_order{
 	 * @param   int     $user_id        用户ID
 	 * @param   int     $order_id       订单ID
 	 * @param   int     $goods_id       申请售后的订单商品ID
-	 * @param   int     $product_id     申请售后的订单商品的货品ID
+	 * @param   int     $product_id     申请售后的订单商品的货品ID 作废
+     * @param   int     $rec_id     申请售后的订单商品的货品ID
 	 *
 	 * @return  array   $arr
 	 */
 
-	public function to_create_back_order($user_id, $order_id, $goods_id = 0, $product_id = 0)
+	public function to_create_back_order($user_id, $order_id, $goods_id = 0, $product_id = 0,$rec_id = 0)
 	{
+        $product_id=$rec_id;
 		$return = array(
             'code' => 500,
             'data' => array(
             ),
             'message' => ''
         );
-
         $sql_oi = "SELECT order_id,order_sn,order_status,shipping_status,pay_status,shipping_time_end,extension_code,(goods_amount +  insure_fee + pay_fee + pack_fee + card_fee + tax - discount) AS total_fee,shipping_fee FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE user_id='$user_id' AND order_id = " . $order_id;
 	    $order_info = $GLOBALS['db']->getRow($sql_oi);
 	    
@@ -211,53 +212,88 @@ class cls_back_order{
 	    	$return['message'] = "非法操作,错误码001";
             return $return;
 	    }
-        
+        //判断订单是否存在申请中状态的退款订单。
+        $sql= "SELECT back_id FROM " . $GLOBALS['ecs']->table('back_order') . " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND status_back = 5";
+        $row=$GLOBALS['db']->getOne($sql);
+        if (!empty($row)) {
+            $return['message'] = "对不起！该订单存在审核中的退款订单。请等客服审核后再进行申请操作。";
+            return $return;
+        }
         //判断是否有整单退款退货
 	    $back_info_num = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('back_order') .
         " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id=0 AND status_back < 6";
 	    if ($GLOBALS['db']->getOne($back_info_num) > 0)
 	    {
-	        $return['message'] = "对不起！您没权限操作该订单";
+	        $return['message'] = "对不起！您没权限操作该订单!1";
             return $return;
 	    }
 
-
 	    //判断单件商品是否有退款退货
-	    if($goods_id>0){
+/*	    if($goods_id>0){
 	    	$back_info_num2 = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('back_order') .
 	        " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id='$goods_id' AND product_id='$product_id' AND status_back < 6";
 		    if ($GLOBALS['db']->getOne($back_info_num2) > 0)
 		    {
-		        $return['message'] = "对不起！您没权限操作该订单";
+		        $return['message'] = "对不起！您没权限操作该订单2";
 	            return $return;
 		    }
-	    }
-
+	    }*/
+        $back_goods_number=0;
+        if($goods_id>0){
+            $back_info_num2 = "SELECT back_id FROM " . $GLOBALS['ecs']->table('back_order') .
+                " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id='$goods_id' AND product_id='$rec_id' AND status_back < 6";
+            $back_list=$GLOBALS['db']->getAll($back_info_num2);
+            if ($back_list)
+            {
+                $tmp=array();
+                foreach ($back_list as $k=>$back_id){
+                    $tmp[]=$back_id['back_id'];
+                }
+                $back_list=implode(',',$tmp);
+                unset($tmp);
+                $back_goods=" SELECT SUM(back_goods_number) FROM ".$GLOBALS['ecs']->table('back_goods').
+                    " WHERE goods_id='$goods_id' AND product_id='$rec_id' AND back_id in ($back_list)";
+                $back_goods_number=$GLOBALS['db']->getOne($back_goods);
+                //存在单件商品的订单，检查是否有多余的数量
+                $order_goods=" SELECT goods_number FROM ".$GLOBALS['ecs']->table('order_goods').
+                    " WHERE order_id = " . $order_id . "  AND goods_id='$goods_id' AND rec_id='$rec_id'";
+                $order_goods_number=$GLOBALS['db']->getOne($order_goods);
+                if ($back_goods_number>=$order_goods_number){
+                    $return['message'] = "对不起！您没权限操作该订单2";
+                    return $return;
+                }
+            }
+        }else {
+            //判断订单是否有单件退款退货
+            $back_info_num = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('back_order') .
+                " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND status_back < 6";
+            if ($GLOBALS['db']->getOne($back_info_num) > 0) {
+                $return['message'] = "订单已有商品单独申请了退款/退货/换货服务!";
+                return $return;
+            }
+        }
 	    $min_time = local_strtotime(local_date('Y-m-d H:i:s', strtotime('-7 days')));//则自确认收货起$GLOBALS['_CFG']['comment_youxiaoqi']天内买家可以申请售后 先默认7天之内还可申请退款，没做后台设置该值
 	    //$min_time = local_strtotime(local_date('Y-m-d H:i:s', strtotime('-'.$GLOBALS['_CFG']['shouhou_time'].' days')));//则自确认收货起$GLOBALS['_CFG']['comment_youxiaoqi']天内买家可以申请售后
 	   
 
 	    $order=array();
 
-        
 
+	    //确认退款订单时候，不要操作商品订单。。商品订单还是原来的状态就好了
         //服务类型[服务商品只能退款]
         //仅退款【未收到货（包含未签收），或卖家协商同意前提下】
 	    //退款退货【已收到货需要退货已收到的货物】
-	    if(in_array($order_info['order_status'],array(1,5)) && in_array($order_info['shipping_status'],array(0,1,3,5))  && $order_info['pay_status']==2){
+	    if(in_array($order_info['order_status'],array(1,2,5)) && in_array($order_info['shipping_status'],array(0,3,5))  && $order_info['pay_status']==2){
 	    	$back_type[0]['type_id']=4;
 	    	$back_type[0]['type_name']='退款';
 	    	$back_type[0]['selected']="checked";
 
 	    	//$order['back_type']=array('4'=>'退款','1'=>'退款退货');
-	    }elseif($order_info['order_status']==5 && $order_info['shipping_status']==1  && $order_info['pay_status']==2 && $order_info['extension_code']!='virtual_good'){
-	    	$back_type[0]['type_id']=4;
-	    	$back_type[0]['type_name']='退款';
-	    	$back_type[0]['selected']="checked";
+	    }elseif(in_array($order_info['order_status'],array(2,5)) && $order_info['shipping_status']==1  && $order_info['pay_status']==2 && $order_info['extension_code']!='virtual_good'){
 
-	    	$back_type[1]['type_id']=1;
-	    	$back_type[1]['type_name']='退款退货';
-	    	$back_type[1]['selected']="";
+            /*$back_type[]=array('type_id'=>0, 'type_name'=>'退款', 'selected'=>'',);*/
+            $back_type[]=array('type_id'=>1, 'type_name'=>'退货', 'selected'=>'checked',);
+            $back_type[]=array('type_id'=>2, 'type_name'=>'换货', 'selected'=>'',);
 
 	    	//$order['back_type']=array('4'=>'退款','1'=>'退款退货');
 	    }elseif($order_info['order_status']==5 && $order_info['shipping_status']==2 && $order_info['pay_status']==2 && $order_info['shipping_time_end']>$min_time){
@@ -266,97 +302,119 @@ class cls_back_order{
 	            return $return;
 	    	}
 	    	$back_type[0]['type_id']=1;
-	    	$back_type[0]['type_name']='退款退货';
+	    	$back_type[0]['type_name']='退货';
 	    	$back_type[0]['selected']="checked";
 	    }
 	    else{
 	    	$return['message'] = "非法操作,错误码003";
             return $return;
 	    }
-
 	    $where="";
         if($goods_id>0){
-        	$where=" AND og.goods_id=$goods_id AND og.product_id=$product_id";
+        	//$where=" AND og.goods_id=$goods_id AND og.product_id=$product_id";
+            $where = " AND og.goods_id=$goods_id AND og.rec_id = $product_id";
         }
 		$sql_og = "SELECT  og.goods_id, og.product_id,og.goods_name, g.goods_thumb, og.goods_number, " .
-            "og.goods_price, og.goods_attr,  " .
+            "og.goods_price, og.goods_attr,og.goods_attr_id,og.rec_id," .
             "og.goods_price * og.goods_number AS subtotal,  og.order_id, og.extension_code  " .
             "FROM " . $this->_tb_order_goods . "as og right join" . $this->_tb_goods .
             "as g on og.goods_id = g.goods_id" .
             " WHERE og.order_id = '$order_id' $where";
-        $goods_list = $GLOBALS['db']->getAll($sql_og); 
+        $goods_list = $GLOBALS['db']->getAll($sql_og);
 
         if(empty($goods_list)){
         	$return['message'] = "非法操作,错误码004";
             return $return;
-        }  
-        
+        }
+
+
+
         $order_goods_total=0; //商品总金额
         $order_goods_number=0; //商品总数量
         $order_goods_price=0; //商品单价[针对单件退款退货商品]
         foreach ($goods_list as $key => $value) {
         	$order_goods_total+=$value['subtotal'];
         	$order_goods_number+=$value['goods_number'];
-
         	$order_goods_price=$value['goods_price'];
-         	//所属商品
+        	//所属商品
             if($value['extension_code']=='virtual_good'){
                 $is_type   = 1;//服务商品
             }
             else{
                 $is_type   = 0;//普通商品
             }
-
             $goods_list[$key]['is_type']=$is_type;
-
-
             $goods_list[$key]['format_goods_price'] = price_format($value['goods_price']);
             $goods_list[$key]['format_subtotal'] = price_format($value['subtotal']);
-
+            $properties=get_goods_properties($value['goods_id']);
+            $spec=array();
+            $spec_list=explode(',',$value['goods_attr_id']);
+            foreach ($spec_list as $ke=>$va){
+                foreach ($properties['spe'] as $k=>$v){
+                    if ($v['name']=="款式"){
+                        foreach ($v['values'] as $k1=>$v1){
+                            if ($v1['id']==$va){$spec[0]=$v1;}
+                        }
+                    }
+                    if ($v['name']=="颜色"){
+                        foreach ($v['values'] as $k1=>$v1){
+                            if ($v1['id']==$va){$spec[1]=$v1;}
+                        }
+                    }
+                    if ($v['name']=="尺码"){
+                        foreach ($v['values'] as $k1=>$v1){
+                            if ($v1['id']==$va){$spec[2]=$v1;}
+                        }
+                    }
+                }
+            }
+            //$goods_list[$key]['properties']=$properties;
+            $goods_list[$key]['spec']=$spec;
+            if($goods_id>0){
+                $goods_list[$key]['back_goods_number']=$goods_list[$key]['goods_number']-$back_goods_number;
+            }else{
+                $goods_list[$key]['back_goods_number']=$goods_list[$key]['goods_number'];
+            }
             unset($goods_list[$key]['extension_code']);
-
-        } 
-
-
+        }
         $order['goods_list']=$goods_list;
 
-
         //判断该订单有几种商品(只有一种的话，则默认为整单。以上的则$goods_id>0为整单，或者为单件)
-	    $order_goods_num =$GLOBALS['db']->getOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_goods') .
-	        " WHERE order_id = " . $order_id . "");
-	    
-
-	    if($order_goods_num>0){
-	    	if($goods_id>0){
-	    		$tui_goods_subtotal=$order_goods_total;
-	    		$goods_price=$order_goods_price;
-	    		$order_all=0;
-	    	}
-	    	else{
-	    		$tui_goods_subtotal=$order_info['total_fee'];
-	    		$goods_price=0;
-	    		$order_all=1;
-	    	}
-	    }
-	    else{
-	    	$tui_goods_subtotal=$order_goods_total;
-	    	$goods_price=0;
-	    	$order_all=1;
-	    }
-
+        $order_goods_num =$GLOBALS['db']->getOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_goods') .
+            " WHERE order_id = " . $order_id . " ");
+        if($order_goods_num>0){
+            if($goods_id>0){
+                $tui_goods_subtotal=$order_goods_total;
+                $goods_price=$order_goods_price;
+                $order_all=0;
+            } else{
+                $tui_goods_subtotal=$order_info['total_fee'];
+                $goods_price=0;
+                $order_all=1;
+            }
+        } else{
+            $tui_goods_subtotal=$order_goods_total;
+            $goods_price=0;
+            $order_all=1;
+        }
+        //优惠折扣
+        $sql = "SELECT u.bonus_id,u.bonus_sn,u.supplier_id, u.order_id, b.type_name, b.type_money, b.min_goods_amount, b.use_start_date, b.use_end_date ".
+            " FROM " .$GLOBALS['ecs']->table('user_bonus'). " AS u ,".
+            $GLOBALS['ecs']->table('bonus_type'). " AS b".
+            " WHERE u.bonus_type_id = b.type_id AND u.user_id = '" .$user_id. "' AND u.order_id='".$order_id."' " ;
+        $bonus=$GLOBALS['db']->getRow($sql);
 
         $order['order_all']=$order_all; //（1是整单的，0为单件）
         $order['order_sn']=$order_info['order_sn']; //订单号
 	    $order['goods_price']=$goods_price; //商品单价（针对的是单件商品退款退货。如果是整单的，那么此项为0）
 
 	    $order['tui_goods_number']=$order_goods_number; //退款数量
-
+        if (!$order_all){
+            $order['tui_goods_number']-=$back_goods_number;
+        }
 	    $order['tui_goods_subtotal']=$tui_goods_subtotal; //退款金额
 	    $order['format_tui_goods_subtotal']=price_format($tui_goods_subtotal);
 
-	    
-
-        
 
 	    $order['back_type']=$back_type;//服务类型
 
@@ -382,4 +440,76 @@ class cls_back_order{
 
         return $return;
 	}
+
+    /**
+     *  判断订单商品是否可退款/退款/换货等操作
+     *
+     * @access  public
+     * @param   int     $user_id        用户ID
+     * @param   int     $order_id       订单ID
+     * @param   int     $goods_id       申请售后的订单商品ID
+     * @param   int     $rec_id     申请售后的订单商品的货品ID
+     *
+     * @return  array   $arr
+     */
+    public function check_order_goods_back($user_id, $order_id, $goods_id = 0,$rec_id = 0)
+    {
+        $return = array(
+            'code' => 500,
+            'data' => array(
+            ),
+            'message' => ''
+        );
+        $sql_oi = "SELECT order_id,order_sn,order_status,shipping_status,pay_status,shipping_time_end,extension_code,(goods_amount +  insure_fee + pay_fee + pack_fee + card_fee + tax - discount) AS total_fee,shipping_fee FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE user_id='$user_id' AND order_id = " . $order_id;
+        $order_info = $GLOBALS['db']->getRow($sql_oi);
+
+
+        if(empty($order_info)){
+            $return['message'] = "非法操作,错误码001";
+            return $return;
+        }
+
+        //判断是否有整单退款退货
+        $back_info_num = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('back_order') .
+            " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id=0 AND status_back < 6";
+        if ($GLOBALS['db']->getOne($back_info_num) > 0)
+        {
+            $return['message'] = "对不起！您没权限操作该订单!1";
+            return $return;
+        }
+
+        //判断单件商品是否有退款退货
+        if($goods_id>0){
+            $back_info_num2 = "SELECT back_goods_number FROM " . $GLOBALS['ecs']->table('back_order') .
+                " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id='$goods_id' AND product_id='$rec_id' AND status_back < 6";
+            $back_goods_number=$GLOBALS['db']->getOne($back_info_num2);
+            if ($back_goods_number>0)
+            {
+                //存在单件商品的订单，检查是否有多余的数量
+                $order_goods=" SELECT goods_number FROM ".$GLOBALS['ecs']->table('order_goods').
+                    " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND goods_id='$goods_id' AND rec_id='$rec_id'";
+                $order_goods_number=$GLOBALS['db']->getOne($order_goods);
+                if ($back_goods_number>=$order_goods_number){
+                    $return['message'] = "对不起！您没权限操作该订单2";
+                    return $return;
+                }else{
+                    $return = array('code' => 200, 'data' => $order_goods_number-$back_goods_number, 'message' => 'success');
+                }
+            }
+        }else {
+            //判断订单是否有单件退款退货
+            $back_info_num = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('back_order') .
+                " WHERE order_id = " . $order_id . " AND user_id='$user_id' AND status_back < 6";
+            if ($GLOBALS['db']->getOne($back_info_num) > 0) {
+                $return['message'] = "订单已有商品单独申请了退款/退货/换货服务!";
+                return $return;
+            }
+        }
+        $return = array(
+            'code' => 200,
+            'data' => array(),
+            'message' => ''
+        );
+        return $return;
+    }
 }

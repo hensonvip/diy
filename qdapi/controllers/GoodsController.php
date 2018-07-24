@@ -121,6 +121,7 @@ class GoodsController extends ApiController
 		$sort    	= $this->input('sort', 'sort_order');
 		$filter  	= $this->input('filter', '');
 		$user_id 	= $this->input('user_id', 0);
+		$designer_id = $this->input('designer_id', 0);//设计师ID
 		$keywords 	= htmlspecialchars(urldecode(trim($this->input('keywords', ''))));
 		$is_real = $this->input('is_real', 3);//0虚拟商品 1真实商品 3虚拟商品和真实商品共存在
 
@@ -150,8 +151,8 @@ class GoodsController extends ApiController
 			$ext = ' and (g.is_real = 0 or g.is_real =1) ';
 		}
 
-		$result = $this->goods->category_get_goods($user_rank_info, $children, $keywords, $supplier_id ,$brand, $min, $max, $ext, $size, $page, $order, $sort, $filter, 0, $shop_price, $sex);
-		$count = $this->goods->category_get_goods_count($user_rank_info, $children, $keywords, $supplier_id ,$brand, $min, $max, $ext, $size, $page, $order, $sort , $filter, 0, $shop_price, $sex);
+		$result = $this->goods->category_get_goods($user_rank_info, $children, $keywords, $supplier_id ,$brand, $min, $max, $ext, $size, $page, $order, $sort, $filter, 0, $shop_price, $sex, $designer_id);
+		$count = $this->goods->category_get_goods_count($user_rank_info, $children, $keywords, $supplier_id ,$brand, $min, $max, $ext, $size, $page, $order, $sort , $filter, 0, $shop_price, $sex, $designer_id);
 
 		if (empty($result))
 		{
@@ -658,11 +659,17 @@ class GoodsController extends ApiController
 		$goods_id = $this->input('goods_id', 0);
 		if (empty($user_id)) {
 			$this->error('请先登录');
-		} else {
-			$add_time = gmtime();
-			$GLOBALS['db']->query("INSERT INTO " . $GLOBALS['ecs']->table('goods_zan') . " (goods_id, user_id, add_time) VALUES ('$goods_id', '$user_id', '$add_time')");
-			$this->success(array(),200,'点赞成功');
 		}
+		if (empty($goods_id)) {
+			$this->error('缺少必要参数');
+		}
+		$add_time = gmtime();
+		$GLOBALS['db']->query("INSERT INTO " . $GLOBALS['ecs']->table('goods_zan') . " (goods_id, user_id, add_time) VALUES ('$goods_id', '$user_id', '$add_time')");
+
+		// 添加互动消息
+		$designer_id = $GLOBALS['db']->getOne("SELECT user_id FROM " . $GLOBALS['ecs']->table('goods') . " WHERE goods_id = '$goods_id'");
+        interact_log($user_id, $designer_id, 2, $goods_id);
+		$this->success(array(),200,'点赞成功');
 	}
 
 	//商品取消点赞
@@ -671,11 +678,48 @@ class GoodsController extends ApiController
 		$goods_id = $this->input('goods_id', 0);
 		if (empty($user_id)) {
 			$this->error('请先登录');
-		} else {
-			$add_time = gmtime();
-			$GLOBALS['db']->query("DELETE FROM " . $GLOBALS['ecs']->table('goods_zan') . " WHERE user_id = '$user_id' AND goods_id = '$goods_id'");
-			$this->success(array(),200,'取消点赞成功');
 		}
+		if (empty($goods_id)) {
+			$this->error('缺少必要参数');
+		}
+		$add_time = gmtime();
+		$GLOBALS['db']->query("DELETE FROM " . $GLOBALS['ecs']->table('goods_zan') . " WHERE user_id = '$user_id' AND goods_id = '$goods_id'");
+		$this->success(array(),200,'取消点赞成功');
+	}
+
+	//商品评论点赞
+	public function c_like(){
+		$user_id = $this->input('user_id', 0);
+		$comment_id = $this->input('comment_id', 0);
+		$source = $this->input('source', 0);
+		if (empty($user_id)) {
+			$this->error('请先登录');
+		}
+		if (empty($comment_id)) {
+			$this->error('缺少必要参数');
+		}
+		$add_time = gmtime();
+		$GLOBALS['db']->query("INSERT INTO " . $GLOBALS['ecs']->table('comment_zan') . " (comment_id, user_id, source, add_time) VALUES ('$comment_id', '$user_id', '$source', '$add_time')");
+
+		// 添加互动消息
+		$c_user_id = $GLOBALS['db']->getOne("SELECT user_id FROM " . $GLOBALS['ecs']->table('comment') . " WHERE comment_id = '$comment_id'");
+		interact_log($user_id, $c_user_id, 3, $comment_id);
+		$this->success(array(),200,'点赞成功');
+	}
+
+	//商品评论取消点赞
+	public function c_unlike(){
+		$user_id = $this->input('user_id', 0);
+		$comment_id = $this->input('comment_id', 0);
+		if (empty($user_id)) {
+			$this->error('请先登录');
+		}
+		if (empty($comment_id)) {
+			$this->error('缺少必要参数');
+		}
+		$add_time = gmtime();
+		$GLOBALS['db']->query("DELETE FROM " . $GLOBALS['ecs']->table('comment_zan') . " WHERE user_id = '$user_id' AND comment_id = '$comment_id'");
+		$this->success(array(),200,'取消点赞成功');
 	}
 
 	//猜你喜欢
@@ -719,6 +763,15 @@ class GoodsController extends ApiController
 		}
 
 		$goods_id = $data['goods_id'];
+
+		// 检查商品是否已出售
+		$goods_info = $GLOBALS['db']->getRow('SELECT * FROM ' . $GLOBALS['ecs']->table('goods') . ' WHERE goods_id = ' . $goods_id);
+		if($goods_info['goods_status'] == 2){
+			$this->error('商品已申请出售，请勿重复申请');
+		}else if($goods_info['goods_status'] == 4){
+			$this->error('商品已正在出售，无需再申请');
+		}
+
 		$goods_update = 'cat_id = "'.$data['cat_id'].'", goods_name = "'.$data['goods_name'].'", goods_design = "'.$data['goods_design'].'", goods_status = "2"';
 
 		// 插入商品详情图片
@@ -901,6 +954,7 @@ class GoodsController extends ApiController
 	public function getGoodsComment()
 	{
 
+		$user_id   = $this->input('user_id', 0);
 		$goods_id      = $this->input('goods_id', 0);
 		$type          = $this->input('type', 0);
 		$page_size     = $this->input('page_size', 5);
@@ -909,7 +963,7 @@ class GoodsController extends ApiController
 
 		include_once(ROOT_PATH . '/includes/lib_comment.php');
 
-		$comment_list = get_my_comments($goods_id,$type, $page, $c_tag, $page_size);
+		$comment_list = get_my_comments($goods_id, $type, $page, $c_tag, $page_size, $user_id);
 		//print_r($comment_list['item_list']);
 		$item_list = $comment_list['item_list'];
 		foreach($item_list as $item_k => $item_v){
@@ -961,6 +1015,7 @@ class GoodsController extends ApiController
 
 		$comment_data['rank_num'] = $this->goods->get_comment_rank_num($goods_id);//评价各数量数据
 		$comment_data['goods_tag_num'] = $this->goods->get_comment_goods_tag($goods_id);//评价各数量数据
+		$comment_data['comment_rank_avg'] = $comment_list['comment_rank_avg'];
 		$this->success($comment_data);
 	}
 
@@ -1303,6 +1358,40 @@ class GoodsController extends ApiController
 			$this->success('举报成功');
 		} else {
 			$this->error('您已举报过该商品');
+		}
+	}
+
+	/**
+	 * 商品评论举报
+	 */
+	public function doCommentReport()
+	{
+		if (empty($this->data['user_id'])) {
+			$this->error('请先登录');
+		}
+
+		if (empty($this->data['comment_id'])) {
+			$this->error('缺少必要参数');
+		}
+
+		if (empty($this->data['reason'])) {
+			$this->error('请选择原因');
+		}
+
+		$sql = "SELECT user_id, id_value AS goods_id, content FROM " . $GLOBALS['ecs']->table('comment') . " WHERE comment_id = " . $this->data['comment_id'];
+		$comment_info = $GLOBALS['db']->getRow($sql);
+		$be_user_id = $comment_info['user_id'];
+		$goods_id = $comment_info['goods_id'];
+		$content = $comment_info['content'];
+		if ($be_user_id == $this->data['user_id']) {
+			$this->error('不能举报自己的评论');
+		}
+		
+		$result = $this->goods->do_Comment_Report($this->data['user_id'], $this->data['comment_id'], $this->data['reason'], $this->data['type'], $goods_id, $be_user_id, $content);
+		if ($result) {
+			$this->success('举报成功');
+		} else {
+			$this->error('您已举报过该评价');
 		}
 	}
 

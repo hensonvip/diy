@@ -5661,11 +5661,11 @@ function number($k) {
 }
 
 /**
- * 订单确认收货后设计师佣金结算，增加总销量（未测试）
+ * 订单确认收货后设计师佣金结算，增加总销量（未测试，可能有BUG）
  */
 function commission($order_id = 0) {
     if (!empty($order_id)) {
-        $sql = "SELECT user_id, is_design FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE order_id = '$order_id'";
+        $sql = "SELECT user_id, is_design, money_paid FROM " . $GLOBALS['ecs']->table('order_info') . " WHERE order_id = '$order_id'";
         $order_info = $GLOBALS['db']->getRow($sql);
         // 判断订单是否为设计作品，不是设计作品才执行
         if ($order_info['is_design'] == 0) {
@@ -5697,11 +5697,35 @@ function commission($order_id = 0) {
                     log_account_change($value['user_id'], $commission, 0, 0, 0, '佣金结算', ACT_COMMISSION);
                 }
 
-                /* 增加累计销量 */
+                /* 增加累计销量和销售额 */
                 $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET rank_sale_number = rank_sale_number + $value[goods_number] WHERE user_id = '$order_info[user_id]'";
                 $GLOBALS['db']->query($sql);                
             }
+
+            /* 增加累计销量和销售额 */
+            $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET sale_amount = sale_amount + $order_info[money_paid] WHERE user_id = '$order_info[user_id]'";
+            $GLOBALS['db']->query($sql);
         }
     }    
+}
+
+/**
+ * 添加互动记录
+ * @param  integer $operate_id        操作用户ID
+ * @param  integer $user_id           操作对象用户ID
+ * @param  integer $type              操作类型  1 关注  2 商品点赞  3 商品评论点赞  4 DIY点赞  5 DIY评论点赞 6 商品评论  7 参赛作品评论
+ * @param  integer $object_id         操作对象ID
+ * @return integer                    插入记录ID
+ */
+function interact_log($operate_id = 0, $user_id = 0, $type = 0, $object_id = 0)
+{
+    if(!$operate_id || !$user_id || !$type){
+        return false;
+    }
+
+    $time = gmtime();
+
+    $sql = "INSERT INTO " . $GLOBALS['ecs']->table('interact') . " (object_id, user_id, operate_id, type, add_time) VALUES ('$object_id', '$user_id', '$operate_id', '$type', '$time')";
+    return $GLOBALS['db']->query($sql);
 }
 ?>

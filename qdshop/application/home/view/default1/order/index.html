@@ -18,18 +18,23 @@
                 
                 <div class="p_con1t">
                     <ul class="fix">
-                        <li><span>所有订单</span>
+                        <li>
+                            {foreach name="$state_list" key ="key" item="st" }
+                            {if  $st eq $state }<span>{$key}</span>{/if}
+                            {/foreach}
                             <dl>
-                                <dd class="on">所有订单</dd>
-                                <dd>待付款</dd>
-                                <dd>待发货</dd>
-                                <dd>待收货</dd>
-                                <dd>待评价</dd>
-                                <dd>已完成</dd>
-                                <dd>售后中</dd>
+                                {foreach name="$state_list" key ="key" item="st" }
+                                    <dd {if  $st eq $state }class="on"{/if} data-code="{$st}">{$key}</dd>
+                                {/foreach}
+                                <!--<dd data-code="100">待付款</dd>
+                                <dd data-code="102">待发货</dd>
+                                <dd data-code="106">待收货</dd>
+                                <dd data-code="108">待评价</dd>
+                                <dd data-code="109">已完成</dd>
+                                <dd data-code="117">售后中</dd>-->
                             </dl>
                         </li>
-                        <li><span>近一个月订单</span>
+                        <!--<li><span>近一个月订单</span>
                             <dl>
                                 <dd class="on">近一个月订单</dd>
                                 <dd>近三个月订单</dd>
@@ -38,7 +43,7 @@
                                 <dd>2019年订单</dd>
                                 <dd>2019年以前订单</dd>
                             </dl>
-                        </li>
+                        </li>-->
                     </ul>
                 </div>
 
@@ -328,78 +333,11 @@
                             </tr>-->
                         </tbody>
                     </table>
+                    <i class="base-load"></i>
                 </div>
 
             </div>
-            <div class="p_y">
-                <div class="p_ycon">
-                    <h4>发表评价</h4>
-                    <div class="p_ycons fix">
-
-                        <ul class="fix">
-                            <h5>请至少填写一件商品评价</h5>
-                            <li class="fix">
-                                <div class="p_pic fl">
-                                    <img src="__IMGPC__/refer/p_2.png" alt="">
-                                </div>
-                                <div class="p_word fl">
-                                    <h5 class="fix">KULTE 
-                                        <span><em>评分</em>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <font>0.0</font>
-                                        </span>
-                                    </h5>
-                                    <textarea placeholder="请输入评价内容"></textarea>
-                                </div>
-                            </li>
-
-                            <li class="fix">
-                                <div class="p_pic fl">
-                                    <img src="__IMGPC__/refer/p_2.png" alt="">
-                                </div>
-                                <div class="p_word fl">
-                                    <h5 class="fix">KULTE 
-                                        <span><em>评分</em>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <font>0.0</font>
-                                        </span>
-                                    </h5>
-                                    <textarea placeholder="请输入评价内容"></textarea>
-                                </div>
-                            </li>
-
-                            <li class="fix">
-                                <div class="p_pic fl">
-                                    <img src="__IMGPC__/refer/p_2.png" alt="">
-                                </div>
-                                <div class="p_word fl">
-                                    <h5 class="fix">KULTE 
-                                        <span><em>评分</em>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <i></i>
-                                            <font>0.0</font>
-                                        </span>
-                                    </h5>
-                                    <textarea placeholder="请输入评价内容"></textarea>
-                                </div>
-                            </li>
-                        </ul>
-                        <a href="javascript:;" class="p_pclo nb_t2">发 表</a>
-                    </div>
-                    <div class="p_pclo1"></div>
-                </div>
-            </div>
+            {include file="order/pingjia" }
 		</div>
 	</div>
 </div>
@@ -449,12 +387,12 @@
 </div>
 <div class="ipro_bg"></div>
 <i class="ipro_close"></i>
-<a href="" class="ipro_prev"></a>
-<a href="" class="ipro_next"></a>
+<!--<a href="" class="ipro_prev"></a>
+<a href="" class="ipro_next"></a>-->
 <div class="ipro_popup">
     <div class="ipro_inner">
         <div class="ipro_content">
-            <div class="ipro_wrap top">
+            <!--<div class="ipro_wrap top">
                 <div class="ipro_size">
                     <i class="ipro_back"></i>
                     <div class="ipro_size_box">
@@ -848,7 +786,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
@@ -885,28 +823,14 @@
 <!--footer start-->
 {include file="public/footer" /}
 <!--footer end-->
-{include file="public/user_js_footer" /}
+</body>
+</html>
+<!--js start-->
+{include file="public/footer_js" /}
+<!--js end-->
 <script>
 $(function(){
-    $('.p_tab1 td a.p_pingjia').click(function(){
-        $('html').addClass('enabled pingjia');
-        $('.mem_rcon .p_y').stop(true,true).fadeIn()
-    })
-
-    $('.mem_rcon .p_pclo1').click(function(){
-        $('.mem_rcon .p_y').stop(true,true).fadeOut()
-        $('html').removeClass('enabled pingjia');
-    })
-
-    $('.p_ycons ul').mCustomScrollbar({
-        axis: "y",
-        scrollInertia: 100,
-        scrollButtons: {
-            enable: true,
-            scrollSpeed: 20
-        },
-        theme: "3d"
-    });
+    var page = 2;//翻页
 
     $('.p_con1t li').click(function(){
         if($(this).hasClass('on')){
@@ -914,8 +838,22 @@ $(function(){
             $('.p_con1t li').find('dl').stop(true,true).fadeOut(); 
             $(document).on("click",".p_con1t dd",function(){
                 $(this).parents('dl').stop(true,true).fadeOut();
-            });
+                var state = $(this).attr('data-code');
+                $.ajax({
+                    url:'{:url("Order/index")}',
+                    type:'GET',
+                    data:{state:state,st_ajax:1,page:1},
+                    dataType:'html',
+                    traditional: true,
+                    success:function(data){
+                        console.log(data)
+                        $('.p_tab1 tbody').html(data);
+                        $('.lazybg').lazyload({d: 300, r: 250});
+                        page = 2;
 
+                    }
+                })
+            });
         }else{
             $('.p_con1t li').removeClass('on');
             $(this).addClass('on');
@@ -930,179 +868,127 @@ $(function(){
             });
         }
     })
+
+
+
+/*    //物流信息 mouseover
+    $(document).on('mouseover','.show_wl',function(){
+       var _this = $(this);
+       var sn=_this.attr('data-shipping-sn');//运单号
+       var code=_this.attr('data-code');//快递代号
+
+       /!*if(sn == ''||code ==''){
+           $(this).find('.wl_wrap').html('暂无物流信息');return false;
+       }*!/
+        $.ajax({
+            url:'{:url("Order/kuaidi")}',
+            type:'GET',
+            data:{typeCom:code,typeNu:sn,is_ajax:1},
+            dataType:'html',
+            traditional: true,
+            success:function(data){
+                //console.log(data);
+
+                _this.find('.wl_wrap').html(data);
+                _this.find('.wl_bg').show();
+
+            }
+        })
+    }).mouseout(function (){
+        var _this = $(this);
+        _this.find('.wl_bg').hide();
+    })*/
+
+
+
 });
 </script>
 <script>
-$(function() { //加入购物车动画
-    var cart_is = true;
-    $(".cart_abtn").click(function(event) { 
-        if(cart_is == false){ return false; }
-        var scrollTop = $(window).scrollTop();
-        cart_is = false;
-        $('.cart_abtn i').stop(true,true).css({
-            "left": event.pageX,
-            "top": event.pageY - scrollTop,
-            "opacity": "1",
-            "z-index": "9999"
-        }).animate({
-            "left": $('.cart').offset().left,
-            "top": $('.cart').offset().top - scrollTop,
-            "margin": "0",
-            "width": "50px",
-            "height": "50px",
-            "opacity": "0",
-            "z-index": "-1"
-        }, 1000, 'easeOutQuint',function(){
-            $('.header .state .cart').text(parseInt($('.header .state .cart').text()) + 1);
-            layer.msg('成功添加到购物袋！', {
-                time: 1000,
-            },function(){
-                cart_is = true;
-            });
-        });
-    });
-});
-</script>
-<script>
-    //弹窗代码
-    $(function() {
-        //展开详情
-        var open = false;
-        $(document).on('click', '.p_tab1 td .box1 img,.p_tab1 td .box2 h2', function() {
-            type = 0;
-            $('#fancybox-loading').fadeIn();
-            $('.ipro_bg').show();
-            $('html').addClass('enabled');
-            $('.ipro_tx').show().siblings().hide();
-            $('.ipro_content').removeClass('dpro_content');
-            checkfloat_r();
-            setTimeout(function() {
-                $('.banner-wrap').slick("slickPause");
-                $('.ipro_popup').fadeIn();
-                $('.ipro_slick.slick-slider').slick("unslick");
-                $('.ipro_slick').slick({
-                    autoplay: false,
-                    draggable: false,
-                    fade: true
+    $(function() { //加入购物车动画
+        var cart_is = true;
+        $(".cart_abtn").click(function(event) {
+            if(cart_is == false){ return false; }
+            var scrollTop = $(window).scrollTop();
+            cart_is = false;
+            $('.cart_abtn i').stop(true,true).css({
+                "left": event.pageX,
+                "top": event.pageY - scrollTop,
+                "opacity": "1",
+                "z-index": "9999"
+            }).animate({
+                "left": $('.cart').offset().left,
+                "top": $('.cart').offset().top - scrollTop,
+                "margin": "0",
+                "width": "50px",
+                "height": "50px",
+                "opacity": "0",
+                "z-index": "-1"
+            }, 1000, 'easeOutQuint',function(){
+                $('.header .state .cart').text(parseInt($('.header .state .cart').text()) + 1);
+                layer.msg('成功添加到购物袋！', {
+                    time: 1000,
+                },function(){
+                    cart_is = true;
                 });
-                $('#fancybox-loading').hide();
-                loadpList(0);
-                r_top_bot(1);
-                open = true;
-            }, 2000);
-        });
-
-        //关闭详情
-        $('.ipro_close').click(function() {
-            if(open == false){ return false;}
-            $('.banner-wrap').slick("slickPlay");
-            $('.ipro_popup').animate({ scrollTop: 0 }, 0);
-            $('.ipro_popup,#fancybox-loading').hide();
-            $('.ipro_bg').hide();
-            $('html').removeClass('enabled bottom');
-            setTimeout(function() {
-                checkfloat_r();
-            },200);
-        });
-
-        //详情左边点赞
-        $('.ipro_left .ipro_zan .icon').click(function() {if($(this).parents('.ipro_zan').hasClass('disabled')){ return false; }
-            if ($(this).parents('.ipro_zan').hasClass('on')) {
-                $(this).parents('.ipro_zan').removeClass('on');
-            } else {
-                $(this).parents('.ipro_zan').addClass('on');
-            }
-        });
-
-        var fav_this;
-        //详情左边底下评论点赞举报标记
-        $(document).on('click', '.ipro_com_icon i', function() {
-            if($(this).hasClass('favor')){
-                right_favor = false;
-                if($(this).hasClass('on')){ return false; }
-                fav_this = $(this);
-                $('.rep_bg').fadeIn();
-                $('html').addClass('report');
-                return false;
-            }
-            if ($(this).hasClass('on')) {
-                $(this).removeClass('on');
-                if($(this).hasClass('zan')){
-                    $(this).text(parseInt($(this).text()) - 1);
-                }
-                if($(this).hasClass('comment')){
-                    $(this).parents('li').find('.ipro_com_rbox').fadeOut();
-                    r_top_bot(1);
-                }
-            } else {
-                $(this).addClass('on');
-                if($(this).hasClass('zan')){
-                    $(this).text(parseInt($(this).text()) + 1);
-                }
-                if($(this).hasClass('comment')){
-                    $(this).parents('li').find('.ipro_com_rbox').fadeIn();
-                    r_top_bot(1);
-                }
-            }
-        });
-
-        //举报弹窗（确认）
-        $('.rep_form .rep_sub').click(function() {
-            var _this = $(this);
-            layer.confirm('确定要举报该评论？', {
-                title: false,
-                closeBtn: 0,
-                btn: ['取 消','确 定'] //按钮
-            }, function(){
-                layer.closeAll();
-            }, function(){
-                $('.rep_bg').fadeOut();
-                $('html').removeClass('report');
-                if(right_favor){
-                    fav_right.addClass('on');
-                }else{
-                    fav_this.addClass('on');
-                }
             });
         });
-
-        //举报弹窗（取消）
-        $('.rep_wrap .del').click(function() {
-            $('.rep_bg').fadeOut();
-            $('html').removeClass('report');
-        });
-
-        //右边举报
-        var right_favor = false;
-        var fav_right;
-        $('.ipd_detail .des span.favor').click(function() {
-            if($(this).hasClass('on')){ return false; }
-            $('.rep_bg').fadeIn();
-            $('html').addClass('report');
-            right_favor = true;
-            fav_right = $(this);
-        });
-
-        //详情右边删除购物袋对应商品
-        $('.ipro_right_after .ipd_cadel').click(function() {
-            $('.dc_pr').removeClass('dc_show');
-            $(this).parents('.dc_pr').addClass('dc_show');
-        });
-
-        $('.dc_firm .dc_yes').click(function(event) {
-            $(this).parents('li').remove();
-        });
-
-        //详情右侧点赞
-        $(document).on('click', '.ipd_detail .des span.zan', function(event) {
-            var zan_num = $(this).text();
-            if($(this).hasClass('on')){
-                $(this).removeClass('on');
-                $(this).text(parseInt(zan_num) - 1);
-            }else{
-                $(this).addClass('on');
-                $(this).text(parseInt(zan_num) + 1);
+    });
+</script>
+<script>
+    $(function() {
+        check_move();
+        //列表下拉刷新
+        var p_load = false;
+        $(window).scroll(function () {
+            var winH = $(window).height();
+            var pageH = $(document.body).height();
+            var scrollT = $(window).scrollTop();
+            if('{$pager.count}'){
+                var count ="{$pager.count}";
+            }
+            console.log(count);
+            //console.log($('.p_con1b').children(".order_list").length);
+            // 如果滚动条到达底部就获取新数据追加到容器
+            if ($(document).scrollTop() >= $(document).height() - $(window).height() && p_load == false) {
+                $('.base-load').addClass('show');
+                p_load = true;
+                if ($('.p_con1b_ti').length >= count) {
+                    setTimeout(function () {
+                        $('.base-load').removeClass('show');
+                        check_move();
+                        p_load = false;
+                        //layer.msg("没有更多数据了");
+                    }, 2000);
+                    return false;
+                }
+                $.ajax({
+                    type: 'GET',
+                    url: "{:url('Order/index')}",
+                    data: {is_ajax: 1, page: page},
+                    dataType: 'html',
+                    success: function (result) {
+                        page++;
+                        console.log(result);
+                        $('.p_tab1 tbody ').append(result);
+                        $('.base-load').removeClass('show');
+                        check_move();
+                        p_load = false;
+                        $('.lazybg').lazyload({d: 300, r: 250});
+                        //}, 2000);
+                    }
+                });
             }
         });
-    });
+
+
+
+        function check_move() {
+            var scrollTop = $(window).scrollTop();
+            $('.i_plist li').each(function (index, el) {
+                if (scrollTop > $(this).offset().top - $(window).height()) {
+                    $(this).addClass('in-view');
+                }
+            });
+        }
+    })
 </script>

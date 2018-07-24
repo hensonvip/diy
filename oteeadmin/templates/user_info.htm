@@ -112,6 +112,14 @@
                 </select>
             </div>
         </div>
+        <!--是否推荐-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否推荐</label>
+            <div class="layui-input-block">
+                <input type="radio" {if $user['is_recommend'] eq 1}checked{/if} value="1" title="是" name="is_recommend">
+                <input type="radio" {if $user['is_recommend'] eq 0}checked{/if} value="0" title="否" name="is_recommend">
+            </div>
+        </div>
         <!--性别-->
         <div class="layui-form-item">
             <label class="layui-form-label">{$lang.gender}</label>

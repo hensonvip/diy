@@ -531,6 +531,9 @@ function get_originalitylist()
         $collect_start_time = $time['collect_start_time'];
         $collect_end_time = $time['collect_end_time'];
 
+        $vote_start_time = $time['vote_start_time'];
+        $vote_end_time = $time['vote_end_time'];
+
         /* 列表总数 */
         $sql = 'SELECT count(*) '.
             'FROM ' .$GLOBALS['ecs']->table('diy_record'). 'dr LEFT JOIN '.$GLOBALS['ecs']->table('diy_info').' di ON dr.record_id = di.record_id WHERE dr.state = 2 AND dr.originality_id = '.$filter['oid']. $where;
@@ -539,7 +542,7 @@ function get_originalitylist()
         $filter = page_and_size($filter);
 
         /* 获取列表数据 */
-        $sql = 'SELECT u.user_name as nickname,dr.record_id as record_id,di.click_count as watch,di.describe as describes,di.title as `title`,di.design_img as `img`,di.add_time as add_time,dr.state as state,COUNT(if(v.add_time >= '.$collect_start_time.' AND v.add_time <= '.$collect_end_time.',v.vote_id,null)) as vote_num '.
+        $sql = 'SELECT u.user_name as nickname,dr.record_id as record_id,di.click_count as watch,di.describe as describes,di.title as `title`,di.design_img as `img`,di.add_time as add_time,dr.state as state,COUNT(if(v.add_time >= '.$vote_start_time.' AND v.add_time <= '.$vote_end_time.',v.vote_id,null)) as vote_num '.
             'FROM ' .$GLOBALS['ecs']->table('diy_record'). ' dr LEFT JOIN '.$GLOBALS['ecs']->table('diy_info').
             ' di ON dr.record_id = di.record_id LEFT JOIN '.$GLOBALS['ecs']->table('users').
             ' u ON u.user_id = dr.user_id LEFT JOIN '.$GLOBALS['ecs']->table('diy_vote').' v ON v.record_id = dr.record_id   WHERE dr.state = 2 AND dr.originality_id = '.$filter['oid'].' group by dr.record_id '.$where.' ORDER by '.$filter['sort_by'].' '.$filter['sort_order'];

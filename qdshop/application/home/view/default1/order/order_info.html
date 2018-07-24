@@ -1,0 +1,318 @@
+<div class="mem_right">
+    <div class="mem_rtit">我的订单</div>
+    <div class="mem_rcon">
+
+        <div class="p_con2">
+            <div class="p_con2t">
+                {if !empty($data.status_code)}
+                <span><em><img src="__IMGPC__/refer/{if $data.status_code eq 1}p_i7{elseif $data.status_code eq 2 }p_i5{elseif $data.status_code eq 3 }p_i4{elseif $data.status_code eq 4 }p_i1{elseif $data.status_code eq 5 }p_i6{/if}.png" alt=""></em>{$data.status}</span>
+                {else}
+                <span><em><img src="__IMGPC__/refer/p_i9.png" alt=""></em>{$data.status}</span>
+                {/if}
+                <!--<span><em><img src="__IMGPC__/refer/p_i6.png" alt=""></em>待发货</span>
+                <span><em><img src="__IMGPC__/refer/p_i5.png" alt=""></em>待收货</span>
+                <span><em><img src="__IMGPC__/refer/p_i4.png" alt=""></em>待评价</span>
+                <span><em><img src="__IMGPC__/refer/p_i1.png" alt=""></em>已完成</span>-->
+            </div>
+
+            <div class="p_con2b">
+                <div class="p_desc1">
+                    <ul class="fix">
+                        <li>
+                            <p>订单号<span class="order_number">{$data.order_sn}</span></p>
+                        </li>
+                        <!--<li>
+                            <p>订单状态<span>待评价</span></p>
+                        </li>-->
+                        <li>
+                            <p>创建时间<span>{$data.add_time}</span></p>
+                        </li>
+                        {if !empty($data.status_code)}
+                        {if $data.status_code eq 1}
+                        {elseif $data.status_code eq 5 }
+                        <li>
+                            <p>付款时间<span>{$data.pay_time}</span></p>
+                        </li>
+                        {elseif $data.status_code eq 2 }
+                        <li>
+                            <p>付款时间<span>{$data.pay_time}</span></p>
+                        </li>
+                        <li>
+                            <p>发货时间<span>{$data.shipping_time}</span></p>
+                        </li>
+                        {elseif $data.status_code eq 4 }
+                        <li>
+                            <p>付款时间<span>{$data.pay_time}</span></p>
+                        </li>
+                        <li>
+                            <p>发货时间<span>{$data.shipping_time}</span></p>
+                        </li>
+                        <li>
+                            <p>成交时间<span>{$data.add_time}</span></p>
+                        </li>
+                        {elseif $data.status_code eq 3 }
+                        <li>
+                            <p>付款时间<span>{$data.pay_time}</span></p>
+                        </li>
+                        <li>
+                            <p>发货时间<span>{$data.shipping_time}</span></p>
+                        </li>
+                        <li>
+                            <p>成交时间<span>{$data.add_time}</span></p>
+                        </li>
+                        {/if}
+                        {/if}
+
+                    </ul>
+                    <ul class="fix">
+                        <li>
+                            <p>
+                            {if $data.chat}
+                                {if $data.chat.0.cus_type eq 0}
+                                <a class="p_i1" title="点击这里给我发消息" alt="点击这里给我发消息" href="http://wpa.qq.com/msgrd?v=3&uin={$data.chat.0.cus_no}&site=qq&menu=yes" target="_blank">
+                                {else}
+                                <a class="p_i1" title="点击这里给我发消息" alt="点击这里给我发消息" href="http://amos1.taobao.com/msg.ww?v=2&uid={$data.chat.0.cus_no}&s=2" target="_blank">
+                                {/if}
+                            {else}
+                                <a href="javascript:;" onclick="noChat()">
+                            {/if}
+                                </a>
+                            </p>
+                        </li>
+                        {if !empty($data.status_code)}
+                        {if $data.status_code eq 1}
+                        <li class="fr p_sh">
+                            <p>30分钟后，订单自动取消
+                                <a href="javascript:void (0);" class="p_no nb_t3 cancel_order">取消订单</a>
+                                <a href="javascript:void (0);" class="p_yes pay_order">立即付款</a>
+                            </p>
+                        </li>
+                        {elseif $data.status_code eq 5 }
+                       <!-- <li class="p_pj fr">
+                            <p><a href="javascript:void (0)" class="">申请退款</a></p>
+                        </li>-->
+                        {elseif $data.status_code eq 2 }
+                        <li class="fr p_sh">
+                            <p>7天后，订单自动确认
+                                <!--<a href="#" class="p_no nb_t3">申请退换货</a>-->
+                                <a href="javascript:void (0);" class="p_yes arrived_info">确认收货</a>
+                            </p>
+                        </li>
+                        {elseif $data.status_code eq 3 }
+                        <li class="p_pj fr">
+                            <p><a href="javascript:void (0);" class="p_pjs">评 价</a></p>
+                        </li>
+                        {elseif $data.status_code eq 4 }
+
+                        {/if}
+
+                        {/if}
+                    </ul>
+                </div>
+                {if isset($data.kuaidi)||!empty($data.kuaidi)}
+                <div class="p_desc4">
+                    <div class="p_desc4b p_mt38">
+                        <ul>
+                            <li>
+                                <div class="p_ct">
+                                    <h4>物流信息</h4>
+                                </div>
+                                <div class="p_cb">
+                                    <dl class="fix">
+                                        <dd>
+                                            <p>物流状态<span>{$data.kuaidi.state}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>物流公司<span>{$data.kuaidi.com}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>运单编号<span>{$data.kuaidi.nu}</span></p>
+                                        </dd>
+                                        <a href="javascript:;" class="fr p_look nb_t1 p_btn">物流跟踪</a>
+                                    </dl>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="p_wl p_wls">
+                            {foreach name="$data.kuaidi.data" item="kd"}
+                            <ul class="fix">
+                                <li class="fix">
+                                    <span>{$kd.time}</span>
+                                    <span class="last">{$kd.context}</span>
+                                </li>
+                            </ul>
+                            {/foreach}
+                        </div>
+                        <!--<div class="p_wl p_wls">
+                            <ul class="fix">
+                                <li class="fix">
+                                    <span>2017-06-05</span>
+                                    <span class="p_color">周一</span>
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">上饶余干县 的 余干二部 已揽件</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+                            </ul>
+
+                            <ul class="fix">
+                                <li class="fix">
+                                    <span>2017-06-05</span>
+                                    <span class="p_color">周一</span>
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">上饶余干县 的 余干二部 已揽件</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+                                <li class="fix">
+                                    <span>15:22:49</span>
+                                    <span class="last">卖家发货</span>
+                                </li>
+                            </ul>
+                        </div>-->
+                    </div>
+                </div>
+                {/if}
+                <div class="p_desc2 ">
+                    <table class="p_tab2">
+                        <thead>
+                        <th>商品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>金额  </th>
+                        </thead>
+                        <tbody>
+                        {foreach name="$data.goods" item="g"}
+                        <tr>
+                            <td>
+                                <div class="box box1" data-id ="{$g.goods_id}"><img class="lazybg" data-lazyload-img="/{$g.goods_thumb}"></div>
+                                <div class="box box2">
+                                    <h2 data-id ="{$g.goods_id}">{$g.goods_name}</h2>
+                                    <div class="icon_list">
+                                        <div class="icon icon1" style="background-image: url(/{$g.attr_icon});"></div>
+                                        <div class="icon icon2" style="background-color: #{$g.attr_color}};"></div>
+                                        <div class="icon icon3">{$g.attr_size}</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>￥{$g.goods_price}</td>
+                            <td>{$g.total}</td>
+                            <td>￥{$g.unit_price}</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p_desc3">
+                    <div class="p_desc3_con">
+                        <p class="fix"><em class="fl">因商品为限量定制产品，如非发错货或质量问题，不支持退换货。</em> <span>{$data.totals} 件商品</span> 合计<font>￥{$data.price}</font></p>
+                        <p> 运费<font>-￥{$data.shipping_fee}</font></p>
+                        <p> 活动优惠<font>-￥{$data.discount}</font></p>
+                        <p> 使用优惠券<font>￥{$data.bonus}</font></p>
+                        <p> 实付款（含运费）<font>￥{$data.order_amount}</font></p>
+                    </div>
+                </div>
+
+                <div class="p_desc4">
+
+                    <div class="p_desc4t">
+                        <h4>备注</h4>
+                        <p>{$data.postscript}</p>
+                    </div>
+
+                    <div class="p_desc4b">
+                        <ul>
+                            <li>
+                                <div class="p_ct">
+                                    <h4>收货人信息</h4>
+                                </div>
+                                <div class="p_cb">
+                                    <dl class="fix">
+                                        <dd>
+                                            <p>收货人姓名<span>{$data.consignee}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>联系电话<span>{$data.mobile}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>收货地址<span>{$data.address}</span></p>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </li>
+
+
+                            <li>
+                                <div class="p_ct">
+                                    <h4>发票信息</h4>
+                                </div>
+
+                                <div class="p_cb">
+                                    <dl class="fix">
+                                        {if $data.invoice.inv_type neq ''}
+                                        <dd>
+                                            <p>发票类型<span>{$data.invoice.inv_type_name}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>发票抬头<span>{$data.invoice.inv_payee_type_name}-{$data.invoice.inv_payee}</span></p>
+                                        </dd>
+
+                                        <dd>
+                                            <p>发票内容<span>{$data.invoice.inv_content}</span></p>
+                                        </dd>
+                                        {else}
+                                        <dd>
+                                            <p><span>暂无发票信息</span></p>
+                                        </dd>
+                                        {/if}
+                                    </dl>
+                                </div>
+
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {include file="order/pingjia" }
+    </div>
+</div>

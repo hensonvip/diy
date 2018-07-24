@@ -13,7 +13,7 @@ if (!defined('IN_ECS'))
  * 获取评论
  * @param  integral  $page_size 接口使用，每页显示的数量，有传值就以这个为主 add by qinglin 2017.09.06
  */
-function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0)
+function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0, $user_id)
 {
 	$res = $GLOBALS['db']->getAll("SELECT * FROM ".$GLOBALS['ecs']->table('goods_tag')." WHERE goods_id = '$goods_id' AND state = 1");	
 	$tags = array();
@@ -23,6 +23,8 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 	}
 	$where = ' AND 1 ';
 	$item_list = array();
+	$sql = "SELECT FLOOR(AVG(comment_rank)) AS comment_rank_avg FROM ".$GLOBALS['ecs']->table('comment')." WHERE id_value = '$goods_id' AND status = 1 AND comment_rank > 0";
+	$comment_rank_avg = $GLOBALS['db']->getOne($sql);
 	if ($type != 4)
 	{
 		if ($type == 1)
@@ -58,7 +60,7 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 		
 		$page_count = ($count > 0) ? intval(ceil($count / $size)) : 1;
 	
-		$sql = "SELECT c.*, u.headimg, s.shaidan_id, s.status AS shaidan_status FROM ".$GLOBALS['ecs']->table('comment')." AS c 
+		$sql = "SELECT c.*, u.headimg, u.sex, s.shaidan_id, s.status AS shaidan_status FROM ".$GLOBALS['ecs']->table('comment')." AS c 
 				LEFT JOIN ".$GLOBALS['ecs']->table('users')." AS u ON c.user_id=u.user_id
 				LEFT JOIN ".$GLOBALS['ecs']->table('shaidan')." AS s ON c.rec_id=s.rec_id
 				WHERE c.id_value = '$goods_id' AND c.status = 1 AND c.comment_rank > 0 $where ORDER BY c.add_time DESC";
@@ -72,9 +74,10 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 													   LEFT JOIN ".$GLOBALS['ecs']->table('order_goods')." AS og ON o.order_id=og.order_id
 													   WHERE og.rec_id = '$row[rec_id]'");
 			
-			$row['add_time_str'] = local_date("Y-m-d", $row['add_time']);
-			$row['buy_time_str'] = local_date("Y-m-d", $row['buy_time']);
+			$row['add_time_str'] = local_date("Y-m-d H:i:s", $row['add_time']);
+			$row['buy_time_str'] = local_date("Y-m-d H:i:s", $row['buy_time']);
 			$row['user_rank'] = get_user_rank($row['user_id']);
+			$row['headimg'] = !empty($row['headimg']) ? str_replace("./../","",$row['headimg']) : 'data/default/sex'.$row['sex'].'.png';//头像
 			if ($row['shaidan_id'] > 0 && $row['shaidan_status'] == 1)
 			{
 				$row['shaidan_imgs'] = $GLOBALS['db']->getAll("SELECT * FROM ".$GLOBALS['ecs']->table('shaidan_img')." WHERE shaidan_id = '$row[shaidan_id]'");
@@ -94,6 +97,10 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 			
 			$parent_res = $GLOBALS['db']->getAll("SELECT * FROM ".$GLOBALS['ecs']->table('comment')." WHERE parent_id = '$row[comment_id]'");	
 			$row['comment_reps'] = $parent_res;
+
+			// 点赞数
+			$row['comment_zan'] = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM ".$GLOBALS['ecs']->table('comment_zan')." WHERE comment_id = '$row[comment_id]'");
+			$row['has_zan'] = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM ".$GLOBALS['ecs']->table('comment_zan')." WHERE comment_id = '$row[comment_id]' AND user_id = '$user_id'");
 			
 			$item_list[] = $row;
 		}
@@ -101,6 +108,7 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 		
 		$arr = array();
 		$arr['item_list'] = $item_list;
+		$arr['comment_rank_avg'] = $comment_rank_avg;
 		$arr['page'] = $page;
 		$arr['count'] = $count;
 		$arr['size'] = $size;
@@ -119,7 +127,7 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 		$size  = 20;
 		$page_count = ($count > 0) ? intval(ceil($count / $size)) : 1;
 	
-		$sql = "SELECT s.*, u.user_name, u.headimg, c.comment_tag, c.comment_rank, c.comment_id FROM ".$GLOBALS['ecs']->table('shaidan')." AS s 
+		$sql = "SELECT s.*, u.user_name, u.headimg, u.sex, c.comment_tag, c.comment_rank, c.comment_id FROM ".$GLOBALS['ecs']->table('shaidan')." AS s 
 				LEFT JOIN ".$GLOBALS['ecs']->table('users')." AS u ON s.user_id=u.user_id
 				LEFT JOIN ".$GLOBALS['ecs']->table('comment')." AS c ON c.rec_id=s.rec_id
 				WHERE s.goods_id = '$goods_id' AND s.status = 1 ORDER BY s.add_time DESC";
@@ -130,10 +138,11 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 			$row_n = $GLOBALS['db']->getRow("SELECT o.add_time as buy_time,og.goods_attr as goods_attr FROM ".$GLOBALS['ecs']->table('order_info')." AS o
 													   LEFT JOIN ".$GLOBALS['ecs']->table('order_goods')." AS og ON o.order_id=og.order_id
 													   WHERE og.rec_id = '$row[rec_id]'");
-			$row['add_time_str'] = local_date("Y-m-d", $row['add_time']);
-			$row['buy_time_str'] = local_date("Y-m-d", $row_n['buy_time']);
+			$row['add_time_str'] = local_date("Y-m-d H:i:s", $row['add_time']);
+			$row['buy_time_str'] = local_date("Y-m-d H:i:s", $row_n['buy_time']);
 			$row['user_rank'] = get_user_rank($row['user_id']);
 			$row['goods_attr'] = $row_n['goods_attr'];
+			$row['headimg'] = !empty($row['headimg']) ? str_replace("./../","",$row['headimg']) : 'data/default/sex'.$row['sex'].'.png';//头像
 			if ($row['shaidan_id'] > 0)
 			{
 				$row['shaidan_imgs'] = $GLOBALS['db']->getAll("SELECT * FROM ".$GLOBALS['ecs']->table('shaidan_img')." WHERE shaidan_id = '$row[shaidan_id]'");	
@@ -153,6 +162,10 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 			{
 				$parent_res = $GLOBALS['db']->getAll("SELECT * FROM ".$GLOBALS['ecs']->table('comment')." WHERE parent_id = '$row[comment_id]'");	
 				$row['comment_reps'] = $parent_res;
+
+				// 点赞数
+				$row['comment_zan'] = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM ".$GLOBALS['ecs']->table('comment_zan')." WHERE comment_id = '$row[comment_id]'");
+				$row['has_zan'] = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM ".$GLOBALS['ecs']->table('comment_zan')." WHERE comment_id = '$row[comment_id]' AND user_id = '$user_id'");
 			}
 			$item_list[] = $row;
 		}
@@ -160,6 +173,7 @@ function get_my_comments($goods_id, $type = 0, $page = 1, $c_tag, $page_size = 0
 		
 		$arr = array();
 		$arr['item_list'] = $item_list;
+		$arr['comment_rank_avg'] = $comment_rank_avg;
 		$arr['page'] = $page;
 		$arr['count'] = $count;
 		$arr['size'] = $size;

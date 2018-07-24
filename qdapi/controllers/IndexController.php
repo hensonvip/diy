@@ -264,8 +264,8 @@ class IndexController extends ApiController
 		$get_content = curl_exec($curl);
 
 		$arr = json_decode($get_content,true);
-		$arr['com'] = array_search($arr['com'], $wuliu);
-		$arr['state'] = $wuliu_state[$arr['state']];
+		$arr['com'] = array_search($arr['com'], $wuliu);//快递公司
+		$arr['state'] = $wuliu_state[$arr['state']];//状态
 		unset($arr['status']);
 		unset($arr['condition']);
 		unset($arr['ischeck']);
@@ -316,7 +316,6 @@ class IndexController extends ApiController
 	 * 搜索价格列表
 	 */
 	public function getPrice(){
-		$brands = $this->input('brand_id');
 		$sql = "SELECT distinct sale_price FROM " . $GLOBALS['ecs']->table('user_rank') . " ORDER BY sale_price ASC";
 		$list = $GLOBALS['db']->getCol($sql);
 		$this->success($list);

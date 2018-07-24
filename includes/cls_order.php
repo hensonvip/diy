@@ -1041,11 +1041,11 @@ class cls_order{
 		}
 
 		//订单一旦确认，不允许用户取消
-		if ( $order['order_status'] == OS_CONFIRMED)
+		/*if ( $order['order_status'] == OS_CONFIRMED)
 		{
 			$return['message'] = $GLOBALS['_LANG']['current_os_already_confirmed'];
 			return $return;
-		}
+		}*/
 
 		// 发货状态只能是“未发货”
 		if ($order['shipping_status'] != SS_UNSHIPPED)

@@ -124,4 +124,16 @@ class CategoryController extends ApiController
 	{
 		$this->logger->writeLog($msg, $level, 'category');
 	}
+
+	/* 获取指定用户商品分类 */
+	public function getUserCat()
+	{
+		$designer_id = $this->input('designer_id', 0, 'intval');
+		if(!$designer_id){
+			$this->error('缺少必要参数！');
+		}
+
+		$category_list = $this->category->get_User_Cat($designer_id);
+		$this->success($category_list);
+	}
 }

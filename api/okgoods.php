@@ -2,7 +2,6 @@
 define('IN_ECS', true);
 require('../includes/init.php');
 require_once( '../includes/lib_order.php');
-
 // 自动确认收货
 $okg = $GLOBALS['db']->getAll("select order_id, add_time,shipping_time from " . $GLOBALS['ecs']->table('order_info') . " where shipping_status = 1 and order_status in(1,5,6)");
 $okgoods_time = $GLOBALS['db']->getOne("select value from " . $GLOBALS['ecs']->table('shop_config') . " where code='okgoods_time'");
@@ -64,7 +63,7 @@ if(!empty($okb)){
 
 
 // 自动取消退货/维修（退货/维修买家发货期限）
-/*$delback_time = $GLOBALS['db']->getOne("select value from " . $GLOBALS['ecs']->table('shop_config') . " where code='delback_time'");
+$delback_time = $GLOBALS['db']->getOne("select value from " . $GLOBALS['ecs']->table('shop_config') . " where code='delback_time'");
 $back_goods = $GLOBALS['db']->getAll("select back_id, add_time, invoice_no, shipping_id from " . $GLOBALS['ecs']->table('back_order') . " where status_back < 5");
 if(!empty($back_goods)){
 	foreach ($back_goods as $bgoods_list)
@@ -79,7 +78,7 @@ if(!empty($back_goods)){
 			}
 		}
 	}
-}*/
+}
 
 
 // 虚拟商品自动下架

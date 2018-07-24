@@ -89,6 +89,12 @@
     <td><div align="right"><strong>运单号：</strong></div></td>
     <td>{$back_order.invoice_no}</td>
   </tr>
+    <tr>
+        <td><div align="right"><strong>换回商品所用快递：</strong></div></td>
+        <td>{$back_order.back_shipping_name|escape}</td>
+        <td><div align="right"><strong>运单号：</strong></div></td>
+        <td>{$back_order.back_invoice_no}</td>
+    </tr>
 	<tr>
     <td><div align="right"><strong>图片：</strong></div></td>
     <td colspan=3>
@@ -166,7 +172,7 @@
  <td>{$goods_info.goods_id}</td>
  <td>{$goods_info.product_id}</td>
  <td>{$goods_info.goods_attr}</td>
- <td colspan=3>{$goods_info.send_number}</td>
+ <td colspan=3>{$goods_info.goods_number}</td>
  </tr>
  {/foreach}
 </table>
@@ -201,13 +207,13 @@
 	    {if $back_order.back_type eq 3}维修{/if}
 	    {if $back_order.back_type eq 4}退款（无需退货）{/if}	
 	</td>
-	<td>{if $back_order.back_type eq 1}{$goods.back_goods_money}{/if}</td>
+	<td>{if $back_order.back_type eq 1}{$goods.back_goods_money}{else}{$goods.back_goods_price}{/if}</td>
     <td><div align="left">{$goods.back_goods_number}</div></td>
   </tr>
   {/foreach}
   {if $back_order.back_type eq 4}
   <tr>
-  <td colspan="7"><strong>此单为整单退款，订单已付金额（应退金额）：{$back_order.money_paid}</strong></td>
+  <td colspan="7" style="display: none"><strong>此单为整单退款，订单已付金额（应退金额）：{$back_order.money_paid}</strong></td>
   </tr>
   {/if}
 </table>
@@ -240,7 +246,7 @@
 			<input name="confirm" type="submit" value="收到用户寄回商品" class="layui-btn" />
 			{/if} 
 			{if $operable_list.backshipping && $back_order.back_type neq 4 && $back_order.status_back eq 1 && ($back_order.status_refund eq 0 || $back_order.status_refund eq 9)}
-			<!--<input name="backshipping" type="submit" class="layui-btn" value="换出商品寄出" />-->
+			<input name="backshipping" type="submit" class="layui-btn" value="换出商品寄出" />
 			{/if}
 			{if ($back_order.back_type eq 4 || ($back_order.back_type eq 1 && ($back_order.status_back eq 1 || $back_order.status_back eq 2))) && ($back_order.status_refund eq 0 || $back_order.status_refund eq 9)}
 			<input name="refund" type="submit" value="去退款" class="layui-btn" />

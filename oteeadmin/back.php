@@ -32,10 +32,9 @@ if ($_REQUEST['act'] == 'back_list')
 {
     /* 检查权限 */
     admin_priv('back_view');
-
     /* 查询 */
     $result = back_list();
-    
+
 	if(intval($_REQUEST['supp']) > 0){
     	$suppliers_list = get_supplier_list();
     	$smarty->assign('supp_list',   $suppliers_list);
@@ -68,7 +67,7 @@ elseif ($_REQUEST['act'] == 'back_query')
     admin_priv('back_view');
 
     $result = back_list();
-    
+
 	if(intval($_REQUEST['supp']) > 0){
     	$suppliers_list = get_supplier_list();
     	$smarty->assign('supp_list',   $suppliers_list);
@@ -167,17 +166,17 @@ elseif ($_REQUEST['act'] == 'back_info')
             "WHERE o.order_id = '" . $back_order['order_id'] . "'";
     $back_order['region'] = $db->getOne($sql);
 
-    
+
 
     /* 取得退换货商品 */
-    $goods_sql = "SELECT * FROM " . $ecs->table('back_goods') . 
+    $goods_sql = "SELECT * FROM " . $ecs->table('back_goods') .
 		" WHERE back_id = " . $back_order['back_id']." order by back_type asc";
 	$res_list = $GLOBALS['db']->query($goods_sql );
     $goods_list = array();
 	while ($row_list = $db->fetchRow($res_list))
 	{
 		$row_list['back_type_name'] = $back_type_arr[$row_list['back_type']];
-		$row_list['back_goods_money'] = price_format($row_list['back_goods_price'] * $row_list['back_goods_number'], false);
+		$row_list['back_goods_money'] = price_format($row_list['back_goods_price'], false);
 		$goods_list[] = $row_list;
 	}
 
@@ -193,7 +192,7 @@ elseif ($_REQUEST['act'] == 'back_info')
             }
         }
     }
-	
+
 	$back_order['country_name'] = $db->getOne("SELECT region_name FROM ".$ecs->table('region')." WHERE region_id = '$back_order[country]'");
 	$back_order['province_name'] = $db->getOne("SELECT region_name FROM ".$ecs->table('region')." WHERE region_id = '$back_order[province]'");
 	$back_order['city_name'] = $db->getOne("SELECT region_name FROM ".$ecs->table('region')." WHERE region_id = '$back_order[city]'");
@@ -206,7 +205,7 @@ elseif ($_REQUEST['act'] == 'back_info')
     $smarty->assign('exist_real_goods', $exist_real_goods);
     $smarty->assign('goods_list', $goods_list);
     $smarty->assign('back_id', $back_id); // 发货单id
-    
+
 	 /* 取得能执行的操作列表 */
 	$operable_list = operable_list($back_order);
     $smarty->assign('operable_list', $operable_list);
@@ -223,18 +222,18 @@ elseif ($_REQUEST['act'] == 'back_info')
         $act_list[] = $row_act;
     }
     $smarty->assign('action_list', $act_list);
-	
-	
+
+
 	/* 回复留言图片 */
 	$res = $db->getAll("SELECT * FROM ".$ecs->table('back_replay')." WHERE back_id = '$back_id' ORDER BY add_time ASC");
 	foreach ($res as $value)
 	{
 		$value['add_time'] = local_date($GLOBALS['_CFG']['time_format'], $value['add_time']);
-		$back_replay[] = $value;	
+		$back_replay[] = $value;
 	}
 	if ($back_order['imgs'])
 	{
-		$imgs = explode(",",$back_order['imgs']);	
+		$imgs = explode(",",$back_order['imgs']);
 	}
 	$smarty->assign('imgs', $imgs);
 	$smarty->assign('back_replay', $back_replay);
@@ -251,7 +250,7 @@ elseif ($_REQUEST['act'] == 'back_info')
 elseif ($_REQUEST['act'] == 'operate')
 {
     /* 检查权限 */
-    admin_priv('back_view');	
+    admin_priv('back_view');
 	$back_id   = intval(trim($_REQUEST['back_id']));        // 退换货订单id
 	$action_note    = isset($_REQUEST['action_note']) ? trim($_REQUEST['action_note']) : '';
 
@@ -261,9 +260,49 @@ elseif ($_REQUEST['act'] == 'operate')
 	 /* 通过申请 */
     if (isset($_POST['ok']))
     {
-		  $status_back='5';
-		  update_back($back_id, $status_back, $status_refund);
-          back_action($back_id, 0, $order['status_refund'],  $action_note);
+        $status_back='5';
+        //通过申请，是否退还优惠
+        $nowtime=gmtime();
+        $sql = "SELECT u.bonus_id,b.type_money,b.min_goods_amount,b.use_start_date,b.use_end_date " .
+            " FROM " . $GLOBALS['ecs']->table('user_bonus') . " AS u ," .
+            $GLOBALS['ecs']->table('bonus_type') . " AS b" .
+            " WHERE u.bonus_type_id = b.type_id  AND u.order_id={$order['order_id']} AND b.use_end_date > $nowtime ";
+        $bonus = $GLOBALS['db']->getRow($sql);
+        if ($bonus){
+            $order_goods_num = $GLOBALS['db']->getOne("SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_goods') ." WHERE order_id = " . $order['order_id'] . " ");
+            if ($order_goods_num > 0) {
+                if ($order['goods_id'] > 0) {
+                    $order_all = 0;  //单件退款或退货
+                } else {
+                    $order_all = 1;  //整单退款或退货
+                }
+            } else {
+                $order_all = 1;
+            }
+            $is_back_bonus=false;
+            if ($order_all==1){
+                //整单 直接退还
+                $is_back_bonus=true;
+            }else{
+                //算出该订单可退总金额
+                $sql = " SELECT SUM(refund_money_1) FROM " . $GLOBALS['ecs']->table('back_order') . " WHERE  order_id = {$order['order_id']} AND status_back < 5 AND back_type  in (1,4) ";
+                $apply_back_order_money = $GLOBALS['db']->getOne($sql);//已经在申请退款的金额
+                //计算订单商品总额
+                $order_goods_amount=$GLOBALS['db']->getOne(" SELECT goods_amount FROM ".$GLOBALS['ecs']->table('order_info')." WHERE order_id={$order['order_id']}");
+                $can_back_order_money = $order_goods_amount - $apply_back_order_money;//订单的商品总退款-已经申请的退款=剩下可退的
+                if ($bonus['min_goods_amount'] > $can_back_order_money - $order['refund_money_1'])//剩下可退的-当前申请的=成功之后的剩下的
+                {
+                    $is_back_bonus=true;
+                }
+            }
+            if ($is_back_bonus){
+                //退还操作
+                $sql = "UPDATE ".$GLOBALS['ecs']->table('user_bonus'). " SET used_time = 0,order_id = 0 WHERE bonus_id = {$bonus['bonus_id']} ";
+                $row=$GLOBALS['db']->query($sql);
+            }
+        }
+        update_back($back_id, $status_back, $status_refund);
+        back_action($back_id, 0, $order['status_refund'],  $action_note);
     }
 
 	 /* 拒绝申请 */
@@ -293,7 +332,7 @@ elseif ($_REQUEST['act'] == 'operate')
         //支付金额
         $money_paid = $GLOBALS['db']->getOne("SELECT money_paid FROM " .$GLOBALS['ecs']->table('order_info'). " where order_id = '$refund[order_id]'");
         $smarty->assign('money_paid', $money_paid);
-        
+
 		assign_query_info();
         $smarty->display('back_refund.htm');
 		exit;
@@ -301,9 +340,25 @@ elseif ($_REQUEST['act'] == 'operate')
 	 /* 换出商品寄回 */
     if (isset($_POST['backshipping']))
     {
-		  $status_back='2';
-		  update_back($back_id, $status_back, $status_refund);
-          back_action($back_id, $status_back, $order['status_refund'],  $action_note);
+        $smarty->assign('ur_here', '添加换回商品快递信息');
+        $display1 = array('pups');//门店自提
+        $display2 = array('tc_express');//同城快递
+        $modules = read_modules('../includes/modules/shipping');
+        $list = array();
+        for ($i = 0; $i < count($modules); $i++) {
+            if (!(in_array($modules[$i]['code'], $display1) || in_array($modules[$i]['code'], $display2))) {
+                /* 检查该插件是否已经安装 */
+                $sql = "SELECT shipping_id,shipping_name,shipping_code FROM " . $GLOBALS['ecs']->table('shipping') . " WHERE shipping_code='" . $modules[$i]['code'] . "' and supplier_id=0 ORDER BY shipping_order";
+                $row = $GLOBALS['db']->GetRow($sql);
+                if ($row) {
+                    $list[] = $row;
+                }
+            }
+        }
+        $smarty->assign('back_id', $back_id);
+        $smarty->assign('shipping_list', $list);
+        $smarty->display('back_shipping.htm');
+        exit;
     }
 	 /* 完成退换货 */
     if (isset($_POST['backfinish']))
@@ -328,12 +383,12 @@ elseif ($_REQUEST['act'] == 'operate')
 elseif ($_REQUEST['act'] == 'operate_refund')
 {
 	 /* 检查权限 */
-    admin_priv('back_view');	
+    admin_priv('back_view');
 	$status_refund = '1';
 	$back_id   = intval(trim($_REQUEST['back_id']));        // 退换货订单id
 	$action_note    = isset($_REQUEST['action_note']) ? trim($_REQUEST['action_note']) : '';
 	$order = back_order_info($back_id);
-	
+
 	$refund_money_2 = $_REQUEST['refund_money_2'] + $_REQUEST['refund_shipping_fee'];
 	$refund_desc = $_REQUEST['refund_desc'] . ($_REQUEST['refund_shipping'] ? '\n（已退运费：'. $_REQUEST['refund_shipping_fee']. '）' : '退款');
     $refund_type = intval($_REQUEST['refund_type']);//退款类型
@@ -347,7 +402,7 @@ elseif ($_REQUEST['act'] == 'operate_refund')
 		if($_CFG['sms_user_money_change'] == 1)
 		{
 			$sql = "SELECT user_money,mobile_phone FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_id = '" . $order['user_id'] . "'";
-			$users = $GLOBALS['db']->getRow($sql); 
+			$users = $GLOBALS['db']->getRow($sql);
 			$content = sprintf($_CFG['sms_return_goods_tpl'],$refund_money_2,$users['user_money'],$_CFG['sms_sign']);
 			if($users['mobile_phone'])
 			{
@@ -360,31 +415,52 @@ elseif ($_REQUEST['act'] == 'operate_refund')
     //原支付方式返回
     if ($refund_type == '2'){
         $money_paid = $GLOBALS['db']->getOne("SELECT money_paid FROM " .$GLOBALS['ecs']->table('order_info'). " where order_id = '$order[order_id]'");
-        if($money_paid > $refund_money_2){
+        if($money_paid < $refund_money_2){
             $links[] = array('text' => '返回退款/退货详情', 'href' => 'back.php?act=back_info&back_id=' . $back_id);
             sys_msg('退款金额不能大于支付金额！', 1, $links);exit();
         }
-
-        require_once(ROOT_PATH . 'admin/includes/lib_main.php');
-        //微信支付方式
-        $refund_id = wxRefund($order['order_id'],$money_paid,$back_id,$refund_money_2,$refund_desc);
-        if(!empty($refund_id)){
-            $sql = "update ". $ecs->table('back_goods') ." set refund_id='$refund_id'  where back_id='$back_id' ";
-            $db->query($sql);
-        }else{
-            //原路退回支付账户失败
+        //
+        $order_id=$order['order_id'];
+        $params = $GLOBALS['db']->getRow("SELECT o.* FROM " . $GLOBALS['ecs']->table('order') . " o LEFT JOIN " . $GLOBALS['ecs']->table('back_order') . " b ON o.order_id = b.order_id WHERE b.back_id = " . $back_id);
+        $params['money_paid'] = $money_paid;
+        $params['payment'] = $GLOBALS['db']->getOne("SELECT pay_code from " . $GLOBALS['ecs']->table("payment") . " WHERE pay_id = " . $params['pay_id']);
+        $params['log_id'] = $GLOBALS['db']->getOne("SELECT log_id from " . $GLOBALS['ecs']->table("pay_log") . " WHERE is_paid = 1 AND order_id = " . $order_id . " AND order_type = 5 ");
+        require_once(ROOT_PATH . 'oteeadmin/includes/payment/'.$params['payment'].'.php');
+        $new_class = $params['payment'];
+        $payment = new $new_class();
+        $other = array();
+        $other['desc'] = $refund_desc;
+        $other['refund_id'] = $back_id;
+        $other['source'] = 1;
+        $params['refund_money_2'] = $refund_money_2;
+        $action_note = $payment->refund($params, $other);
+        if(!$action_note){
+            //失败，返回信息。
             $links[] = array('text' => '返回退款/退货详情', 'href' => 'back.php?act=back_info&back_id=' . $back_id);
             sys_msg('原支付方式返回失败，请选择其他退款方式！', 1, $links);exit();
+            //respond_data(500, $GLOBALS['msg_arr']['32']);
+        }else{
+            //成功，修改退款订单状态
+            //更新退款状态
+            $sql = "update ". $ecs->table('back_goods') ." set status_refund='$status_refund'  where back_id='$back_id' and (back_type='0' or back_type='4') ";
+            $db->query($sql);
+            $sql2 = "update ". $ecs->table('back_order') ." set  status_refund='$status_refund',  refund_money_2='$refund_money_2', refund_type='$refund_type', refund_desc='$refund_desc' where back_id='$back_id' ";
+            $db->query($sql2);
+        }
+        //是否开启余额变动给客户发短信-退款
+        if($_CFG['sms_user_money_change'] == 1)
+        {
+            $sql = "SELECT user_money,mobile_phone FROM " . $GLOBALS['ecs']->table('users') . " WHERE user_id = '" . $order['user_id'] . "'";
+            $users = $GLOBALS['db']->getRow($sql);
+            $content = sprintf($_CFG['sms_return_goods_tpl'],$refund_money_2,$users['user_money'],$_CFG['sms_sign']);
+            if($users['mobile_phone'])
+            {
+                include_once('../send.php');
+                sendSMS($users['mobile_phone'],$content);
+            }
         }
 
     }
-
-    //更新退款状态
-    $sql = "update ". $ecs->table('back_goods') ." set status_refund='$status_refund'  where back_id='$back_id' and (back_type='0' or back_type='4') ";
-    $db->query($sql);
-    $sql2 = "update ". $ecs->table('back_order') ." set  status_refund='$status_refund',  refund_money_2='$refund_money_2', refund_type='$refund_type', refund_desc='$refund_desc' where back_id='$back_id' ";
-    $db->query($sql2);
-
     /* 记录log */
 	back_action($back_id, $order['status_back'], $status_refund,  $action_note);
 	$links[] = array('text' => '返回退款/退货详情', 'href' => 'back.php?act=back_info&back_id=' . $back_id);
@@ -400,21 +476,21 @@ elseif ($_REQUEST['act'] == 'remove_back')
         {
 			$back_id_list = implode(",", $back_id);
             $sql = "DELETE FROM ".$ecs->table('back_order'). " WHERE back_id in ($back_id_list)";
-            $db->query($sql);    
+            $db->query($sql);
 			$sql = "DELETE FROM ".$ecs->table('back_goods'). " WHERE back_id in ($back_id_list)";
             $db->query($sql);
         }
         else
         {
             $back_id = intval($back_id);
-            $sql = "DELETE FROM ".$ecs->table('back_order'). " WHERE back_id = '$back_id'";			
+            $sql = "DELETE FROM ".$ecs->table('back_order'). " WHERE back_id = '$back_id'";
             $db->query($sql);
-			$sql = "DELETE FROM ".$ecs->table('back_goods'). " WHERE back_id = '$back_id'";			
+			$sql = "DELETE FROM ".$ecs->table('back_goods'). " WHERE back_id = '$back_id'";
             $db->query($sql);
         }
 		//echo $sql;
 
-        /* 返回 */		
+        /* 返回 */
         sys_msg('恭喜，记录删除成功！', 0, array(array('href'=>'back.php?act=back_list' , 'text' =>'返回退款/退货列表')));
 }
 
@@ -424,14 +500,33 @@ elseif ($_REQUEST['act'] == 'replay')
 		$back_id = intval($_REQUEST['back_id']);
 		$message = $_POST['message'];
 		$add_time = gmtime();
-		
+
 		$db->query("INSERT INTO ".$ecs->table('back_replay')." (back_id, message, add_time) VALUES ('$back_id', '$message', '$add_time')");
-		
-        sys_msg('恭喜，回复成功！', 0, array(array('href'=>'back.php?act=back_info&back_id='.$back_id , 'text' =>'返回')));	
-        
+
+        sys_msg('恭喜，回复成功！', 0, array(array('href'=>'back.php?act=back_info&back_id='.$back_id , 'text' =>'返回')));
+
 }
 
+/* 提交换出商品寄出*/
+elseif (($_REQUEST['act'] == 'operate_back_shipping')){
+    $back_id   = intval(trim($_REQUEST['back_id']));        // 退换货订单id
+    $action_note    = isset($_REQUEST['action_note']) ? trim($_REQUEST['action_note']) : '';
+    $back_shipping_name=trim($_REQUEST['back_shipping_name']);
+    $back_invoice_no=trim($_REQUEST['back_invoice_no']);
+    $setsql .= " back_shipping_name = '{$back_shipping_name}' , back_invoice_no= '{$back_invoice_no}' ";
+    $sql = "update ". $GLOBALS['ecs']->table('back_order') ." set  $setsql where back_id='$back_id' ";
+    $row=$GLOBALS['db']->query($sql);
+    if ($row){
+        $status_back='2';
+        update_back($back_id, $status_back, $status_refund);
+        back_action($back_id, $status_back, $order['status_refund'],  $action_note);
+        $links[] = array('text' => '返回退款/退货详情', 'href' => 'back.php?act=back_info&back_id=' . $back_id);
+        sys_msg('提交换出商品寄出快递信息成功！', 0,$links);exit();
+    }else{
+        sys_msg('提交换出商品寄出快递信息失败！', 1);exit();
+    }
 
+}
 /**
  *  获取退货单列表信息
  *
@@ -453,8 +548,8 @@ function back_list()
         $filter['order_id'] = empty($_REQUEST['order_id']) ? 0 : intval($_REQUEST['order_id']);
 		$filter['order_type'] = intval($_REQUEST['order_type']);
 		$filter['back_type'] = intval($_REQUEST['back_type']);
-		
-		
+
+
         if ($aiax == 1 && !empty($_REQUEST['consignee']))
         {
             $_REQUEST['consignee'] = json_str_iconv($_REQUEST['consignee']);
@@ -466,13 +561,13 @@ function back_list()
         $filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
 
      	$filter['supp'] = (isset($_REQUEST['supp']) && !empty($_REQUEST['supp']) && intval($_REQUEST['supp'])>0) ? intval($_REQUEST['supp']) : 0;
-        
+
         $filter['suppid'] = (isset($_REQUEST['suppid']) && !empty($_REQUEST['suppid']) && intval($_REQUEST['suppid'])>0) ? intval($_REQUEST['suppid']) : 0;
 
 
         //$where = 'WHERE 1 ';
         $where = ($filter['supp']>0) ? 'WHERE b.supplier_id > 0' : 'WHERE b.supplier_id = 0';
-        
+
         if ($filter['suppid']){
         	//$where .= " AND o.supplier_id = ".$filter['suppid'];
         	$where = 'WHERE b.supplier_id = '.$filter['suppid'];
@@ -501,7 +596,7 @@ function back_list()
 		{
 			$where .= " AND status_back > 5 ";
 		}
-		
+
 		if ($filter['back_type'] == 1)
 		{
 			$where .= " AND back_type = 1 ";
@@ -550,11 +645,11 @@ function back_list()
         /* 查询 */
         if($filter['supp']){
         	$sql = "SELECT b.*,s.supplier_name FROM " . $GLOBALS['ecs']->table("back_order") . " AS b LEFT JOIN ". $GLOBALS['ecs']->table("supplier") ." AS s ON b.supplier_id=s.supplier_id ".
-			    "  $where   ORDER BY " . $filter['sort_by'] . " " . $filter['sort_order']. 
+			    "  $where   ORDER BY " . $filter['sort_by'] . " " . $filter['sort_order'].
 				" LIMIT " . ($filter['page'] - 1) * $filter['page_size'] . ", " . $filter['page_size'] . " ";
         }else{
         	$sql = "SELECT * FROM " . $GLOBALS['ecs']->table("back_order") . " AS b ".
-			    "  $where   ORDER BY " . $filter['sort_by'] . " " . $filter['sort_order']. 
+			    "  $where   ORDER BY " . $filter['sort_by'] . " " . $filter['sort_order'].
 				" LIMIT " . ($filter['page'] - 1) * $filter['page_size'] . ", " . $filter['page_size'] . " ";
         }
 
@@ -587,7 +682,7 @@ function back_list()
         {
         $row[$key]['status_name'] = $GLOBALS['_LANG']['delivery_status'][0];
         }
-		
+
 		$sql_og = "SELECT * FROM " . $GLOBALS['ecs']->table('back_goods') . " WHERE back_id = " . $value['back_id'];
 		$row[$key]['goods_list'] = $GLOBALS['db']->getAll($sql_og);
     }
@@ -646,7 +741,7 @@ function back_order_info($back_id)
 		}
 
 		/* 退换货状态   退款状态 */
-		
+
         $return_order = $back;
     }
 
@@ -657,7 +752,7 @@ function back_order_info($back_id)
  * 返回某个订单可执行的操作列表
  */
 function operable_list($order)
-{	
+{
 	$os = $order['status_back'];
 	$ds = $order['status_refund'];
 	/* 根据状态返回可执行操作 */
@@ -721,10 +816,15 @@ function update_back($back_id, $status_back, $status_refund )
 		   $sql3="update ". $GLOBALS['ecs']->table('order_info') ." set order_status='2', to_buyer='用户对订单内的部分或全部商品申请退款并取消订单' where order_sn = '" . $status_bo . "'";
 		   $GLOBALS['db']->query($sql3);
 	   }
-	   
-	   $sql="update ". $GLOBALS['ecs']->table('back_goods') ." set status_back='$status_b' where back_id='$back_id' ";
+	   //最后的寄回时间...到时间了就取消申请..
+	   $set_sql="";
+	   if ($status_b==0){
+           $delback_time    = $GLOBALS['db']->getRow("select value from ".$GLOBALS['ecs']->table('shop_config')." where code='delback_time'");
+           $set_sql.=" , best_time = ".(gmtime()+$delback_time['value']*3600*24);
+       }
+	   $sql="update ". $GLOBALS['ecs']->table('back_goods') ." set status_back='$status_b'  where back_id='$back_id' ";
 	   $GLOBALS['db']->query($sql);
-	   $sql2="update ". $GLOBALS['ecs']->table('back_order') ." set status_back='$status_b' where back_id='$back_id' ";
+	   $sql2="update ". $GLOBALS['ecs']->table('back_order') ." set status_back='$status_b' $set_sql where back_id='$back_id' ";
 	   $GLOBALS['db']->query($sql2);
 	}
 	if($status_back =='6') //拒绝申请
@@ -741,7 +841,7 @@ function update_back($back_id, $status_back, $status_refund )
 	   $GLOBALS['db']->query($sql);
 	   $sql2="UPDATE ". $GLOBALS['ecs']->table('back_order') ." SET status_back='$status_back' WHERE back_id='$back_id' ";
 	   $GLOBALS['db']->query($sql2);
-	   
+
 	   $get_order_id = $GLOBALS['db']->getOne("SELECT order_id FROM " . $GLOBALS['ecs']->table('back_order') . " WHERE back_id = '" . $back_id . "'");
 	   $get_goods_id = $GLOBALS['db']->getCol("SELECT goods_id FROM " . $GLOBALS['ecs']->table('back_order') . " WHERE order_id = '" . $get_order_id . "' AND status_back = '3' AND back_type <> '3'");
 	   if (count($get_goods_id) > 0)
@@ -759,7 +859,7 @@ function update_back($back_id, $status_back, $status_refund )
 	   {
 	       $sql4 = "UPDATE " .$GLOBALS['ecs']->table('order_goods') . " SET is_back = 1 WHERE goods_id = '" . $get_goods_info['goods_id'] . "' AND order_id = '" . $get_order_id . "'";
 	       $GLOBALS['db']->query($sql4);
-		   
+
 		   //退款完成后，进行返库
 		   $back_type = $GLOBALS['db']->getOne("SELECT back_type FROM " . $GLOBALS['ecs']->table('back_order') . " WHERE back_id = '" . $back_id . "'");
 		   $stock_dec_time = $GLOBALS['db']->getOne("SELECT value FROM " . $GLOBALS['ecs']->table('shop_config') . " WHERE code =  'stock_dec_time'");

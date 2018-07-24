@@ -61,6 +61,7 @@ class Order extends Common
 				)
 			)
 		);
+
     }
 
 
@@ -73,23 +74,212 @@ class Order extends Common
         $api = "Order/getOrderList";
         $data['user_id'] = $this->user_id;
         $data['page'] = input('page',1);
-        $data['screen_order'] = input('screen_order',1);
+        $data['screen'] = input('screen',1);//时间筛选
+        $data['state'] = input('state',0);//订单状态筛选
         $result = $this->curlGet($api,$data);
         //var_dump($result);exit;
         $result = json_decode($result,true);
-        //print_r($result);exit;
+
+        //物流
+        foreach($result['data']['order_data'] as $k=>$v){
+            if($v['shipping_name'] && $v['invoice_no']){
+                $url = "index/kuaidi";
+                $kuaidi_data = array();
+                $kuaidi_data['typeCom'] = $v['shipping_name'];
+                $kuaidi_data['typeNu'] = $v['invoice_no'];
+                //$kuaidi_data['typeCom'] = '圆通速递';
+                //$kuaidi_data['typeNu'] = '800410081166733399';
+                $kuaidi_json = $this->curlGet($url,$kuaidi_data);
+                $kuaidi = json_decode($kuaidi_json,true);
+                //$this->assign('kuaidi',$kuaidi['data']);
+                $result['data']['order_data'][$k]['kuaidi'] = $kuaidi['data'];
+            }
+        }
+
+        //print_r($result['data']['order_data']);exit;
         $this->assign('order_data',$result['data']['order_data']);
         $this->assign('pager',$result['data']['pager']);
+
+
+
+        //订单状态
+        $state = $data['state'];
+        $this->assign('state',$state);
+        $state_list = array(
+            '所有订单'=>'0',
+            '待付款'=>'100',
+            '待发货'=>'102',
+            '待收货'=>'106',
+            '待评价'=>'108',
+            '已完成'=>'109',
+            '售后中'=>'117'
+        );
+        $this->assign('state_list',$state_list);
+
+        //筛选
+        $st_ajax = input('st_ajax',0,'intval');
+        $this->assign('st_ajax',$st_ajax);
+        if($st_ajax){
+            echo $this->fetch('order_ajax');exit;
+        }
 
         //异步加载分页数据
         $is_ajax = input('is_ajax',0,'intval');
         $this->assign('is_ajax',$is_ajax);
         if($is_ajax){
-            echo $this->fetch('order_ajax');exit();
+            echo $this->fetch('order_ajax');exit;
         }
         return $this->fetch();
 
     }
+
+/*    //订单确认收货 ajax
+    function confirm_order(){
+        $data['user_id'] = $this->user_id;
+        $data['order_id'] = input('order_id',0);
+        $api = "User/arrivedUserOrder";
+        $result = $this->curlGet($api,$data);
+        //$result = json_decode($result,true);
+        echo $result;
+    }
+
+    //取消订单
+    function cancel_order(){
+        $data['user_id'] = $this->user_id;
+        $data['order_id'] = input('order_id',0);
+        $api = "User/cancelUserOrder";
+        $result = $this->curlGet($api,$data);
+        //$result = json_decode($result,true);
+        echo $result;
+    }*/
+
+
+
+
+    //弹窗
+    public function details_ajax(){
+        $goods_id =  input('goods_id','','intval') ? input('goods_id','','intval') : 0;
+        if(!$goods_id){
+            $this->error('该商品不存在！');
+        }
+
+        $api = "goods/getGoodsInfo";
+        $data = array();
+        $data['user_id'] = $this->user_id;
+        $data['goods_id'] = $goods_id;
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result,true);
+        if(!$result['data']){
+            $this->error($result['message']);
+        }
+        if ($result['data']['goods_status'] == 1 || $result['data']['goods_status'] == 2 || $result['data']['goods_status'] == 3) {
+            $this->error('商品未出售');
+        }
+        $cat_id = $result['data']['cat_id'];
+        // print_r($result['data']);die;
+        $this->assign('data',$result['data']);
+        $this->assign('comment_count',count($result['data']['comment']));//好评数量。做判断用
+        $this->assign('goods_id', $goods_id);
+        //var_dump($goods_id);exit;
+
+        // 增加查看次数
+        $api = "goods/addClickCount";
+        $data = array();
+        $data['goods_id'] = $goods_id;
+        $this->curlGet($api,$data);
+
+        //评论
+        $api = "goods/getGoodsComment";
+        $data = array();
+        $data['goods_id'] = $goods_id;
+        $data['page_size'] = 20;
+        $data['page'] = input('page','','intval') ? input('page','','intval') : 1;
+        $data['type'] = input('type','','intval') ? input('type','','intval') : 0;//0所有评价 1好评 2中评 3差评 4晒单
+        $result = $this->curlGet($api,$data);
+        $result = json_decode($result,true);
+        $this->assign('comment_data',$result['data']);
+
+        //print_r($result['data']);die;
+
+        //获取推荐商品
+        $api = "goods/query";
+        $data = array();
+        $data['cat_id'] = 0;
+        $data['supplier_id'] = '-1';
+        $data['filter'] = 'is_hot';
+        $data['size'] = 3;
+        $hot = $this->curlGet($api,$data);
+        $hot = json_decode($hot,true);
+        if ($hot['data']['list']) {
+            $this->assign('hot',$hot['data']);
+        } else {
+            $api = "goods/query";
+            $data = array();
+            $data['cat_id'] = $cat_id;
+            $data['supplier_id'] = '-1';
+            $data['size'] = 3;
+            $hot = $this->curlGet($api,$data);
+            $hot = json_decode($hot,true);
+            $this->assign('hot',$hot['data']);
+        }
+        // print_r($hot['data']);die();
+
+        // 私信举报原因
+        $url = "user/getReportReason";
+        $data = array();
+        $result = $this->curlGet($url);
+        $result = json_decode($result,true);//json转数组
+        $this->assign('reason_list', $result['data']);
+
+        $html = $this->fetch();
+        return ['html' => $html, 'goods_id' => $goods_id];
+    }
+
+
+    //订单详情
+    function order_details(){
+        $api = "Order/order_details";
+        $data['user_id'] = $this->user_id;
+        $data['order_id'] = input('order_id',0);
+        $result_json = $this->curlGet($api,$data);
+        $result = json_decode($result_json,true);//json转数组
+
+
+        if($result['data']['shipping_name'] && $result['data']['invoice_no']){
+            $url = "index/kuaidi";
+            $kuaidi_data = array();
+            $kuaidi_data['typeCom'] = $result['data']['shipping_name'];
+            $kuaidi_data['typeNu'] = $result['data']['invoice_no'];
+            //$kuaidi_data['typeCom'] = '圆通速递';
+            //$kuaidi_data['typeNu'] = '800410081166733399';
+            $kuaidi_json = $this->curlGet($url,$kuaidi_data);
+            $kuaidi = json_decode($kuaidi_json,true);
+            $result['data']['kuaidi'] = $kuaidi['data'];
+        }
+
+        $this->assign('data',$result['data']);
+        //print_r($result);exit;
+
+        return $this->fetch();
+    }
+
+    //订单评价
+    function order_appraise(){
+        //$data['user_id'] = $this->user_id;
+        $data = file_get_contents("php://input");
+        var_dump($data);exit;
+        //$data['order_sn'] = input('order_sn',0);
+        $api = "Order/order_goods_appraise";
+        $result_json = $this->curlPost($api,$data);
+        //var_dump($result_json);exit;
+        //$result = json_decode($result_json,true);//json转数组
+        echo $result_json;
+    }
+
+
+
+
+
 
     //获取订单数据
 /*    public function order_ajax(){
@@ -384,7 +574,7 @@ class Order extends Common
         return $this->fetch();
     }
 
-    //我的订单 - 列表
+/*    //我的订单 - 列表
     public function order_list()
     {
         $url = "user/getUserOrder";
@@ -504,13 +694,13 @@ class Order extends Common
 		$this->assign('class',$class);
 		$this->assign('selected',$selected);
 
-		//print_r($result['data']);
+		print_r($result['data']);
 
 		$this->assign('left','我的订单');
 
         $this->assign('order',$result['data']);
         return $this->fetch();
-    }
+    }*/
 
     //我的信息
     public function user_info()
@@ -1851,9 +2041,10 @@ class Order extends Common
         $data['user_id'] = $this->user_id;
         $data['order_id'] = input('order_id',0);
 
-        $result = $this->curlPost($url,$data);
+        $result = $this->curlGet($url,$data);
         //$result = json_decode($result);
-        header("Location:".url('User/order_list',array('status'=>5)));exit();
+        echo $result;
+        //header("Location:".url('User/order_list',array('status'=>5)));exit();
 	}
 
 	//取消订单
@@ -1865,20 +2056,36 @@ class Order extends Common
 
         $result = $this->curlGet($url,$data);
         //$result = json_decode($result);
+        //print_r($result);exit;
         echo $result;
 	}
 
-	//查看物流
+/*	//查看物流
 	public function kuaidi(){
 		$url = "index/kuaidi";
         $data = array();
-        $data['typeCom'] = input('typeCom','','trim');
-        $data['typeNu'] = input('typeNu',0,'trim');
-		$result = $this->curlGet($url,$data);
-		$result = json_decode($result,true);//print_r($result);die;
-		$this->assign('data',$result['data']);
+        //$data['typeCom'] = input('typeCom','','trim');
+        //$data['typeNu'] = input('typeNu',0,'trim');
+        $data['typeCom'] = '圆通速递';
+        $data['typeNu'] = '800410081166733399';
+		$result_json = $this->curlGet($url,$data);
+		$result = json_decode($result_json,true);
+
+        $this->assign('data',$result['data']);
+        //print_r($result);die;
+        //$html = '<li class="fix"><span>2017-06-05</span><span class="p_color">周一</span><span>15:22:49</span><span class="last">卖家发货</span></li>';
+        $html = '<div class="wl_info"><span>'.$result['data']['com'].'</span><span>运单编号<font>'.$result['data']['nu'].'</font></span></div><div class="wl_con"><div class="p_wl p_wls">';
+        foreach($result['data']['data'] as $key=>$value){
+            $html .= '<ul class="fix"><li class="fix"><span>'.$value['time'].'</span><span class="last">'.$value['context'].'</span></li></ul>';
+        }
+        $html .='</div></div>';
+        $is_ajax = input('is_ajax',0,'intval');
+        $this->assign('is_ajax',$is_ajax);
+        if($is_ajax){
+            echo $html;exit;
+        }
 		return $this->fetch();
-	}
+	}*/
 
 	//立即付款
 	public function re_pay(){

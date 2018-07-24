@@ -1102,6 +1102,7 @@ body,th,td,button,input,select,textarea{font-size:13px;color:#666;font-family: "
 
 .menu .mb img {-webkit-transition: all .25s;transition: all .25s;
     width: 100%;
+    height: 100%;
     vertical-align: middle;
 }
 .menu .mb:hover img{-webkit-transform: scale(1.05);transform: scale(1.05)}
@@ -1109,6 +1110,7 @@ body,th,td,button,input,select,textarea{font-size:13px;color:#666;font-family: "
     border:1px solid transparent;
     box-sizing: border-box;
     padding:5px;
+    height: 104px;
     }
 .imgShowTypeItem img{  max-width: 100%}
 

@@ -1,0 +1,84 @@
+<div class="mem_left p_l1 p_l2">
+    <div class="head_box tc bg_white">
+        <div class="grade_box">
+            <i class="grade_i" style="background: url({$webUrl}{$user.rank_icon}) center no-repeat;"></i>
+            <div class="p_level">
+                {foreach $user.rank_list as $key =>$value}
+                <a href="javascript:void(0);" {if $user.rank_name eq $value.rank_name}class="on"{/if}>{$value.rank_name}</a>
+                {/foreach}
+            </div>
+        </div>
+        <div class="avatar d_ib">
+            <img class="lazybg" data-lazyload-img="{if $user.headimg}/{$user.headimg}{else /}__IMGPC__/avatar6.jpg{/if}">
+            <h2>{if $user.nickname}{$user.nickname}{else /}{$user.user_name}{/if}<span>{$user.profile}</span></h2>
+            {if $user.user_id neq $user_id}
+            <div class="p_btns">
+                <a href="javascript:void(0)" class="nb_t2 guanzhu {if $user.follow_status gt 0}follow followed{else}follow{/if}" user_id="{$user.user_id}" value="{$user.follow_status}">{if $user.follow_status eq 1}已关注{elseif $user.follow_status eq 2 }互相关注{else}关注{/if}</a>
+                <a href="javascript:void(0);" class="d_showtalk nb_t1">私 信</a>
+                <input type="hidden" name="user_id" id="user_id" value="{$user_id}">
+                <input type="hidden" name="receive_user_id" id="receive_user_id" value="{$user.user_id}">
+            </div>
+            {/if}
+        </div>
+        <dl>
+            <dd><span>地区</span><font>{$user.formated_city}</font></dd>
+            <dd><span>学校</span><font>{$user.formated_sh_school}</font></dd>
+            <dd><span>个人链接</span><font><a href="{$user.website}" target="_blank">{$user.website}</a></font></dd>
+        </dl>
+    </div>
+    
+    <dl class="p_l1_con p_l1_con1">
+        <dd class="fix"><span>领域</span><font>{$user.fields|trim=###, ','}</font></dd>
+    </dl>
+
+    <div class="p_l1_con p_l1_con2">
+        <dd class="fix"><a href="">
+            <span class="p_i1">粉丝</span>
+            <font>{$user.be_follow_number}</font>
+        </a></dd>
+        <dd class="fix">
+            <span class="p_i2">人气</span>
+            <font>{$user.be_zan_number}</font>
+        </dd>
+        <dd class="fix">
+            <span class="p_i3">被收藏</span>
+            <font>{$user.be_collect_number}</font>
+        </dd>
+    </div>
+
+    <dl class="p_l1_con p_l1_con1 p_l1_con3">
+        <dd class="fix"><span>总销量</span><font>{$user.rank_sale_number}</font></dd>
+        <dd class="fix"><a href="{:url('user/ranking_list', array('designer_id'=>$designer_id))}"><span>排行榜</span><font>11（未完成）</font></a></dd>
+    </dl>
+
+    <dl class="p_l1_con p_l1_con1 p_l1_con3">
+        <dd class="fix"><a href=""><span>TA的点赞</span><font>{$user.zan_number}</font></a></dd>
+        <dd class="fix"><a href=""><span>关注的人</span><font>{$user.follow_number}</font></a></dd>
+        <!-- <dd class="fix"><a href=""><span>话题</span><font>23</font></a></dd>
+        <dd class="fix"><a href=""><span>圈子</span><font>2</font></a></dd> -->
+    </dl>
+    
+    {if $recommend_users}
+    <div class="p_l1_con6">
+        <h3>推荐设计师</h3>
+        <ul class="fix">
+            {foreach $recommend_users as $key => $vo}
+            <li class="fix">
+                <div class="p_pic fl">
+                    <a href="{:url('user/designer_page', array('designer_id'=>$vo['user_id']))}"><img class="lazybg" data-lazyload-img="{$webUrl}{$vo.headimg}" alt="{if $vo.nickname}{$vo.nickname}{else}{$vo.user_name}{/if}" style="width:75px;height:75px;"></a>
+                </div>
+                <div class="p_word fl">
+                    <a href="{:url('user/designer_page', array('designer_id'=>$vo['user_id']))}"><h4>{if $vo.nickname}{$vo.nickname}{else}{$vo.user_name}{/if}</h4></a>
+                    <a href=""><h5>粉丝：<i class='fansi'>{$vo.be_follow_number}</i></h5></a>
+                    <a href="javascript:void(0)" class="p_gz nb_t1 guanzhu {if $vo.follow_status gt 0}follow followed{else}follow{/if}" user_id="{$vo.user_id}" value="{$vo.follow_status}">{if $vo.follow_status eq 1}已关注{elseif $vo.follow_status eq 2 }互相关注{else}关注{/if}</a>
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    {/if}
+
+    <div class="p_l1_con5">
+        {include file="public/ipro_share" /}
+    </div>
+</div>

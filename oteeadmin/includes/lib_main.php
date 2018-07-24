@@ -935,4 +935,20 @@ function sys_info(){
     return $sys_info;
 }
 
+
+//微信退款 原路返回
+function wxRefund($order_id,$order_amount,$refund_id,$refund_amount,$desc){
+    require_once(ROOT_PATH . 'oteeadmin/includes/payment/weixin.php');
+    $payment = new weixin();
+    $order['pay_code'] = 'XCX';
+    $other['source'] = 1;
+    $order['order_id'] = $order_id; //订单id
+    $order['order_amount'] = $order_amount; //订单金额
+    $other['refund_amount'] = $refund_amount; //退款金额
+    $other['refund_id'] = $refund_id; //退款id
+    $other['desc'] = $desc; //描述
+    $result = $payment->refund($order,$other);
+    // print_r($result);
+    return $result;
+}
 ?>

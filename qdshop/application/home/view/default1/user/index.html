@@ -55,30 +55,30 @@
             <div class="mem_rtit">我的订单<a href="{:url('Order/index')}" class="fr"></a></div>
             <div class="mem_r_con">
                 <div class="mem_sp3">
-                    <div class="box"><a href="">
+                    <div class="box"><a href="{:url('order/index',array('state'=>100))}">
                         <i class="icon icon1"></i>
                         <h2>待付款</h2>
-                        <p>2</p>
+                        <p>{$order_data.unpay}</p>
                     </a></div>
-                    <div class="box"><a href="">
+                    <div class="box"><a href="{:url('order/index',array('state'=>102))}">
                         <i class="icon icon2"></i>
                         <h2>待发货</h2>
-                        <p>2</p>
+                        <p>{$order_data.chcked}</p>
                     </a></div>
-                    <div class="box"><a href="">
+                    <div class="box"><a href="{:url('order/index',array('state'=>106))}">
                         <i class="icon icon3"></i>
                         <h2>待收货</h2>
-                        <p>2</p>
+                        <p>{$order_data.shipped}</p>
                     </a></div>
-                    <div class="box"><a href="">
+                    <div class="box"><a href="{:url('order/index',array('state'=>108))}">
                         <i class="icon icon4"></i>
                         <h2>待评价</h2>
-                        <p>2</p>
+                        <p>{$order_data.received}</p>
                     </a></div>
-                    <div class="box"><a href="">
+                    <div class="box"><a href="{:url('order/index',array('state'=>117))}">
                         <i class="icon icon5"></i>
                         <h2>售后中</h2>
-                        <p>2</p>
+                        <p>{$order_data.service}</p>
                     </a></div>
                 </div>
             </div>
@@ -1393,7 +1393,7 @@
 <!--footer start-->
 {include file="public/footer" /}
 <!--footer end-->
-{include file="public/user_js_footer" /}
+{include file="public/footer_js" /}
 <script>
 $(function() { //加入购物车动画
     var cart_is = true;

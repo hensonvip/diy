@@ -114,6 +114,9 @@ $purview['08_unreply_msg'] = 'feedback_priv';
 $purview['10_user_account_manage'] = 'account_manage';
 $purview['09_postman_list'] = 'users_manage';
 
+$purview['11_bank_card_list'] = 'bank_card_manage';
+$purview['12_bank_list'] = 'bank_manage';
+
 // 权限管理
 $purview['admin_logs'] = array(
 	'logs_manage', 'logs_drop'
