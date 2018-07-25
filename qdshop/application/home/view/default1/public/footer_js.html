@@ -509,31 +509,34 @@
         //console.log(sn);
         var _li =$(this).siblings('ul').find('li');
         var _sc =$(this).siblings('ul').find('li').find('font').html();
-        var IDarr = new Array();
+        var textarr = new Array();
         var arr = new Array();
         _li.each(function(i,item){
-            if(IDarr.indexOf(item)){
-                arr.goods_id = $(this).attr('data-goods');
-                arr.content = $(this).find('textarea').val();
-                arr.score = _sc;
-                arr.order_sn = sn;
-                IDarr.push(arr);
-            }
+            //if(arr.indexOf(item)){
+                arr.push({
+                    'goods_id':$(this).attr('data-goods'),
+                    'content' : $(this).find('textarea').val(),
+                    'score' : _sc,
+                    'order_sn' : sn,
+                })
+            textarr.push($(this).find('textarea').val());
+            //}
         })
-        console.log(arr);
-        console.log(IDarr);return false;
-        if($(this).find('textarea').val()==""){
-            layer.msg('至少填写一件商品评价');return false;
+
+
+
+        if(textarr==""){
+            layer.msg('至少填写一件商品评价',{offset:'40%'});return false;
         }
-        //console.log(IDarr);
+        //console.log(textarr);return false;
         $.ajax({
             url:'{:url("Order/order_appraise")}',
             type:'POST',
-            data:{goods_arr:IDarr,test:1},
+            data:{goods_arr:JSON.stringify(arr)},
             dataType:'json',
             traditional: true,
             success:function(data){
-                console.log(IDarr);
+                //console.log(IDarr);
                 if(data['data']['code'] == 500){
                     layer.msg('评价失败，请稍后重试',{offset:'40%'});return false;
                 }else{
@@ -564,10 +567,11 @@
             }else{
                 var sn = $(this).parent().parent().prev().find('.order_sn').text();
                 var a =$(this).parent().siblings(':first').find('.box1');
-                var goods_id = $(this).parent().siblings(':first').attr('data-id');
+                var goods_id = a.attr('data-id');
                 var img =  $(this).parent().siblings(':first').find('a').find('img').attr('src');
                 var name = $(this).parent().siblings(':first').find('.box2').find('h2').html();
             }
+            console.log(goods_id);
             var IDarr = new Array();
             var arr = new Array();
             a.each(function(i,item){

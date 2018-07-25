@@ -75,7 +75,7 @@ class Orderback extends Common
     public function index()
     {
         echo '<a target="_blank" href="'.url('orderback/goods_apply').'">goods_apply</a>';
-        echo '<a target="_blank" href="'.url('orderback/apply_refund',array('order_id'=>612,'goods_id'=>943,'rec_id'=>620)).'">apply_refund</a>';
+        echo '<a target="_blank" href="'.url('orderback/apply_refund',array('order_id'=>614,'goods_id'=>943,'rec_id'=>622)).'">apply_refund</a>';
         echo '<a target="_blank" href="'.url('orderback/apply_refund',array('order_id'=>620)).'">apply_refund_all</a>';
         echo '<a  href="'.url('orderback/refund_details',array('back_id'=>56)).'">refund_details</a>';
     }

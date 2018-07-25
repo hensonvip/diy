@@ -81,20 +81,21 @@ class Order extends Common
         $result = json_decode($result,true);
 
         //物流
-        foreach($result['data']['order_data'] as $k=>$v){
-            if($v['shipping_name'] && $v['invoice_no']){
-                $url = "index/kuaidi";
-                $kuaidi_data = array();
-                $kuaidi_data['typeCom'] = $v['shipping_name'];
-                $kuaidi_data['typeNu'] = $v['invoice_no'];
-                //$kuaidi_data['typeCom'] = '圆通速递';
-                //$kuaidi_data['typeNu'] = '800410081166733399';
-                $kuaidi_json = $this->curlGet($url,$kuaidi_data);
-                $kuaidi = json_decode($kuaidi_json,true);
-                //$this->assign('kuaidi',$kuaidi['data']);
-                $result['data']['order_data'][$k]['kuaidi'] = $kuaidi['data'];
+        if(isset($result['data']['order_data'])){
+            foreach($result['data']['order_data'] as $k=>$v){
+                if($v['shipping_name'] && $v['invoice_no']){
+                    $url = "index/kuaidi";
+                    $kuaidi_data = array();
+                    $kuaidi_data['typeCom'] = $v['shipping_name'];
+                    $kuaidi_data['typeNu'] = $v['invoice_no'];
+                    $kuaidi_json = $this->curlGet($url,$kuaidi_data);
+                    $kuaidi = json_decode($kuaidi_json,true);
+                    //$this->assign('kuaidi',$kuaidi['data']);
+                    $result['data']['order_data'][$k]['kuaidi'] = $kuaidi['data'];
+                }
             }
         }
+
 
         //print_r($result['data']['order_data']);exit;
         $this->assign('order_data',$result['data']['order_data']);
@@ -114,12 +115,14 @@ class Order extends Common
             '已完成'=>'109',
             '售后中'=>'117'
         );
+
         $this->assign('state_list',$state_list);
 
         //筛选
         $st_ajax = input('st_ajax',0,'intval');
         $this->assign('st_ajax',$st_ajax);
         if($st_ajax){
+            //var_dump($result['data']['order_data']);
             echo $this->fetch('order_ajax');exit;
         }
 
@@ -265,13 +268,14 @@ class Order extends Common
 
     //订单评价
     function order_appraise(){
-        //$data['user_id'] = $this->user_id;
-        $data = file_get_contents("php://input");
-        var_dump($data);exit;
-        //$data['order_sn'] = input('order_sn',0);
+        $data['user_id'] = $this->user_id;
+        $info_json = input('goods_arr',0);
+        $data['info'] = json_decode($info_json);
+        if(!$info_json){
+            exit;
+        }
         $api = "Order/order_goods_appraise";
         $result_json = $this->curlPost($api,$data);
-        //var_dump($result_json);exit;
         //$result = json_decode($result_json,true);//json转数组
         echo $result_json;
     }
@@ -2059,6 +2063,25 @@ class Order extends Common
         //print_r($result);exit;
         echo $result;
 	}
+
+    //订单付款
+    public function done(){
+        $api = "Order/order_money";
+        $data['user_id'] = $this->user_id;
+        $data['order_id'] = input('order_id',0);
+        $result = $this->curlPost($api,$data);
+        //var_dump($result);exit;
+        $result = json_decode($result,true);
+        if(empty($result['data'])){
+            $this->error('订单已超过30分钟未支付，已自动取消');
+        }
+
+        $this->assign('order_id',$result['data']['order_id']);
+        $this->assign('order_amount',$result['data']['order_amount']);
+
+
+        return $this->fetch('goods/done');
+    }
 
 /*	//查看物流
 	public function kuaidi(){

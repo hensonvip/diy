@@ -331,8 +331,7 @@ class CheckoutController extends ApiController
 			if($this->input('device')=='xcx'){
 				$other['openid'] = $GLOBALS['db']->getOne("select openid FROM " . $GLOBALS['ecs']->table('third_login') ." WHERE user_id = '".$this->user_id."' and type = 'Wechat'");
 			}
-			//print_r($params);
-
+			//print_r($params);exit;
 			$order = array();
 			$order['order_id'] = $params['orderId'];
 			$order['order_sn'] = $params['orderId'];
@@ -354,7 +353,7 @@ class CheckoutController extends ApiController
 
 			$resultb = array();
 			try {
-				require_once(ROOT_PATH . 'includes/modules/payment/'.$params['payment'].'.php');
+				require(ROOT_PATH . 'includes/modules/payment/'.$params['payment'].'.php');
 				$new_class = $params['payment'];
 				$paymenta = new $new_class();
 				$resultb['order_id'] = $params['orderId'];
@@ -364,6 +363,7 @@ class CheckoutController extends ApiController
 					$resultb['payment'] = $resulta;
 					$resultb['payment']['payment_name'] = $payment['pay_name'];
 				}
+
 				$this->success($resultb);
 
 			} catch (Exception $e) {

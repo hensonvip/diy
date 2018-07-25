@@ -5697,12 +5697,12 @@ function commission($order_id = 0) {
                     log_account_change($value['user_id'], $commission, 0, 0, 0, '佣金结算', ACT_COMMISSION);
                 }
 
-                /* 增加累计销量和销售额 */
+                /* 增加累计销量 */
                 $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET rank_sale_number = rank_sale_number + $value[goods_number] WHERE user_id = '$order_info[user_id]'";
                 $GLOBALS['db']->query($sql);                
             }
 
-            /* 增加累计销量和销售额 */
+            /* 增加销售额 */
             $sql = "UPDATE " . $GLOBALS['ecs']->table('users') . " SET sale_amount = sale_amount + $order_info[money_paid] WHERE user_id = '$order_info[user_id]'";
             $GLOBALS['db']->query($sql);
         }

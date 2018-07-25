@@ -621,6 +621,9 @@ class OrderbackController extends ApiController
             );
             $GLOBALS['db']->autoExecute($GLOBALS['ecs']->table('back_replay'), $replay_data, 'INSERT');
         }
+        //发送 交易信息
+        $back_type_str=array(1=>'退货',2=>'换货',3=>'维修',4=>'退款');
+        sent_message($this->user_id,3,'申请退款','订单：'.$data['order_sn'].' 已申请 '.$back_type_str[$back_type].' 处理！');
         /* 更新back_order */
         if ($have_tuikuan) {
             /*if ($_POST['order_all'])

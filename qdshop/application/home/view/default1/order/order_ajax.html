@@ -71,7 +71,7 @@
     <td>
         {if !empty($order.status_code)}
             {if $order.status_code eq 1 }
-                <a href="{:url('Ooods/done')}" class="p_yes pay_order">立即付款</a>
+                <a href="{:url('order/done')}?order_id={$order.order_id}" class="p_yes pay_order">立即付款</a>
                 <a href="javascript:void (0)" class="p_no cancel_order">取消订单</a>
                 {elseif $order.status_code eq 2}
                 <a href="javascript:void (0)" class="p_yes arrived">确认收货</a>

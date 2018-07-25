@@ -265,7 +265,12 @@ class cls_image
 
         /* 生成文件 */
 	/* wei2 修改 start by www.68ecshop.com */
-        if (function_exists('imagejpeg'))
+        if (function_exists('imagepng'))
+        {
+            $filename .= '.png';
+            imagepng($img_thumb, $dir . $filename, 95);
+        }
+        elseif (function_exists('imagejpeg'))
         {
             $filename .= '.jpg';
             imagejpeg($img_thumb, $dir . $filename, 95);
@@ -274,11 +279,6 @@ class cls_image
         {
             $filename .= '.gif';
             imagegif($img_thumb, $dir . $filename, 95);
-        }
-        elseif (function_exists('imagepng'))
-        {
-            $filename .= '.png';
-            imagepng($img_thumb, $dir . $filename, 95);
         }
  	/* wei2 修改 end by www.68ecshop.com */
         else

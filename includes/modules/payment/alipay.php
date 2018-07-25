@@ -122,7 +122,6 @@ class alipay {
 		$request = new $c();
 		$request->setNotifyUrl($return_url);
 		$request->setBizContent($bizcontent);
-
 		$arr = array();
 
 		if($payment == 'QUICK_MSECURITY_PAY'){
@@ -140,7 +139,7 @@ class alipay {
 		if(!strstr($order['order_id'],'charge')){
 			$GLOBALS['db']->query("update".$GLOBALS['ecs']->table('order_info')." set pay_code = '".$payment."' where order_id = ".$order['order_id']);
 		}
-
+		file_put_contents('bb.txt',var_export($arr,TRUE));
 		return $arr;
 	}
 
@@ -195,6 +194,7 @@ class alipay {
 	    }/*else{
 	        echo $result['msg'].' : '.$result['sub_msg'];
 	    }*/
+
 	    return $arr;
 	}
 

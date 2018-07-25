@@ -829,16 +829,17 @@
 {include file="public/footer_js" /}
 <!--js end-->
 <script>
-$(function(){
     var page = 2;//翻页
-
+    var state = '';
+$(function(){
     $('.p_con1t li').click(function(){
         if($(this).hasClass('on')){
+            $('#fancybox-loading').fadeIn();
             $(this).removeClass('on');
             $('.p_con1t li').find('dl').stop(true,true).fadeOut(); 
             $(document).on("click",".p_con1t dd",function(){
                 $(this).parents('dl').stop(true,true).fadeOut();
-                var state = $(this).attr('data-code');
+                state = $(this).attr('data-code');
                 $.ajax({
                     url:'{:url("Order/index")}',
                     type:'GET',
@@ -846,11 +847,13 @@ $(function(){
                     dataType:'html',
                     traditional: true,
                     success:function(data){
-                        console.log(data)
+                        //console.log(data)
                         $('.p_tab1 tbody').html(data);
                         $('.lazybg').lazyload({d: 300, r: 250});
                         page = 2;
-
+                        $('#fancybox-loading').fadeOut();
+                    },error:function(){
+                        $('#fancybox-loading').fadeOut();
                     }
                 })
             });
@@ -946,7 +949,8 @@ $(function(){
             if('{$pager.count}'){
                 var count ="{$pager.count}";
             }
-            console.log(count);
+            //var state = $('.p_con1t .fix .on').attr('data-code');
+            console.log(state);
             //console.log($('.p_con1b').children(".order_list").length);
             // 如果滚动条到达底部就获取新数据追加到容器
             if ($(document).scrollTop() >= $(document).height() - $(window).height() && p_load == false) {
@@ -964,11 +968,11 @@ $(function(){
                 $.ajax({
                     type: 'GET',
                     url: "{:url('Order/index')}",
-                    data: {is_ajax: 1, page: page},
+                    data: {is_ajax:1,page:page,state:state},
                     dataType: 'html',
                     success: function (result) {
                         page++;
-                        console.log(result);
+                        //console.log(result);
                         $('.p_tab1 tbody ').append(result);
                         $('.base-load').removeClass('show');
                         check_move();

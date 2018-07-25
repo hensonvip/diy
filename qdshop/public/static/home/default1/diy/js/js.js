@@ -3236,7 +3236,7 @@ $(window).load(function () {
            var diy_design_html ='<img class="diy_design_img" style="display: none" src="'+sjt+'" alt="">';//创意擂台
            $('.mep_tleft').append(diy_design_html);
         }
-        //console.log(sjt);
+        
         mD.allData[0].visible=true;
         mD.allData[1].strokeStyle='#ccc';
         for(var is2=0;is2<mD.allData.length;is2++){

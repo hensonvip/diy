@@ -1195,6 +1195,7 @@ class OrderController extends ApiController
 	public function getOrderList(){
 		$user_id = $this->input('user_id',0);
 		$state = $this->input('state',0);//状态
+		//$state = 109;//状态
 
 		if(!$user_id){
 			$this->error('请先登录！');exit;
@@ -1216,10 +1217,10 @@ class OrderController extends ApiController
 				$screen_state = " AND pay_status = 0 AND order_status = 1";
 				break;
 			case CS_CHECKED://已付款/待发货 102
-				$screen_state = " AND pay_status = 2 ";
+				$screen_state = " AND pay_status = 2 AND comment_state = 0";
 				break;
-			case CS_SHIPPED://已发货/待收获 106
-				$screen_state = " AND shipping_status = 1";
+			case CS_SHIPPED://已发货/待收货 106
+				$screen_state = " AND shipping_status = 1 AND comment_state = 0";
 				break;
 			case CS_RECEIVED://已收货/待评价 108
 				$screen_state = " AND shipping_status = 2 AND comment_state = 0";
@@ -1403,6 +1404,10 @@ class OrderController extends ApiController
 			}
 		}else if($state['order_status'] == OS_UNCONFIRMED){
 			$data['status'] = '订单未确认';
+			if($state['pay_status'] == PS_UNPAYED){
+				$data['status'] = '待付款';
+				$data['status_code'] = '1';//立即支付
+			}
 		}else if($state['order_status'] == OS_INVALID){
 			$data['status'] = '无效订单';
 		}else if($state['order_status'] == OS_RETURNED){
@@ -1450,6 +1455,28 @@ class OrderController extends ApiController
 			$code['code'] = 500;//失败
 		}
 		$this->success($code);
+	}
+
+	//order_money 付款的数据
+	function order_money(){
+		$order_id = $this->input('order_id',0);
+		$user_id = $this->input('user_id',0);
+		if(!$user_id){
+			$this->error('您未登录！');
+		}
+		if(!$order_id){
+			$this->error('支付异常，请稍后重试！');
+		}
+		$sql = "SELECT * FROM ".$GLOBALS['ecs']->table('order_info')." WHERE order_id = $order_id AND user_id = $user_id";
+		$order = $GLOBALS['db']->getRow($sql);
+		if (gmtime() - $order['add_time'] >= 1800 && $order['pay_status'] != 2) {
+			update_order($order_id, array('order_status' => 2, 'to_buyer' => '订单付款超时自动取消'));//取消订单
+			change_order_goods_storage($order_id, false, 1);//恢复库存
+			//$this->error('30分钟之内未付款成功，订单已取消');
+		}
+		//print_r($order);exit;
+		$this->success($order);
+
 	}
 
 

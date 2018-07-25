@@ -17,6 +17,7 @@ require_once(ROOT_PATH . 'includes/cls_common.php');
 require_once(ROOT_PATH . 'includes/lib_transaction.php');
 require_once(ROOT_PATH . 'includes/lib_clips.php');
 require_once(ROOT_PATH . 'includes/lib_validate_record.php');
+require_once(ROOT_PATH . 'includes/lib_common.php');
 
 $GLOBALS['_LANG'] = $_LANG;
 
@@ -1489,10 +1490,20 @@ class UserController extends ApiController
 
 		$order_id = !empty($this->data['order_id'])?intval($this->data['order_id']) : 0;
 
+
+		if(!$order_id){
+			$this->error('参数错误');
+		}
+
 		$result = $this->order->arrived_order($order_id, $this->user_rank_info['user_id']);
+
+
 
 		if($result['code'] == 200)
 		{
+			//结算佣金
+			$this->commission($order_id);
+
 			$this->success(array(),200,'确认收货订单成功');
 		}
 		else

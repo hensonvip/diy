@@ -13,6 +13,7 @@
     <th><a href="javascript:listTable.sort('mask_name'); ">蒙版名称</a>{$sort_mask_name}</th>
     <th><a href="javascript:listTable.sort('mask_img'); ">蒙版图片</a>{$sort_mask_img}</th>
     <th><a href="javascript:listTable.sort('is_show'); ">是否显示</a>{$sort_is_show}</th>
+    <th><a href="javascript:listTable.sort('sort_order'); ">排序</a>{$sort_sort_order}</th>
     <th>操作</th>
   </tr>
   {foreach from=$mask_list item=list}
@@ -22,6 +23,7 @@
     <td align="center">{if $list.mask_img}<a target="_blank" href="../{$list.mask_img}"><img src="../{$list.mask_img}" alt="{$list.mask_name|escape:html}" style="max-width:325px; max-height:96px;"></a>{/if}</td>
     <td align="center"><span>
     <img src="images/{if $list.is_show eq 1}yes{else}no{/if}.gif" onclick="listTable.toggle(this, 'toggle_show', {$list.mask_id})" /></span></td>
+    <td>{$list.sort_order}</td>
     <td align="center" nowrap="true">
       <span>
         <a href="mask.php?act=edit&id={$list.mask_id}" title="编辑"><img src="images/icon_edit.gif" border="0" height="16" width="16" /></a>&nbsp;
